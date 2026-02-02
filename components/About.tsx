@@ -3,6 +3,8 @@ import Image from 'next/image';
 export default function About() {
     const roles = [
         'ヘルスケアカウンセリング',
+        '精密栄養学',
+        '血液検査データ解析',
         '映像制作',
         '写真撮影',
         'Web制作',
@@ -10,8 +12,9 @@ export default function About() {
         '記事執筆',
         'AIワークフロー構築',
         'フロントエンド実装',
-        'ノーコード開発',
+        'Kindle書籍制作',
         'フィッシング',
+        'ハンティング',
     ];
 
     return (
@@ -56,6 +59,9 @@ export default function About() {
                                 style={{ objectFit: 'cover' }}
                             />
                         </div>
+                        <a href="/journal" className="profile-journal-btn">
+                            Journal
+                        </a>
                     </div>
                     <div className="profile-info">
                         <p className="profile-name-en">DAISUKE KOBAYASHI</p>

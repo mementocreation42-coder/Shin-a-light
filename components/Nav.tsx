@@ -8,6 +8,7 @@ export default function Nav() {
             </Link>
             <div className="nav-links">
                 <Link href="/#about">About</Link>
+                <Link href="/journal" className="nav-journal">Journal</Link>
                 <Link href="/#works">Works</Link>
                 <Link href="/#contact">Contact</Link>
             </div>
