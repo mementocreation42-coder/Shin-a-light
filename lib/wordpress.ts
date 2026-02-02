@@ -1,4 +1,4 @@
-const WP_API_URL = 'http://journal.shinealight.jp/wp-json/wp/v2';
+const WP_API_URL = 'https://journal.shinealight.jp/wp-json/wp/v2';
 
 export interface WPPost {
     id: number;
