@@ -27,7 +27,7 @@ export default function Contact() {
 
         try {
             const response = await fetch(
-                'http://journal.shinealight.jp/wp-json/contact-form-7/v1/contact-forms/16255/feedback',
+                'https://journal.shinealight.jp/wp-json/contact-form-7/v1/contact-forms/16255/feedback',
                 {
                     method: 'POST',
                     body: body,
