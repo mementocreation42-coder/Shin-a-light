@@ -48,9 +48,29 @@ export default async function WorkDetailPage({ params }: PageProps) {
 
             {/* Main Visual */}
             <section className="work-visual">
-                <div className={`visual-placeholder ${work.color}`}>
-                    Main Visual / Video
-                </div>
+                {work.vimeoId ? (
+                    <div className="video-container">
+                        <iframe
+                            src={`https://player.vimeo.com/video/${work.vimeoId}?autoplay=0&loop=1&background=0`}
+                            frameBorder="0"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                ) : work.youtubeId ? (
+                    <div className="video-container">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${work.youtubeId}`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                ) : (
+                    <div className={`work-main-image ${work.color}`}>
+                        <img src={work.image} alt={work.title} />
+                    </div>
+                )}
             </section>
 
             {/* Content */}
@@ -91,23 +111,18 @@ export default async function WorkDetailPage({ params }: PageProps) {
             </section>
 
             {/* Gallery */}
-            <section className="work-gallery">
-                <h2 className="gallery-title">Gallery</h2>
-                <div className="gallery-grid">
-                    <div className="gallery-item">
-                        <div className="gallery-placeholder" />
+            {work.gallery && work.gallery.length > 0 && (
+                <section className="work-gallery">
+                    <h2 className="gallery-title">Gallery</h2>
+                    <div className="gallery-grid">
+                        {work.gallery.map((image, index) => (
+                            <div key={index} className="gallery-item">
+                                <img src={image} alt={`${work.title} gallery ${index + 1}`} />
+                            </div>
+                        ))}
                     </div>
-                    <div className="gallery-item">
-                        <div className="gallery-placeholder" />
-                    </div>
-                    <div className="gallery-item">
-                        <div className="gallery-placeholder" />
-                    </div>
-                    <div className="gallery-item">
-                        <div className="gallery-placeholder" />
-                    </div>
-                </div>
-            </section>
+                </section>
+            )}
 
             {/* Navigation */}
             <nav className="work-nav">
