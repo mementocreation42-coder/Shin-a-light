@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+JP:wght@400;700&display=swap');
+
+/* Background Narrative Images */
+.bgImageContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.bgImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.15;
+    filter: grayscale(40%) contrast(1.2) brightness(0.8);
+    transition: opacity 1s ease-in-out;
+    mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+}
+
+.bgOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 30% 50%, transparent 0%, #1E1E1E 80%);
+    /* Used hardcoded hex for bg-color */
+}
+
+/* Layout */
+.container {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    background-color: #1E1E1E;
+    /* Provide a base bg */
+    color: #FFFFFF;
+    font-family: 'JetBrains Mono', monospace;
+    /* Ensure font is available globally or imported here */
+}
+
+/* Narrative content */
+.narrativePanel {
+    flex: 1;
+    padding: 100px 5% 300px 10%;
+    max-width: 70%;
+}
+
+.milestoneSection {
+    margin-bottom: 250px;
+    opacity: 0.3;
+    transition: opacity 0.5s ease;
+}
+
+.milestoneSection.active {
+    opacity: 1;
+}
+
+.yearStamp {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #FF764D;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 10px rgba(255, 118, 77, 0.4);
+}
+
+.milestoneTitle {
+    font-size: 2.5rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: #FFFFFF;
+}
+
+.milestoneContent {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    max-width: 500px;
+    line-height: 1.8;
+    font-family: 'Noto Serif JP', serif;
+    /* Verify font availability */
+}
+
+/* Dashboard UI */
+.dashboardPanel {
+    position: fixed;
+    right: 0;
+    top: 60px;
+    width: 30%;
+    height: calc(100vh - 60px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
+}
+
+.dashboardCard {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 16px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.statLabel {
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.statValue {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+/* Accent colors */
+.accentYellow {
+    color: #F9E654;
+}
+
+.energyBarBg {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-top: 12px;
+}
+
+.energyBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #87D37C 0%, #F9E654 100%);
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Stats Bars */
+.statsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.statRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.statRowLabel {
+    width: 80px;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.statBarBg {
+    flex: 1;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.statBarFill {
+    height: 100%;
+    border-radius: 2px;
+    background: #FF764D;
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.creativity {
+    background: #FF764D;
+}
+
+.technology {
+    background: rgba(59, 130, 246, 0.15);
+    /* glow-blue */
+}
+
+.lifestyle {
+    background: #87D37C;
+}
+
+/* Focus Tags */
+.focusTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.focusTag {
+    font-size: 0.7rem;
+    color: #F9E654;
+    border: 1px solid rgba(249, 230, 84, 0.3);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(249, 230, 84, 0.05);
+}
+
+/* Chuunibyou (Sci-fi) Stats */
+.syncRateValue {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #00FFFF !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    letter-spacing: -0.05em;
+}
+
+.distortionLabel {
+    color: #FF00FF !important;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
+}
+
+.distortionBarFill {
+    height: 100%;
+    background: linear-gradient(90deg, #FF00FF 0%, #7000FF 100%);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: pulse-glow 2s infinite alternate;
+}
+
+@keyframes pulse-glow {
+    from {
+        opacity: 0.8;
+    }
+
+    to {
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+}
+
+@media (max-width: 1024px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .narrativePanel {
+        max-width: 100%;
+        padding: 60px 5%;
+        width: 100%;
+    }
+
+    .dashboardPanel {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px 5%;
+    }
+}
