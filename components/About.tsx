@@ -2,17 +2,17 @@ import Image from 'next/image';
 
 export default function About() {
     const roles = [
-        'ヘルスケアカウンセリング',
         '精密栄養学',
         '血液検査データ解析',
+        'ヘルスケアカウンセリング',
+        'システム構築',
+        'AIワークフロー構築',
+        'Web制作',
+        'フロントエンド実装',
         '映像制作',
         '写真撮影',
-        'Web制作',
         'インタビュー・取材',
         '記事執筆',
-        'AIワークフロー構築',
-        'フロントエンド実装',
-        'Kindle書籍制作',
         'フィッシング',
         'ハンティング',
     ];
@@ -59,9 +59,14 @@ export default function About() {
                                 style={{ objectFit: 'cover' }}
                             />
                         </div>
-                        <a href="/journal" className="profile-journal-btn">
-                            Journal
-                        </a>
+                        <div className="profile-actions">
+                            <a href="/journal" className="profile-btn journal">
+                                Journal
+                            </a>
+                            <a href="/chronicle" className="profile-btn chronicle">
+                                Chronicle
+                            </a>
+                        </div>
                     </div>
                     <div className="profile-info">
                         <p className="profile-name-en">DAISUKE KOBAYASHI</p>
@@ -85,6 +90,6 @@ export default function About() {
                     </div>
                 </div>
             </div>
-        </section>
+        </section >
     );
 }

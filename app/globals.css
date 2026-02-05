@@ -319,9 +319,14 @@ a {
   margin-bottom: 24px;
 }
 
-.profile-journal-btn {
+.profile-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-btn {
+  flex: 1;
   display: block;
-  width: 100%;
   padding: 14px;
   background-color: var(--accent-orange);
   border: 1px solid var(--accent-orange);
@@ -335,7 +340,7 @@ a {
   transition: opacity 0.2s ease;
 }
 
-.profile-journal-btn:hover {
+.profile-btn:hover {
   opacity: 0.8;
 }
 
@@ -600,10 +605,7 @@ textarea:disabled {
   color: var(--accent-orange);
 }
 
-.nav-links a.nav-journal {
-  color: var(--accent-orange);
-  font-weight: 700;
-}
+
 
 .work-category {
   font-size: 12px;
