@@ -27,51 +27,113 @@ export const milestones: Milestone[] = [
     {
         id: "birth",
         year: 1980,
-        month: "10月",
-        title: "はじまり",
-        content: "愛知県一宮市に生まれる。幼少期から絵を描くことに夢中になり、鳥山明のドラゴンボールに強い影響を受ける。",
+        title: "誕生",
+        content: "愛知県一宮市にて次男として誕生。",
         image: "/images/chronicle/milestone_1980.png",
         dashboard: {
             age: 0,
             location: "愛知県",
             energy: 100,
-            title: "誕生",
+            title: "次男",
+            stats: {
+                creativity: 50,
+                technology: 0,
+                lifestyle: 50,
+                syncRate: 100,
+                realityDistortion: 0
+            },
+            focus: ["家族", "誕生"]
+        }
+    },
+    {
+        id: "childhood-art",
+        year: 1984,
+        title: "絵画との出会い",
+        content: "絵画教室に通い始め、表現の楽しさを知る。鳥山明氏の影響を受け、漫画家に憧れる。",
+        image: "/images/chronicle/milestone_1980.png", // Reusing 1980 image as relevant fallback
+        dashboard: {
+            age: 4,
+            location: "愛知県",
+            energy: 100,
+            title: "画家の卵",
             stats: {
                 creativity: 80,
-                technology: 10,
+                technology: 5,
                 lifestyle: 50,
-                syncRate: 98,
-                realityDistortion: 10
+                syncRate: 95,
+                realityDistortion: 20
             },
-            focus: ["絵画", "漫画", "好奇心"]
+            focus: ["絵画", "漫画", "ドラゴンボール"]
         }
     },
     {
         id: "blue-hearts",
         year: 1988,
-        title: "音楽との出会い",
-        content: "初めてのライブ体験。THE BLUE HEARTSの衝撃が、POPからパンク・ロックへと音楽の嗜好を一変させる。この日から音楽は人生の中心となる。",
+        title: "パンクの目覚め",
+        content: "THE BLUE HEARTSのライブに行く。パンクの追求が始まる。",
         image: "/images/chronicle/milestone_1988.png",
         dashboard: {
             age: 8,
             location: "愛知県",
             energy: 95,
-            title: "少年",
+            title: "パンク少年",
             stats: {
-                creativity: 90,
-                technology: 20,
+                creativity: 85,
+                technology: 10,
                 lifestyle: 50,
-                syncRate: 85,
+                syncRate: 90,
                 realityDistortion: 30
             },
-            focus: ["パンク", "ロック", "反骨精神"]
+            focus: ["音楽", "パンク"]
         }
     },
     {
-        id: "punk-era",
+        id: "game-world",
+        year: 1992,
+        title: "物語への没入",
+        content: "ファイナルファンタジーⅣに没頭。RPGを通じて物語の世界に浸る。",
+        image: "/images/chronicle/milestone_1988.png", // Fallback to 80s vibe
+        dashboard: {
+            age: 12,
+            location: "愛知県",
+            energy: 90,
+            title: "ゲーマー",
+            stats: {
+                creativity: 90,
+                technology: 30,
+                lifestyle: 50,
+                syncRate: 85,
+                realityDistortion: 50
+            },
+            focus: ["ゲーム", "物語", "RPG"]
+        }
+    },
+    {
+        id: "alternative-culture",
+        year: 1995,
+        title: "カウンターカルチャー",
+        content: "Nirvanaなどのオルタナティブ・ミュージック、DIY精神、カウンターカルチャーに深く傾倒。",
+        image: "/images/chronicle/milestone_1996.png", // Using punk era image
+        dashboard: {
+            age: 15,
+            location: "愛知県",
+            energy: 100,
+            title: "反逆者",
+            stats: {
+                creativity: 95,
+                technology: 20,
+                lifestyle: 45,
+                syncRate: 80,
+                realityDistortion: 60
+            },
+            focus: ["オルタナ", "DIY", "グランジ"]
+        }
+    },
+    {
+        id: "punk-hs",
         year: 1996,
-        title: "パンクに染まる",
-        content: "高校進学で名古屋へ。UK/ヨーロッパのパンク・ハードコアシーンに没頭し、緑のモヒカンで街を歩く。反骨精神と自己表現の原点がここにある。",
+        title: "モヒカンの夏",
+        content: "名古屋の高校へ進学。イギリス・ヨーロッパのパンク／ハードコアシーンに浸かり、夏休みには緑のモヒカンで過ごすパンクキッズとなった。",
         image: "/images/chronicle/milestone_1996.png",
         dashboard: {
             age: 16,
@@ -82,17 +144,17 @@ export const milestones: Milestone[] = [
                 creativity: 95,
                 technology: 20,
                 lifestyle: 40,
-                syncRate: 120, // High rebellion
-                realityDistortion: 60
+                syncRate: 120, // Peak rebellion
+                realityDistortion: 70
             },
-            focus: ["ファッション", "ライブ", "自己表現"]
+            focus: ["モヒカン", "ハードコア", "自己表現"]
         }
     },
     {
-        id: "band-era",
+        id: "drummer-era",
         year: 2001,
-        title: "バンド活動",
-        content: "ギターからドラムへ転向。Blankey Jet Cityに影響を受け、名古屋で本格的なバンド活動を開始。音楽、ジャズ、ブルース、映画に浸る日々。",
+        title: "ドラムと音楽探究",
+        content: "ドラムを本格的に開始。ジャズ、ブルース、ロック、ファンク、ソウルなどの歴史的な音楽を掘り下げ、音楽への理解を深める。",
         image: "/images/chronicle/milestone_2001.png",
         dashboard: {
             age: 21,
@@ -106,14 +168,14 @@ export const milestones: Milestone[] = [
                 syncRate: 90,
                 realityDistortion: 50
             },
-            focus: ["ドラム", "ジャズ/ブルース", "映画"]
+            focus: ["ドラム", "ルーツ音楽", "深掘り"]
         }
     },
     {
-        id: "new-orleans",
+        id: "new-orleans-web",
         year: 2007,
-        title: "ニューオーリンズへ",
-        content: "音楽のルーツを求めてニューオーリンズへ。この旅の中でWeb開発・コーディングを学び始める。創造の幅が音楽からデジタルへと広がる。",
+        title: "聖地とWebスキル",
+        content: "音楽の聖地ニュー・オリンズへ。本場のファンクやセカンドラインを体験。同年、独学でウェブサイト制作のスキルを習得。",
         image: "/images/chronicle/milestone_2007.png",
         dashboard: {
             age: 27,
@@ -124,158 +186,178 @@ export const milestones: Milestone[] = [
                 creativity: 85,
                 technology: 60,
                 lifestyle: 40,
-                syncRate: 75, // Searching
+                syncRate: 75,
                 realityDistortion: 40
             },
-            focus: ["旅行", "Web開発", "コーディング"]
+            focus: ["ファンク", "旅", "Web制作"]
         }
     },
     {
-        id: "australia",
+        id: "australia-byron",
         year: 2011,
-        title: "オーストラリアへ",
-        content: "バイロンベイへ移住。寿司職人として働きながら、心身ともに大きな転換点を迎える。自然の中での生活が新たな価値観を育む。",
+        title: "解放と世界",
+        content: "渡豪。バイロンベイでの生活を通じ、ストレスからの解放と世界を知る。",
         image: "/images/chronicle/milestone_2011.png",
         dashboard: {
             age: 31,
             location: "バイロンベイ",
             energy: 80,
-            title: "職人",
+            title: "旅人",
             stats: {
                 creativity: 70,
                 technology: 50,
-                lifestyle: 90,
-                syncRate: 88,
-                realityDistortion: 20 // Grounded
+                lifestyle: 95,
+                syncRate: 90,
+                realityDistortion: 20
             },
-            focus: ["寿司", "サーフィン", "スローライフ"]
+            focus: ["海外生活", "解放", "多様性"]
         }
     },
     {
-        id: "tokushima",
+        id: "father-loss",
         year: 2013,
-        title: "徳島へ",
-        content: "海の近くで暮らすため徳島へ移住。釣りを楽しみながら、プロフォトグラファーとしてのキャリアをスタート。7年計画の始まり。",
+        title: "決意",
+        content: "ALSで闘病した父を看取り、「自分らしく生きる」ことを決意。",
         image: "/images/chronicle/milestone_2013.png",
         dashboard: {
             age: 33,
-            location: "徳島県",
-            energy: 85,
-            title: "フォトグラファー",
+            location: "愛知県",
+            energy: 70,
+            title: "決意の人",
             stats: {
-                creativity: 90,
-                technology: 60,
-                lifestyle: 85,
-                syncRate: 92,
-                realityDistortion: 40
+                creativity: 80,
+                technology: 50,
+                lifestyle: 80,
+                syncRate: 95, // Deep sync with life
+                realityDistortion: 10
             },
-            focus: ["写真", "釣り", "移住"]
+            focus: ["看取り", "自分らしさ", "転機"]
         }
     },
     {
-        id: "creative-brand",
+        id: "tokushima-move",
+        year: 2014,
+        title: "徳島移住",
+        content: "徳島県に移住。釣りとカメラに没頭する日々を送る。ミラーレスカメラとドローンの登場により、僕の感性とクロスした。",
+        image: "/images/chronicle/milestone_2013.png", // Reusing 2013 tokushima related image
+        dashboard: {
+            age: 34,
+            location: "徳島県",
+            energy: 90,
+            title: "移住者",
+            stats: {
+                creativity: 90,
+                technology: 70,
+                lifestyle: 90,
+                syncRate: 92,
+                realityDistortion: 30
+            },
+            focus: ["釣り", "カメラ", "ドローン"]
+        }
+    },
+    {
+        id: "brand-launch",
         year: 2018,
-        title: "DAISUKE KOBAYASHI",
-        content: "クリエイティブブランド「DAISUKE KOBAYASHI」を正式に立ち上げ。映像制作、ドローン撮影、ミラーレスカメラを軸に活動を本格化。",
+        title: "クロスオーヴァー",
+        content: "『DAISUKE KOBAYASHI』開業。感性とテクノロジーが融合した「クロスオーヴァー期」を迎え、働くことと人生が一致する。",
         image: "/images/chronicle/milestone_2018.png",
         dashboard: {
             age: 38,
             location: "徳島県",
-            energy: 90,
-            title: "クリエイター",
+            energy: 95,
+            title: "事業主",
             stats: {
                 creativity: 95,
                 technology: 85,
-                lifestyle: 75,
-                syncRate: 96,
-                realityDistortion: 70
+                lifestyle: 90,
+                syncRate: 98,
+                realityDistortion: 60
             },
-            focus: ["映像制作", "ドローン", "ブランディング"]
+            focus: ["独立", "融合", "ライフワーク"]
         }
     },
     {
-        id: "remote-life",
-        year: 2020,
-        title: "場所に縛られない働き方",
-        content: "2013年から始めた7年計画が結実。どこにいても働けるライフスタイルを確立。しかし40歳を迎え、体の変化を感じ始める。",
-        image: "/images/chronicle/milestone_2020.png",
+        id: "book-publish",
+        year: 2021,
+        title: "執筆活動",
+        content: "Kindle書籍『現代を生き抜くサバイバルアイテム40』を出版。",
+        image: "/images/chronicle/milestone_2020.png", // Using remote life era image
         dashboard: {
-            age: 40,
+            age: 41,
             location: "徳島県",
-            energy: 65,
-            title: "リモートワーカー",
+            energy: 85,
+            title: "作家",
             stats: {
-                creativity: 85,
-                technology: 90,
-                lifestyle: 70,
-                syncRate: 60, // Crisis
-                realityDistortion: 50
+                creativity: 90,
+                technology: 85,
+                lifestyle: 85,
+                syncRate: 85,
+                realityDistortion: 40
             },
-            focus: ["リモートワーク", "7年ルール", "健康"]
+            focus: ["Kindle", "執筆", "サバイバル"]
         }
     },
     {
-        id: "daughter-memento",
-        year: 2023,
-        title: "娘の誕生とMEMENTO",
-        content: "娘が誕生し、人生に新たな意味が加わる。メモリアルフォト・ムービーサービス「MEMENTO」を立ち上げ、7年ルールについてのKindle本を出版。",
-        image: "/images/chronicle/milestone_2023.png",
+        id: "daughter-emma",
+        year: 2022,
+        title: "生命の神秘",
+        content: "長女・永茉（エマ）誕生。生命の神秘と記録の大切さを再認識する。",
+        image: "/images/chronicle/milestone_2023.png", // Using memento image (close enough context)
         dashboard: {
-            age: 43,
+            age: 42,
             location: "徳島県",
-            energy: 90,
-            title: "父・起業家",
+            energy: 95,
+            title: "父",
             stats: {
                 creativity: 90,
                 technology: 80,
                 lifestyle: 95,
-                syncRate: 98,
-                realityDistortion: 40
+                syncRate: 100,
+                realityDistortion: 20
             },
-            focus: ["育児", "MEMENTO", "執筆"]
+            focus: ["育児", "生命", "記録"]
         }
     },
     {
-        id: "nutrition-discovery",
+        id: "concept-rebuild",
+        year: 2024,
+        title: "再構築",
+        content: "全プロジェクトのコンセプトを再構築。映像制作・執筆を通じた「ビジュアルコミュニケーション戦略」を展開。",
+        image: "/images/chronicle/milestone_2025.png", // Placeholder/Forward looking
+        dashboard: {
+            age: 44,
+            location: "徳島県",
+            energy: 90,
+            title: "ストラテジスト",
+            stats: {
+                creativity: 95,
+                technology: 90,
+                lifestyle: 90,
+                syncRate: 95,
+                realityDistortion: 50
+            },
+            focus: ["戦略", "映像", "ビジュアル"]
+        }
+    },
+    {
+        id: "mitoflow-start",
         year: 2025,
-        month: "2月",
-        title: "精密栄養学との出会い",
-        content: "細胞レベルの栄養学に深く潜る。分子レベルで体の必要を理解することで、劇的な変容を始め、エネルギーと明晰さを取り戻す。",
-        image: "/images/chronicle/milestone_2025.png",
+        title: "MitoFlow40",
+        content: "精密栄養学を学び、ヘルスケアサービス『ミトフロー40』をスタート。",
+        image: "/images/chronicle/milestone_2026.png", // Using final vision image
         dashboard: {
             age: 45,
             location: "徳島県",
             energy: 95,
-            title: "バイオハッカー",
+            title: "ファウンダー",
             stats: {
-                creativity: 85,
+                creativity: 90,
                 technology: 95,
                 lifestyle: 100,
                 syncRate: 99,
                 realityDistortion: 80
             },
-            focus: ["栄養学", "分子生物学", "バイオハッキング"]
-        }
-    },
-    {
-        id: "mitoflow-launch",
-        year: 2026,
-        title: "MitoFlow40",
-        content: "クリエイターの感性と健康科学の精密さを融合。40代以上の人々が生物学を最適化し、活力に満ちたクリエイティブな人生を送るためのMitoFlow40を立ち上げる。",
-        image: "/images/chronicle/milestone_2026.png",
-        dashboard: {
-            age: 46,
-            location: "徳島県",
-            energy: 100,
-            title: "創業者",
-            stats: {
-                creativity: 100,
-                technology: 100,
-                lifestyle: 100,
-                syncRate: 400, // Breakthrough
-                realityDistortion: 100
-            },
-            focus: ["MitoFlow40", "最適化", "活力"]
+            focus: ["栄養学", "ヘルスケア", "創業"]
         }
     }
 ];
