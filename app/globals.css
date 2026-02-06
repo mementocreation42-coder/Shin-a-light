@@ -727,6 +727,26 @@ textarea:disabled {
   font-size: 14px;
   line-height: 2;
   color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.work-link-button {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 8px 16px;
+  background-color: var(--accent-orange);
+  color: #1e1e1e;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 12px;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.work-link-button:hover {
+  background-color: #ff9d7f;
+  transform: translateY(-1px);
 }
 
 .work-gallery {
