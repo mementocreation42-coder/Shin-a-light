@@ -409,72 +409,117 @@ a {
   background-color: var(--accent-orange);
 }
 
-.work-card.color-1:hover .work-info h3 {
-  color: var(--accent-orange);
+.work-card.color-1:hover .work-info {
+  background-color: var(--accent-orange);
+}
+
+.work-card.color-1:hover .work-info h3,
+.work-card.color-1:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-2 .work-thumb {
   background-color: var(--accent-blue);
 }
 
-.work-card.color-2:hover .work-info h3 {
-  color: var(--accent-blue);
+.work-card.color-2:hover .work-info {
+  background-color: var(--accent-blue);
+}
+
+.work-card.color-2:hover .work-info h3,
+.work-card.color-2:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-3 .work-thumb {
   background-color: var(--accent-green);
 }
 
-.work-card.color-3:hover .work-info h3 {
-  color: var(--accent-green);
+.work-card.color-3:hover .work-info {
+  background-color: var(--accent-green);
+}
+
+.work-card.color-3:hover .work-info h3,
+.work-card.color-3:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-4 .work-thumb {
   background-color: var(--accent-purple);
 }
 
-.work-card.color-4:hover .work-info h3 {
-  color: var(--accent-purple);
+.work-card.color-4:hover .work-info {
+  background-color: var(--accent-purple);
+}
+
+.work-card.color-4:hover .work-info h3,
+.work-card.color-4:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-5 .work-thumb {
   background-color: var(--accent-yellow);
 }
 
-.work-card.color-5:hover .work-info h3 {
-  color: var(--accent-yellow);
+.work-card.color-5:hover .work-info {
+  background-color: var(--accent-yellow);
+}
+
+.work-card.color-5:hover .work-info h3,
+.work-card.color-5:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-6 .work-thumb {
   background-color: var(--accent-red);
 }
 
-.work-card.color-6:hover .work-info h3 {
-  color: var(--accent-red);
+.work-card.color-6:hover .work-info {
+  background-color: var(--accent-red);
+}
+
+.work-card.color-6:hover .work-info h3,
+.work-card.color-6:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-7 .work-thumb {
   background-color: #58d8d8;
 }
 
-.work-card.color-7:hover .work-info h3 {
-  color: #58d8d8;
+.work-card.color-7:hover .work-info {
+  background-color: #58d8d8;
+}
+
+.work-card.color-7:hover .work-info h3,
+.work-card.color-7:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-8 .work-thumb {
   background-color: #f78fb3;
 }
 
-.work-card.color-8:hover .work-info h3 {
-  color: #f78fb3;
+.work-card.color-8:hover .work-info {
+  background-color: #f78fb3;
+}
+
+.work-card.color-8:hover .work-info h3,
+.work-card.color-8:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 .work-card.color-9 .work-thumb {
   background-color: #a29bfe;
 }
 
-.work-card.color-9:hover .work-info h3 {
-  color: #a29bfe;
+.work-card.color-9:hover .work-info {
+  background-color: #a29bfe;
+}
+
+.work-card.color-9:hover .work-info h3,
+.work-card.color-9:hover .work-info p {
+  color: var(--bg-primary);
 }
 
 /* .work-card:hover .work-thumb {
@@ -483,6 +528,8 @@ a {
 
 .work-info {
   padding: 20px;
+  background-color: var(--bg-secondary);
+  transition: background-color 0.2s ease;
 }
 
 .work-info h3 {
@@ -498,6 +545,7 @@ a {
 .work-info p {
   font-size: 12px;
   color: var(--text-muted);
+  transition: color 0.2s ease;
 }
 
 /* ===================================
