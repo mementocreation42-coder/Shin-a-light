@@ -396,16 +396,11 @@ a {
   width: 100% !important;
   height: 100% !important;
   object-fit: cover;
-  opacity: 0.2;
-  mix-blend-mode: multiply;
-  filter: grayscale(100%);
+  opacity: 1;
   transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .work-card:hover .work-image {
-  opacity: 1;
-  mix-blend-mode: normal;
-  filter: grayscale(0%);
   transform: scale(1.05);
 }
 
