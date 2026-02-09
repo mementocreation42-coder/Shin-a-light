@@ -38,10 +38,16 @@ export const works: Work[] = [
         linkLabel: 'Other Film Link',
         linkButtonText: 'View Documentary',
         gallery: [
-            'https://img.youtube.com/vi/nBt3BryfMa0/maxresdefault.jpg',
-            'https://picsum.photos/seed/pr1/800/450',
-            'https://picsum.photos/seed/pr2/800/450',
-            'https://picsum.photos/seed/pr3/800/450'
+            '/images/works/beyond-borders-prayer/1.jpg',
+            '/images/works/beyond-borders-prayer/2.jpg',
+            '/images/works/beyond-borders-prayer/3.jpg',
+            '/images/works/beyond-borders-prayer/4.jpg',
+            '/images/works/beyond-borders-prayer/5.jpg',
+            '/images/works/beyond-borders-prayer/6.jpg',
+            '/images/works/beyond-borders-prayer/7.jpg',
+            '/images/works/beyond-borders-prayer/8.jpg',
+            '/images/works/beyond-borders-prayer/9.jpg',
+            '/images/works/beyond-borders-prayer/10.jpg'
         ]
     },
     {
@@ -49,7 +55,7 @@ export const works: Work[] = [
         title: 'パーソナルヘルスケアサービス Mitoflow40',
         category: 'Personal Healthcare Service',
         color: 'color-2',
-        image: 'https://picsum.photos/seed/mito/800/450',
+        image: '/images/works/mitoflow40/main.jpg',
         year: '2025',
         client: 'オウンドプロジェクト',
         role: '企画・開発・デザイン・運営',
@@ -57,19 +63,14 @@ export const works: Work[] = [
         overview: '2025年より精密栄養学の探求を開始。自身の体調不良をデータに基づく実践によって劇的に改善させた経験を機に、その知見を社会へ還元すべく「MitoFlow40」を立ち上げました。単なる感覚的なアドバイスではなく、バイオロジカルな数値に基づいたパーソナルヘルスケアの最適解を提供することを目指しています。',
         process: '徹底した「自分事」からの出発：\n自分の身体を実験台に、あらゆる栄養素の相関関係を可視化。映像制作で培った「観察眼」をデータ解析に転換し、徹底的に個人の心身に寄り添う設計を心がけました。\n\nクリエイター×エンジニアのハイブリッド構築：\nサービスの顔となるWebサイトはNext.jsで構築し、バックエンドにはAIによる解析支援を導入。最新テクノロジーと、温かみのあるライティングやビジュアルを融合させ、「心強さ」を感じるサービスデザインを目指しています。\n\n独自解析システムの開発：\n現在は、血液検査データや生活習慣の定量的データを統合し、個別に最適化されたフィードバックを自動生成する「独自のパーソナル解析システム」を開発中です。Gemini APIを活用したAI解析と、統計モデルを組み合わせることで、専門的な知見をより迅速かつ直感的にユーザーへ届ける基盤を構築実験中です。',
         result: '現在はクローズドな環境でサービスを提供しながら、着実に加入者を増やしています。 「長年の不調の理由が初めて腑に落ちた」「数値に裏打ちされたアドバイスなので迷いなく実践できる」といった声をいただいており、開発中のシステムによるデータ推移の可視化も、モチベーション維持に大きく寄与しています。',
-        link: 'https://mitoflow40.com/',
-        gallery: [
-            'https://picsum.photos/seed/mito1/800/450',
-            'https://picsum.photos/seed/mito2/800/450',
-            'https://picsum.photos/seed/mito3/800/450'
-        ]
+        link: 'https://mitoflow40.com/'
     },
     {
         slug: 'mugizine-media',
         title: '牟岐町メディア MUGIZINE',
         category: 'Web Media',
         color: 'color-3',
-        image: 'https://picsum.photos/seed/mugi/800/450',
+        image: '/images/works/mugizine/main.jpg',
         year: '2018〜',
         client: '牟岐町',
         role: '企画・開発・デザイン・運営・記事執筆・編集',
@@ -79,9 +80,12 @@ export const works: Work[] = [
         result: '2018年の立ち上げから現在まで欠かすことなく運営を続け、今では町を代表する広報媒体としての地位を確立。町内外に根強いファンを抱え、「更新が楽しみ」という声が多く寄せられるなど、コミュニティの記録（アーカイブ）としても重要な役割を担っています。',
         link: 'https://mugizine.jp/',
         gallery: [
-            'https://picsum.photos/seed/mugi1/800/450',
-            'https://picsum.photos/seed/mugi2/800/450',
-            'https://picsum.photos/seed/mugi3/800/450'
+            '/images/works/mugizine/1.jpg',
+            '/images/works/mugizine/2.jpg',
+            '/images/works/mugizine/3.jpg',
+            '/images/works/mugizine/4.jpg',
+            '/images/works/mugizine/5.jpg',
+            '/images/works/mugizine/6.jpg'
         ]
     },
     {
@@ -89,7 +93,7 @@ export const works: Work[] = [
         title: '釣りメディア TSURIHACK',
         category: 'Outdoor / Fishing / Lifestyle',
         color: 'color-4',
-        image: 'https://picsum.photos/seed/tsuri/800/450',
+        image: '/images/works/tsurihack/main.jpg',
         year: '2018 –',
         client: '株式会社スペースキー',
         role: '企画・構成・記事執筆・撮影',
@@ -99,9 +103,14 @@ export const works: Work[] = [
         result: 'メディアの急成長期に深く関わらせていただき、現場感覚を活かした記事群は読者からも高い支持をいただきました。クライアントからは「メディアのアイデンティティ形成と継続的な成長における重要な一翼を担った」との評価をいただいており、現在まで続くクリエイティブ活動の原点となっています。',
         link: 'https://tsurihack.com/author/enigamid',
         gallery: [
-            'https://picsum.photos/seed/tsuri1/800/450',
-            'https://picsum.photos/seed/tsuri2/800/450',
-            'https://picsum.photos/seed/tsuri3/800/450'
+            '/images/works/tsurihack/1.jpg',
+            '/images/works/tsurihack/2.jpg',
+            '/images/works/tsurihack/3.jpg',
+            '/images/works/tsurihack/4.jpg',
+            '/images/works/tsurihack/5.jpg',
+            '/images/works/tsurihack/6.jpg',
+            '/images/works/tsurihack/7.jpg',
+            '/images/works/tsurihack/8.jpg'
         ]
     },
     {
@@ -119,9 +128,14 @@ export const works: Work[] = [
         result: '納品後、クライアント様からは「あの日の熱狂が鮮明に蘇る」と大変高い評価をいただきました。「記録としてプロに依頼して本当に良かった」というお言葉をいただき、グループにとっての大切な節目に、映像という形で深く寄与することができました。',
         youtubeId: 'EILMCYSX3tE',
         gallery: [
-            'https://img.youtube.com/vi/EILMCYSX3tE/maxresdefault.jpg',
-            'https://picsum.photos/seed/pandle2/800/450',
-            'https://picsum.photos/seed/pandle3/800/450'
+            '/images/works/steelband-pandle/1.jpg',
+            '/images/works/steelband-pandle/2.jpg',
+            '/images/works/steelband-pandle/3.jpg',
+            '/images/works/steelband-pandle/4.jpg',
+            '/images/works/steelband-pandle/5.jpg',
+            '/images/works/steelband-pandle/6.jpg',
+            '/images/works/steelband-pandle/7.jpg',
+            '/images/works/steelband-pandle/8.jpg'
         ]
     },
     {
@@ -139,9 +153,16 @@ export const works: Work[] = [
         result: 'クライアント様からは「自分たちが大切にしている空気感が、言葉にできないほど美しく可視化された。本当に撮ってもらってよかった」という、クリエイターとしてこの上ない評価をいただきました。\n\n映像公開後、ビジュアルのトーンが統一されたことで、既存ファンとのエンゲージメントが深化。同時に、ブランドの質感を重視する新たな客層への認知も着実に広がっています。\n\n撮影した静止画や映像は、日々のSNS発信といったオンラインの活動に留まらず、マルシェやポップアップイベントなどのリアルな現場でも活用されています。店内のモニターでの上映やパネル・お品書きへの展開など、オフラインにおいても「ブランドの世界観を瞬時に伝えるメディア」として、現在も継続的に運用されています。',
         youtubeId: '7dMyN_6mbVI',
         gallery: [
-            'https://img.youtube.com/vi/7dMyN_6mbVI/maxresdefault.jpg',
-            'https://picsum.photos/seed/muffin2/800/450',
-            'https://picsum.photos/seed/muffin3/800/450'
+            '/images/works/planetary-muffin/1.jpg',
+            '/images/works/planetary-muffin/2.jpg',
+            '/images/works/planetary-muffin/3.jpg',
+            '/images/works/planetary-muffin/4.jpg',
+            '/images/works/planetary-muffin/5.jpg',
+            '/images/works/planetary-muffin/6.jpg',
+            '/images/works/planetary-muffin/7.jpg',
+            '/images/works/planetary-muffin/8.jpg',
+            '/images/works/planetary-muffin/9.jpg',
+            '/images/works/planetary-muffin/10.jpg'
         ]
     },
     {
