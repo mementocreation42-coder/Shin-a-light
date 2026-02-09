@@ -11,6 +11,9 @@ export default function ChronicleTimeline() {
     const [activeMilestone, setActiveMilestone] = useState<Milestone>(milestones[0]);
 
     useEffect(() => {
+        // Force scroll to top on mount
+        window.scrollTo(0, 0);
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
@@ -25,7 +28,7 @@ export default function ChronicleTimeline() {
             },
             {
                 root: null,
-                rootMargin: '-40% 0px -40% 0px',
+                rootMargin: '-20% 0px -20% 0px', // More lenient margin
                 threshold: 0,
             }
         );
@@ -57,7 +60,7 @@ export default function ChronicleTimeline() {
 
             {/* Narrative Scroll Panel */}
             <div className={styles.narrativePanel}>
-                <header style={{ marginBottom: '150px' }}>
+                <header style={{ marginBottom: '60px' }}>
                     <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', letterSpacing: '0.2em', marginBottom: '20px', color: 'rgba(255, 255, 255, 0.6)' }}>
                         CHRONICLE: DAISUKE KOBAYASHI
                     </div>
