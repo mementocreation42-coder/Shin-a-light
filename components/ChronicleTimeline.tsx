@@ -14,8 +14,19 @@ export default function ChronicleTimeline() {
         // Force scroll to top on mount
         window.scrollTo(0, 0);
 
+        // Ensure first milestone is active when near top
+        const handleScroll = () => {
+            if (window.scrollY < 200) {
+                setActiveMilestone(milestones[0]);
+            }
+        };
+
         const observer = new IntersectionObserver(
             (entries) => {
+                // Don't update if we're at the top (first milestone should stay active)
+                if (window.scrollY < 200) {
+                    return;
+                }
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute('data-id');
@@ -28,7 +39,7 @@ export default function ChronicleTimeline() {
             },
             {
                 root: null,
-                rootMargin: '-20% 0px -20% 0px', // More lenient margin
+                rootMargin: '-30% 0px -30% 0px',
                 threshold: 0,
             }
         );
@@ -36,7 +47,12 @@ export default function ChronicleTimeline() {
         const sections = document.querySelectorAll(`.${styles.milestoneSection}`);
         sections.forEach((section) => observer.observe(section));
 
-        return () => observer.disconnect();
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     return (
