@@ -12,8 +12,8 @@ export default function Works() {
                 </div>
                 <div className="works-grid">
                     {works.map((work) => (
-                        <Link key={work.slug} href={`/works/${work.slug}`} className="work-card">
-                            <div className={`work-thumb ${work.color}`}>
+                        <Link key={work.slug} href={`/works/${work.slug}`} className={`work-card ${work.color}`}>
+                            <div className="work-thumb">
                                 <Image
                                     src={work.image}
                                     alt={work.title}
