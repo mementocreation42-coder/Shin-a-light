@@ -372,15 +372,18 @@ a {
 }
 
 .work-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
   background-color: var(--bg-secondary);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
   text-decoration: none;
+  height: 100%;
 }
 
 .work-card:hover {
   background-color: var(--bg-tertiary);
+  /* Default hover color */
 }
 
 .work-thumb {
@@ -409,7 +412,7 @@ a {
   background-color: var(--accent-orange);
 }
 
-.work-card.color-1:hover .work-info {
+.work-card.color-1:hover {
   background-color: var(--accent-orange);
 }
 
@@ -422,7 +425,7 @@ a {
   background-color: var(--accent-blue);
 }
 
-.work-card.color-2:hover .work-info {
+.work-card.color-2:hover {
   background-color: var(--accent-blue);
 }
 
@@ -435,7 +438,7 @@ a {
   background-color: var(--accent-green);
 }
 
-.work-card.color-3:hover .work-info {
+.work-card.color-3:hover {
   background-color: var(--accent-green);
 }
 
@@ -448,7 +451,7 @@ a {
   background-color: var(--accent-purple);
 }
 
-.work-card.color-4:hover .work-info {
+.work-card.color-4:hover {
   background-color: var(--accent-purple);
 }
 
@@ -461,7 +464,7 @@ a {
   background-color: var(--accent-yellow);
 }
 
-.work-card.color-5:hover .work-info {
+.work-card.color-5:hover {
   background-color: var(--accent-yellow);
 }
 
@@ -474,7 +477,7 @@ a {
   background-color: var(--accent-red);
 }
 
-.work-card.color-6:hover .work-info {
+.work-card.color-6:hover {
   background-color: var(--accent-red);
 }
 
@@ -487,7 +490,7 @@ a {
   background-color: #58d8d8;
 }
 
-.work-card.color-7:hover .work-info {
+.work-card.color-7:hover {
   background-color: #58d8d8;
 }
 
@@ -500,7 +503,7 @@ a {
   background-color: #f78fb3;
 }
 
-.work-card.color-8:hover .work-info {
+.work-card.color-8:hover {
   background-color: #f78fb3;
 }
 
@@ -513,7 +516,7 @@ a {
   background-color: #a29bfe;
 }
 
-.work-card.color-9:hover .work-info {
+.work-card.color-9:hover {
   background-color: #a29bfe;
 }
 
@@ -527,9 +530,8 @@ a {
 } */
 
 .work-info {
+  flex-grow: 1;
   padding: 20px;
-  background-color: var(--bg-secondary);
-  transition: background-color 0.2s ease;
 }
 
 .work-info h3 {
