@@ -14,32 +14,39 @@ export default function ChronicleTimeline() {
         // Force scroll to top on mount
         window.scrollTo(0, 0);
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const id = entry.target.getAttribute('data-id');
-                        const milestone = milestones.find((m) => m.id === id);
-                        if (milestone) {
-                            setActiveMilestone(milestone);
-                        }
-                    }
-                });
-            },
-            {
-                root: null,
-                rootMargin: '0px 0px -60% 0px', // Trigger when milestone enters top 40% of viewport
-                threshold: 0,
-            }
-        );
+        const handleScroll = () => {
+            const sections = document.querySelectorAll(`.${styles.milestoneSection}`);
+            let closestSection: Element | null = null;
+            let closestDistance = Infinity;
 
-        const sections = document.querySelectorAll(`.${styles.milestoneSection}`);
-        sections.forEach((section) => observer.observe(section));
+            sections.forEach((section) => {
+                const rect = section.getBoundingClientRect();
+                // Find the section closest to the top of the viewport (within upper half)
+                const distance = Math.abs(rect.top - 100); // 100px from top is our target
+                if (rect.top < window.innerHeight * 0.6 && distance < closestDistance) {
+                    closestDistance = distance;
+                    closestSection = section;
+                }
+            });
+
+            if (closestSection) {
+                const id = closestSection.getAttribute('data-id');
+                const milestone = milestones.find((m) => m.id === id);
+                if (milestone && milestone.id !== activeMilestone.id) {
+                    setActiveMilestone(milestone);
+                }
+            }
+        };
+
+        // Initial check
+        handleScroll();
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => {
-            observer.disconnect();
+            window.removeEventListener('scroll', handleScroll);
         };
-    }, []);
+    }, [activeMilestone.id]);
 
     return (
         <div className={styles.container} ref={containerRef}>
