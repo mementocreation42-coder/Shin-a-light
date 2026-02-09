@@ -367,17 +367,15 @@ a {
 .works-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 1000px;
-  margin: 0 auto;
+  gap: 1px;
+  background-color: #3a3a3a;
 }
 
 .work-card {
   display: block;
   background-color: var(--bg-secondary);
-  border: var(--border);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s;
   text-decoration: none;
 }
 
