@@ -16,15 +16,15 @@ export default function ChronicleTimeline() {
 
         // Ensure first milestone is active when near top
         const handleScroll = () => {
-            if (window.scrollY < 200) {
+            if (window.scrollY < 100) {
                 setActiveMilestone(milestones[0]);
             }
         };
 
         const observer = new IntersectionObserver(
             (entries) => {
-                // Don't update if we're at the top (first milestone should stay active)
-                if (window.scrollY < 200) {
+                // Don't update if we're at the very top (first milestone should stay active)
+                if (window.scrollY < 100) {
                     return;
                 }
                 entries.forEach((entry) => {
@@ -39,8 +39,8 @@ export default function ChronicleTimeline() {
             },
             {
                 root: null,
-                rootMargin: '-30% 0px -30% 0px',
-                threshold: 0,
+                rootMargin: '-10% 0px -50% 0px', // Top 40% of viewport triggers
+                threshold: 0.1,
             }
         );
 
