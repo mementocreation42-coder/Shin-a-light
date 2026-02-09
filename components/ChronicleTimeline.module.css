@@ -71,7 +71,6 @@
     color: #FF764D;
     margin-bottom: 0.5rem;
     letter-spacing: 0.15em;
-    text-shadow: 0 0 10px rgba(255, 118, 77, 0.4);
 }
 
 .milestoneTitle {
@@ -98,17 +97,17 @@
     width: 30%;
     height: calc(100vh - 60px);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 30px 24px;
+    padding: 20px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 16px;
+    gap: 8px;
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.98) 100%);
 }
 
 .dashboardCard {
     background: rgba(255, 255, 255, 0.03);
-    padding: 16px;
+    padding: 12px;
     border-radius: 2px;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -216,21 +215,17 @@
     font-size: 1.5rem;
     font-weight: 700;
     color: #00FFFF !important;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
     letter-spacing: -0.05em;
 }
 
 .distortionLabel {
     color: #FF00FF !important;
-    text-shadow: 0 0 5px rgba(255, 0, 255, 0.3);
 }
 
 .distortionBarFill {
     height: 100%;
     background: linear-gradient(90deg, #FF00FF 0%, #7000FF 100%);
-    box-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
     transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-    animation: pulse-glow 2s infinite alternate;
 }
 
 @keyframes pulse-glow {
