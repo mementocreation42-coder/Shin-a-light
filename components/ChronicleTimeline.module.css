@@ -135,7 +135,7 @@
     width: 100%;
     height: 4px;
     background: rgba(255, 255, 255, 0.1);
-    margin-top: 12px;
+    margin-top: 8px;
 }
 
 .energyBarFill {
@@ -148,13 +148,13 @@
 .statsContainer {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .statRow {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .statRowLabel {
@@ -196,8 +196,8 @@
 .focusTags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 12px;
+    gap: 6px;
+    margin-top: 8px;
 }
 
 .focusTag {
