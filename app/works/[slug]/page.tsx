@@ -91,7 +91,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                             <p className="meta-value">{work.year}</p>
                         </div>
                         <div className="meta-block">
-                            <p className="meta-label">Tools</p>
+                            <p className="meta-label">{work.toolsLabel || 'Tools'}</p>
                             <p className="meta-value">{work.tools}</p>
                         </div>
                         {work.link && (
