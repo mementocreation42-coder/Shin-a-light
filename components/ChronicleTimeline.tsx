@@ -13,7 +13,9 @@ export default function ChronicleTimeline() {
     useEffect(() => {
         // Force scroll to top on mount
         window.scrollTo(0, 0);
+    }, []);
 
+    useEffect(() => {
         const handleScroll = () => {
             const sections = document.querySelectorAll(`.${styles.milestoneSection}`);
             let closestSection: Element | null = null;
