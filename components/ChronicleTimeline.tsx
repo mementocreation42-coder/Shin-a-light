@@ -30,7 +30,7 @@ export default function ChronicleTimeline() {
             });
 
             if (closestSection) {
-                const id = closestSection.getAttribute('data-id');
+                const id = (closestSection as Element).getAttribute('data-id');
                 const milestone = milestones.find((m) => m.id === id);
                 if (milestone && milestone.id !== activeMilestone.id) {
                     setActiveMilestone(milestone);
