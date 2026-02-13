@@ -24,10 +24,15 @@ export interface Work {
     linkLabel?: string;
     linkButtonText?: string;
     toolsLabel?: string;
+    photoBy?: string;
+    photoByLink?: string;
 }
 
 export const works: Work[] = [
     {
+        // ... (omitted lines to keep it short, I will use multiple ReplaceChunks if possible, or just one for interface and one for data if far apart. They are far apart.)
+        // Actually, let's just do the interface first.
+
         slug: 'mugi-promotion-video',
         title: '牟岐町プロモーション映像',
         category: 'Promotion',
@@ -158,6 +163,8 @@ export const works: Work[] = [
         result: '納品後、クライアント様からは「あの日の熱狂が鮮明に蘇る」と大変高い評価をいただきました。「記録としてプロに依頼して本当に良かった」というお言葉をいただき、グループにとっての大切な節目に、映像という形で深く寄与することができました。',
         youtubeId: 'EILMCYSX3tE',
         link: 'https://masatoshikaeriyama.com/',
+        photoBy: 'Photo by Masatoshi Kaeriyama',
+        photoByLink: 'https://masatoshikaeriyama.com/',
         gallery: [
             '/images/works/steelband-pandle/1.jpg',
             '/images/works/steelband-pandle/2.jpg',

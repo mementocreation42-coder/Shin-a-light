@@ -163,6 +163,21 @@ export default async function WorkDetailPage({ params }: PageProps) {
                             </div>
                         ))}
                     </div>
+                    {work.photoBy && (
+                        <p className="photo-credit">
+                            {work.photoByLink ? (
+                                <a
+                                    href={work.photoByLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {work.photoBy}
+                                </a>
+                            ) : (
+                                work.photoBy
+                            )}
+                        </p>
+                    )}
                 </section>
             )}
 

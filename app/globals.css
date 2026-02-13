@@ -1333,3 +1333,22 @@ textarea:disabled {
     font-size: 24px;
   }
 }
+
+.photo-credit {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.photo-credit a {
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.photo-credit a:hover {
+  color: var(--accent-orange);
+  border-bottom-color: var(--accent-orange);
+}
