@@ -152,6 +152,30 @@ export default async function WorkDetailPage({ params }: PageProps) {
                 </section>
             )}
 
+            {/* BTS Videos */}
+            {work.btsVideos && work.btsVideos.length > 0 && (
+                <section className="work-videos">
+                    <div className="section-inner">
+                        <h2 className="section-title">Behind The Scenes</h2>
+                        <div className="videos-grid">
+                            {work.btsVideos.map((video) => (
+                                <div key={video.id} className="video-item">
+                                    <div className="video-wrapper">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${video.id}`}
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                    <p className="video-title">{video.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
             {/* Gallery */}
             {work.gallery && work.gallery.length > 0 && (
                 <section className="work-gallery">

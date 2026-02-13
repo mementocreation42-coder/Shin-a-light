@@ -26,6 +26,7 @@ export interface Work {
     toolsLabel?: string;
     photoBy?: string;
     photoByLink?: string;
+    btsVideos?: VideoItem[];
 }
 
 export const works: Work[] = [
@@ -247,7 +248,10 @@ export const works: Work[] = [
         result: '完成した映像は、クライアントであるミツグルマのプラットフォームを通じて公開。地域の人間でも見落としがちな「日常の中の神聖さ」を再発見するきっかけとなり、地元の方々からも「見慣れた風景が、これほどまでに美しいとは思わなかった」との反響をいただきました。また、県外の方へ向けては、徳島の自然の深さを伝える強力なビジュアルコンテンツとして機能しています。',
         youtubeId: 'wVZ6kqpEKL4',
         link: 'https://todorokijinja.jp/',
-        linkLabel: '轟神社 サイト'
+        linkLabel: '轟神社 サイト',
+        btsVideos: [
+            { id: '0rt0MfoGC3A', title: 'BTS: Todoroki Shrine Concept Movie' }
+        ]
     },
     {
         slug: 'tokushima-seikyo-40th-anniversary',
