@@ -90,6 +90,25 @@ export default async function WorkDetailPage({ params }: PageProps) {
                             <p className="meta-label">Year</p>
                             <p className="meta-value">{work.year}</p>
                         </div>
+                        {work.produce && (
+                            <div className="meta-block">
+                                <p className="meta-label">Produce</p>
+                                <p className="meta-value">
+                                    {work.produceLink ? (
+                                        <a
+                                            href={work.produceLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ textDecoration: 'underline' }}
+                                        >
+                                            {work.produce}
+                                        </a>
+                                    ) : (
+                                        work.produce
+                                    )}
+                                </p>
+                            </div>
+                        )}
                         <div className="meta-block">
                             <p className="meta-label">{work.toolsLabel || 'Tools'}</p>
                             <p className="meta-value">{work.tools}</p>
