@@ -703,7 +703,7 @@ textarea:disabled {
 }
 
 .work-detail-title {
-  font-size: clamp(36px, 8vw, 72px);
+  font-size: clamp(30px, 6vw, 60px);
   font-weight: 700;
   line-height: 1.1;
   margin-bottom: 16px;
