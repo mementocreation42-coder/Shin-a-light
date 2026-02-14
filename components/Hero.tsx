@@ -1,20 +1,18 @@
 export default function Hero() {
     return (
         <section id="hero" className="section hero">
-            {/* Vimeo Background Video */}
-            <div
-                className="hero-video-container"
-                style={{
-                    backgroundImage: 'url(/images/hero_poster.png)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                }}
-            >
-                <iframe
-                    src="https://player.vimeo.com/video/1013002269?background=1&autoplay=1&loop=1&muted=1"
-                    allow="autoplay; fullscreen"
-                    allowFullScreen
-                />
+            {/* Local Background Video */}
+            <div className="hero-video-container">
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className="hero-video"
+                    poster="/images/hero_poster.png"
+                >
+                    <source src="/videos/hero.mp4" type="video/mp4" />
+                </video>
             </div>
             <div className="hero-overlay" />
             <div className="hero-content">
