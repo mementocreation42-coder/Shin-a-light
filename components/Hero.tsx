@@ -2,9 +2,16 @@ export default function Hero() {
     return (
         <section id="hero" className="section hero">
             {/* Vimeo Background Video */}
-            <div className="hero-video-container">
+            <div
+                className="hero-video-container"
+                style={{
+                    backgroundImage: 'url(/images/hero_poster.png)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                }}
+            >
                 <iframe
-                    src="https://player.vimeo.com/video/1013002269?background=1&autoplay=1&loop=1&muted=1&quality=1080p"
+                    src="https://player.vimeo.com/video/1013002269?background=1&autoplay=1&loop=1&muted=1"
                     allow="autoplay; fullscreen"
                     allowFullScreen
                 />
