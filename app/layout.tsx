@@ -21,6 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <link rel="preload" href="/images/hero_poster.png" as="image" />
+      </head>
       <body className={jetbrainsMono.variable}>
         <Nav />
         <main>{children}</main>
