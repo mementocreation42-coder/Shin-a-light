@@ -246,16 +246,91 @@
 
     .narrativePanel {
         max-width: 100%;
-        padding: 60px 5%;
+        padding: 60px 4% 220px 4%;
         width: 100%;
     }
 
     .dashboardPanel {
-        position: relative;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: auto;
         width: 100%;
         height: auto;
+        max-height: 42vh;
+        overflow-y: auto;
         border-left: none;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 40px 5%;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        padding: 8px 4% 20px 4%;
+        background: linear-gradient(180deg, rgba(20, 20, 20, 0.98) 0%, rgba(15, 15, 15, 1.0) 100%);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        z-index: 50;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .dashboardContent {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2px;
+    }
+
+    .dashboardCard:nth-child(1),
+    .dashboardCard:nth-child(4),
+    .dashboardCard:nth-last-child(2),
+    .dashboardCard:last-child {
+        grid-column: span 2;
+    }
+
+    .dashboardCard:nth-child(4) {
+        grid-column: span 2;
+    }
+
+    .dashboardContent>div:nth-child(2),
+    .dashboardContent>div:nth-child(5) {
+        gap: 2px !important;
+    }
+
+    .dashboardCard {
+        padding: 3px 6px;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .statLabel {
+        font-size: 0.4rem;
+        margin-bottom: 1px;
+        opacity: 0.7;
+    }
+
+    .statValue {
+        font-size: 0.8rem;
+    }
+
+    .syncRateValue {
+        font-size: 0.9rem !important;
+    }
+
+    .focusTag {
+        font-size: 0.5rem;
+        padding: 1px 4px;
+    }
+
+    .energyBarBg,
+    .statBarBg {
+        height: 2px;
+        margin-top: 2px;
+    }
+
+    .milestoneSection {
+        margin-bottom: 150px;
+    }
+
+    .milestoneTitle {
+        font-size: 1.6rem;
+    }
+
+    .milestoneContent {
+        font-size: 0.9rem;
     }
 }
