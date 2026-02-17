@@ -1,23 +1,23 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getPost, getPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
+import { getPostById, getPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 
 export const revalidate = 60;
 
 interface PageProps {
-    params: Promise<{ slug: string }>;
+    params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
     const { posts } = await getPosts(1, 20);
     return posts.map((post) => ({
-        slug: post.slug,
+        id: String(post.id),
     }));
 }
 
 export async function generateMetadata({ params }: PageProps) {
-    const { slug } = await params;
-    const post = await getPost(slug);
+    const { id } = await params;
+    const post = await getPostById(id);
 
     if (!post) {
         return { title: 'Post Not Found' };
@@ -30,8 +30,8 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function JournalPostPage({ params }: PageProps) {
-    const { slug } = await params;
-    const post = await getPost(slug);
+    const { id } = await params;
+    const post = await getPostById(id);
 
     if (!post) {
         notFound();

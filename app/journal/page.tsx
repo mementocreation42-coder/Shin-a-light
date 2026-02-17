@@ -32,7 +32,7 @@ export default async function JournalPage({ searchParams }: PageProps) {
                             return (
                                 <Link
                                     key={post.id}
-                                    href={`/journal/${post.slug}`}
+                                    href={`/journal/${post.id}`}
                                     className="journal-card"
                                 >
                                     {imageUrl && (

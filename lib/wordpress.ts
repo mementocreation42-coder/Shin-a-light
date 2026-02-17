@@ -1,4 +1,5 @@
-const WP_API_URL = 'https://journal.shinealight.jp/wp-json/wp/v2';
+const WP_BASE = 'https://journal.shinealight.jp';
+const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
 
 export interface WPPost {
     id: number;
@@ -34,7 +35,7 @@ export interface WPCategory {
 export async function getPosts(page = 1, perPage = 12): Promise<{ posts: WPPost[]; totalPages: number }> {
     try {
         const res = await fetch(
-            `${WP_API_URL}/posts?page=${page}&per_page=${perPage}&_embed`,
+            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
             { next: { revalidate: 60 } }
         );
 
@@ -57,7 +58,7 @@ export async function getPosts(page = 1, perPage = 12): Promise<{ posts: WPPost[
 export async function getPost(slug: string): Promise<WPPost | null> {
     try {
         const res = await fetch(
-            `${WP_API_URL}/posts?slug=${slug}&_embed`,
+            `${WP_REST_BASE}/posts&slug=${slug}&_embed`,
             { next: { revalidate: 60 } }
         );
 
@@ -73,13 +74,32 @@ export async function getPost(slug: string): Promise<WPPost | null> {
     }
 }
 
+// Fetch a single post by ID
+export async function getPostById(id: string): Promise<WPPost | null> {
+    try {
+        const res = await fetch(
+            `${WP_REST_BASE}/posts/${id}&_embed`,
+            { next: { revalidate: 60 } }
+        );
+
+        if (!res.ok) {
+            return null;
+        }
+
+        return res.json();
+    } catch (error) {
+        console.error('WordPress API connection error (getPostById):', error);
+        return null;
+    }
+}
+
 // Fetch media (featured image) by ID
 export async function getMedia(mediaId: number): Promise<WPMedia | null> {
     if (!mediaId) return null;
 
     try {
         const res = await fetch(
-            `${WP_API_URL}/media/${mediaId}`,
+            `${WP_REST_BASE}/media/${mediaId}`,
             { next: { revalidate: 3600 } }
         );
 
@@ -98,7 +118,7 @@ export async function getMedia(mediaId: number): Promise<WPMedia | null> {
 export async function getCategories(): Promise<WPCategory[]> {
     try {
         const res = await fetch(
-            `${WP_API_URL}/categories`,
+            `${WP_REST_BASE}/categories`,
             { next: { revalidate: 3600 } }
         );
 
