@@ -9,6 +9,7 @@ export default function Nav() {
             <div className="nav-links">
                 <Link href="/#about">About</Link>
                 <Link href="/journal">Journal</Link>
+                <Link href="/lab">Lab</Link>
                 <Link href="/#works">Works</Link>
                 <Link href="/#contact">Contact</Link>
             </div>
