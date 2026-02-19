@@ -584,6 +584,13 @@ a {
 /* ===================================
    CONTACT - Flat Input Style
    =================================== */
+.contact-description {
+  margin-bottom: 32px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
 .contact-form {
   max-width: 600px;
 }

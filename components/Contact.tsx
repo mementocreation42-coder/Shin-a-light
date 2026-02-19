@@ -58,6 +58,9 @@ export default function Contact() {
                     <span className="section-number">03</span>
                     <h2>Contact</h2>
                 </div>
+                <p className="contact-description">
+                    映像制作、Web関連などのお仕事に限らず、お気軽にご連絡ください
+                </p>
                 <form className="contact-form" onSubmit={handleSubmit}>
                     <div className="form-row">
                         <div className="form-group">
