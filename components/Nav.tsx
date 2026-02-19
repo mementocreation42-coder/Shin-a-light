@@ -4,7 +4,7 @@ export default function Nav() {
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                Shine a Light
+                SaL
             </Link>
             <div className="nav-links">
                 <Link href="/#about">About</Link>
