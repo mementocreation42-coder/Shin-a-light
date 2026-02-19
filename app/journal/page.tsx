@@ -25,43 +25,44 @@ export default async function JournalPage({ searchParams }: PageProps) {
                     過去の出来事、技術、思想を未来の視点から再解釈するために書き残すブログメディア。
                 </p>
 
-                <div className="journal-grid">
+                <ul className="journal-grid">
                     {posts.length > 0 ? (
                         posts.map((post) => {
                             const imageUrl = getFeaturedImageUrl(post);
                             return (
-                                <Link
-                                    key={post.id}
-                                    href={`/journal/${post.id}`}
-                                    className="journal-card"
-                                >
-                                    {imageUrl && (
-                                        <div
-                                            className="journal-card-image"
-                                            style={{ backgroundImage: `url(${imageUrl})` }}
-                                        />
-                                    )}
-                                    <div className="journal-card-content">
-                                        <time className="journal-card-date">
-                                            {formatDate(post.date)}
-                                        </time>
-                                        <h2
-                                            className="journal-card-title"
-                                            dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                                        />
-                                        <p className="journal-card-excerpt">
-                                            {stripHtml(post.excerpt.rendered).slice(0, 100)}...
-                                        </p>
-                                    </div>
-                                </Link>
+                                <li key={post.id} className="journal-card-wrapper">
+                                    <Link
+                                        href={`/journal/${post.id}`}
+                                        className="journal-card"
+                                    >
+                                        {imageUrl && (
+                                            <div
+                                                className="journal-card-image"
+                                                style={{ backgroundImage: `url(${imageUrl})` }}
+                                            />
+                                        )}
+                                        <div className="journal-card-content">
+                                            <time className="journal-card-date">
+                                                {formatDate(post.date)}
+                                            </time>
+                                            <h2
+                                                className="journal-card-title"
+                                                dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                                            />
+                                            <p className="journal-card-excerpt">
+                                                {stripHtml(post.excerpt.rendered).slice(0, 100)}...
+                                            </p>
+                                        </div>
+                                    </Link>
+                                </li>
                             );
                         })
                     ) : (
-                        <div className="journal-empty">
+                        <li className="journal-empty">
                             <p>現在メンテナンス中です。しばらくしてから再度アクセスしてください。</p>
-                        </div>
+                        </li>
                     )}
-                </div>
+                </ul>
 
                 {/* Pagination */}
                 {totalPages > 1 && (
