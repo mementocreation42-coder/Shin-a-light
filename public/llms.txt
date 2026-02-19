@@ -1,0 +1,18 @@
+# Shine a Light
+> クリエイター小林大介のポートフォリオサイト
+
+## About
+精密栄養学、血液検査データ解析、ヘルスケアカウンセリング、システム構築、AIワークフロー構築、Web制作、フロントエンド実装、映像制作、写真撮影、インタビュー・取材、記事執筆、フィッシング、ハンティングなど行うポートフォリオサイト
+
+## Main Sections
+- [ホーム](https://www.shinealight.jp/): トップページ
+- [ブログ](https://www.shinealight.jp/journal): 記事一覧
+- [ワークス](https://www.shinealight.jp/#works): 作例情報
+- [お問い合わせ](https://www.shinealight.jp/#contact): 連絡先
+
+## Related Sites
+- [note](https://note.com/elvin): ブログ・エッセイ
+- [ヘルスケアサービス](https://mitoflow40.com/): MitoFlow40
+
+## Contact
+- Email: info@shinealight.jp
