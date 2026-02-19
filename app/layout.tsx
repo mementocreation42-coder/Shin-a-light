@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/hero_poster.png",
-        width: 1200,
-        height: 630,
+        url: "/images/profile.jpg",
+        width: 587,
+        height: 587,
         alt: "Shine a Light - DAISUKE KOBAYASHI",
       },
     ],
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Shine a Light - DAISUKE KOBAYASHI",
     description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
-    images: ["/images/hero_poster.png"],
+    images: ["/images/profile.jpg"],
   },
 };
 
