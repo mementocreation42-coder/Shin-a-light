@@ -24,6 +24,19 @@ export async function generateMetadata({ params }: Props) {
         alternates: {
             canonical: `/lab/${slug}`,
         },
+        openGraph: {
+            title: `${project.title} - Lab | Shine a Light`,
+            description: project.description,
+            url: `/lab/${slug}`,
+            siteName: 'Shine a Light',
+            locale: 'ja_JP',
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${project.title} - Lab | Shine a Light`,
+            description: project.description,
+        },
     };
 }
 

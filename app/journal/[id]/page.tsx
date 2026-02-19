@@ -107,7 +107,7 @@ export default async function JournalPostPage({ params }: PageProps) {
 
                 {imageUrl && (
                     <div className="journal-article-hero">
-                        <img src={imageUrl} alt="" />
+                        <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
                     </div>
                 )}
 

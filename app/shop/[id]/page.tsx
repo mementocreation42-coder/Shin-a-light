@@ -23,6 +23,28 @@ export async function generateMetadata({ params }: PageProps) {
         alternates: {
             canonical: `/shop/${id}`,
         },
+        openGraph: {
+            title: `${product.name} - Shine a Light Shop`,
+            description: product.description,
+            url: `/shop/${id}`,
+            siteName: 'Shine a Light',
+            locale: 'ja_JP',
+            type: 'website',
+            images: [
+                {
+                    url: product.image,
+                    width: 1200,
+                    height: 1200,
+                    alt: product.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${product.name} - Shine a Light Shop`,
+            description: product.description,
+            images: [product.image],
+        },
     };
 }
 
@@ -36,6 +58,31 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
     return (
         <div className="product-detail-page">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org/",
+                        "@type": "Product",
+                        "name": product.name,
+                        "image": [product.image],
+                        "description": product.description,
+                        "sku": product.id,
+                        "brand": {
+                            "@type": "Brand",
+                            "name": "Shine a Light"
+                        },
+                        "offers": {
+                            "@type": "Offer",
+                            "url": `https://www.shinealight.jp/shop/${product.id}`,
+                            "priceCurrency": "JPY",
+                            "price": product.price,
+                            "availability": "https://schema.org/InStock",
+                            "itemCondition": "https://schema.org/NewCondition"
+                        }
+                    })
+                }}
+            />
             <header className="product-detail-header">
                 <div className="product-detail-header-inner">
                     <Link href="/shop" className="back-link">

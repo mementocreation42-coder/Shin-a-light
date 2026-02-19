@@ -59,6 +59,26 @@ export default async function WorkDetailPage({ params }: PageProps) {
 
     return (
         <div className="work-detail">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "CreativeWork",
+                        "name": work.title,
+                        "headline": work.title,
+                        "image": [work.image],
+                        "datePublished": work.year.toString(),
+                        "author": {
+                            "@type": "Person",
+                            "name": "DAISUKE KOBAYASHI",
+                            "url": "https://www.shinealight.jp"
+                        },
+                        "description": work.overview,
+                        "genre": work.category
+                    })
+                }}
+            />
             {/* Hero */}
             <header className="work-hero">
                 <div className="work-hero-inner">
