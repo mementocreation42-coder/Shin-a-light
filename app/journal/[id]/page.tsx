@@ -30,6 +30,9 @@ export async function generateMetadata({ params }: PageProps) {
     return {
         title: `${title} | Shine a Light`,
         description: description,
+        alternates: {
+            canonical: `/journal/${id}`,
+        },
         openGraph: {
             title: `${title} | Shine a Light`,
             description: description,

@@ -1,7 +1,11 @@
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
     title: '特定商取引法に基づく表記 | Shine a Light',
     description: '特定商取引法に基づく表記です。',
+    alternates: {
+        canonical: '/legal',
+    },
 };
 
 export default function LegalPage() {

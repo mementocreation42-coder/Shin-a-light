@@ -14,13 +14,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Shine a Light - DAISUKE KOBAYASHI",
+    default: "Shine a Light | DAISUKE KOBAYASHIのポートフォリオサイト",
     template: "%s | Shine a Light",
   },
-  description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+  description: "ビデオグラファー・Webエンジニア｜小林大介。映像、写真、Web、そしてAI。領域を横断するクリエイティブで、ビジネスや表現の可能性を広げます。徳島を拠点に全国のプロジェクトに対応。",
   openGraph: {
-    title: "Shine a Light - DAISUKE KOBAYASHI",
-    description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+    title: "Shine a Light | DAISUKE KOBAYASHIのポートフォリオサイト",
+    description: "ビデオグラファー・Webエンジニア｜小林大介。映像、写真、Web、そしてAI。領域を横断するクリエイティブで、ビジネスや表現の可能性を広げます。徳島を拠点に全国のプロジェクトに対応。",
     url: SITE_URL,
     siteName: "Shine a Light",
     locale: "ja_JP",

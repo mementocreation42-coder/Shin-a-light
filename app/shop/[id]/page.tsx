@@ -20,6 +20,9 @@ export async function generateMetadata({ params }: PageProps) {
     return {
         title: `${product.name} - Shine a Light Shop`,
         description: product.description,
+        alternates: {
+            canonical: `/shop/${id}`,
+        },
     };
 }
 

@@ -1,7 +1,11 @@
+import type { Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
     title: 'プライバシーポリシー | Shine a Light',
     description: 'Shine a Lightのプライバシーポリシーです。',
+    alternates: {
+        canonical: '/privacy',
+    },
 };
 
 export default function PrivacyPage() {

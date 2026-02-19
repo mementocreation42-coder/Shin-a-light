@@ -1,9 +1,13 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import { labProjects } from './data';
 
-export const metadata = {
+export const metadata: Metadata = {
     title: 'Lab - Shine a Light',
     description: 'Experimental system development projects.',
+    alternates: {
+        canonical: '/lab',
+    },
 };
 
 export default function LabPage() {

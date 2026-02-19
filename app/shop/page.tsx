@@ -1,5 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { products } from '@/data/products';
+
+export const metadata: Metadata = {
+    title: 'Shop | Shine a Light',
+    description: 'Official Merch & Digital Goods',
+    alternates: {
+        canonical: '/shop',
+    },
+};
 
 export default function ShopPage() {
     return (

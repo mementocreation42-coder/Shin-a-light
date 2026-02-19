@@ -1,6 +1,15 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPosts, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
+
+export const metadata: Metadata = {
+    title: 'Journal | Shine a Light',
+    description: '過去の出来事、技術、思想を未来の視点から再解釈するために書き残すブログメディア。',
+    alternates: {
+        canonical: '/journal',
+    },
+};
 
 export const revalidate = 60;
 
