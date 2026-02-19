@@ -7,7 +7,6 @@ export default function Works() {
         <section id="works" className="section">
             <div className="section-inner">
                 <div className="section-header">
-                    <span className="section-number">02</span>
                     <h2>Works &amp; Projects</h2>
                 </div>
                 <div className="works-grid">

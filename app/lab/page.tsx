@@ -10,7 +10,6 @@ export default function LabPage() {
     return (
         <div className="lab-section">
             <div className="lab-header">
-                <span className="section-number">04</span>
                 <h1 className="lab-title">LAB</h1>
                 <p style={{ color: 'var(--text-secondary)', maxWidth: '600px' }}>
                     System development, experimental tools, and prototypes.

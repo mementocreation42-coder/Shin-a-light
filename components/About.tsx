@@ -21,7 +21,6 @@ export default function About() {
         <section id="about" className="section">
             <div className="section-inner">
                 <div className="section-header">
-                    <span className="section-number">01</span>
                     <h2>About</h2>
                 </div>
 

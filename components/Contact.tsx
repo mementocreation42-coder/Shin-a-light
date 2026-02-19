@@ -55,7 +55,6 @@ export default function Contact() {
         <section id="contact" className="section">
             <div className="section-inner">
                 <div className="section-header">
-                    <span className="section-number">03</span>
                     <h2>Contact</h2>
                 </div>
                 <p className="contact-description">
