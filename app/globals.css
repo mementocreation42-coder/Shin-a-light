@@ -179,15 +179,18 @@ a {
 
 .hero-content {
   text-align: right;
-  padding: 32px 64px; /* Added more padding on sides */
+  padding: 32px 64px;
+  /* Added more padding on sides */
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 1400px; /* Allow wide reach */
+  max-width: 1400px;
+  /* Allow wide reach */
 }
 
 .hero-title {
-  font-size: clamp(40px, 9vw, 100px); /* Reduced size */
+  font-size: clamp(32px, 7vw, 80px);
+  /* Further reduced size */
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -4px;
@@ -196,7 +199,8 @@ a {
 }
 
 .hero-quote {
-  font-size: clamp(18px, 4vw, 32px);
+  font-size: clamp(14px, 3vw, 24px);
+  /* Further reduced size */
   line-height: 1.5;
   font-weight: 400;
   letter-spacing: 1px;
