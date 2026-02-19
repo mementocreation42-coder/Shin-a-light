@@ -1822,3 +1822,24 @@ textarea:disabled {
   color: var(--text-muted);
   line-height: 1.6;
 }
+
+/* ===================================
+   FOOTER LINKS
+   =================================== */
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: var(--accent-orange);
+}
