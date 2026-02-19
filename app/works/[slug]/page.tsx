@@ -19,6 +19,28 @@ export async function generateMetadata({ params }: PageProps) {
     return {
         title: `${work.title} - Shine a Light`,
         description: work.overview,
+        openGraph: {
+            title: `${work.title} - Shine a Light`,
+            description: work.overview,
+            url: `/works/${slug}`,
+            siteName: 'Shine a Light',
+            locale: 'ja_JP',
+            type: 'article',
+            images: [
+                {
+                    url: work.image,
+                    width: 1200,
+                    height: 630,
+                    alt: work.title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${work.title} - Shine a Light`,
+            description: work.overview,
+            images: [work.image],
+        },
     };
 }
 

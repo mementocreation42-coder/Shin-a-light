@@ -9,9 +9,37 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
+
 export const metadata: Metadata = {
-  title: "Shine a Light - DAISUKE KOBAYASHI",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Shine a Light - DAISUKE KOBAYASHI",
+    template: "%s | Shine a Light",
+  },
   description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+  openGraph: {
+    title: "Shine a Light - DAISUKE KOBAYASHI",
+    description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+    url: SITE_URL,
+    siteName: "Shine a Light",
+    locale: "ja_JP",
+    type: "website",
+    images: [
+      {
+        url: "/images/hero_poster.png",
+        width: 1200,
+        height: 630,
+        alt: "Shine a Light - DAISUKE KOBAYASHI",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shine a Light - DAISUKE KOBAYASHI",
+    description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+    images: ["/images/hero_poster.png"],
+  },
 };
 
 export default function RootLayout({

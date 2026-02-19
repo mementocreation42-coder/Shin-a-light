@@ -23,9 +23,37 @@ export async function generateMetadata({ params }: PageProps) {
         return { title: 'Post Not Found' };
     }
 
+    const title = post.title.rendered.replace(/<[^>]*>/g, '');
+    const description = post.excerpt.rendered.replace(/<[^>]*>/g, '').slice(0, 160);
+    const imageUrl = getFeaturedImageUrl(post);
+
     return {
-        title: `${post.title.rendered.replace(/<[^>]*>/g, '')} | Shine a Light`,
-        description: post.excerpt.rendered.replace(/<[^>]*>/g, '').slice(0, 160),
+        title: `${title} | Shine a Light`,
+        description: description,
+        openGraph: {
+            title: `${title} | Shine a Light`,
+            description: description,
+            url: `/journal/${id}`,
+            siteName: 'Shine a Light',
+            locale: 'ja_JP',
+            type: 'article',
+            publishedTime: post.date,
+            authors: ['DAISUKE KOBAYASHI'],
+            images: imageUrl ? [
+                {
+                    url: imageUrl,
+                    width: 1200,
+                    height: 630,
+                    alt: title,
+                }
+            ] : undefined,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${title} | Shine a Light`,
+            description: description,
+            images: imageUrl ? [imageUrl] : undefined,
+        },
     };
 }
 
