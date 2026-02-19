@@ -1,18 +1,36 @@
-# Shine a Light
-> クリエイター小林大介のポートフォリオサイト
+# Shine a Light (https://www.shinealight.jp/)
 
-## About
-精密栄養学、血液検査データ解析、ヘルスケアカウンセリング、システム構築、AIワークフロー構築、Web制作、フロントエンド実装、映像制作、写真撮影、インタビュー・取材、記事執筆、フィッシング、ハンティングなど行うポートフォリオサイト
+> クリエイター小林大介（DAISUKE KOBAYASHI）のポートフォリオサイト。
+> 映像制作、写真、執筆、Web制作から、精密栄養学やヘルスケアまで多岐にわたる活動を紹介しています。
 
-## Main Sections
-- [ホーム](https://www.shinealight.jp/): トップページ
-- [ブログ](https://www.shinealight.jp/journal): 記事一覧
-- [ワークス](https://www.shinealight.jp/#works): 作例情報
-- [お問い合わせ](https://www.shinealight.jp/#contact): 連絡先
+## 概要
+Shine a Lightは、ビジュアルストーリーテリングとテクノロジー、そしてヘルスケアを融合させたクリエイティブスタジオです。
+「在るがままの美しさ」を捉えるドキュメンタリースタイルを軸に、映像、写真、テキスト、そしてWeb実装までを一貫して手がけます。
 
-## Related Sites
-- [note](https://note.com/elvin): ブログ・エッセイ
-- [ヘルスケアサービス](https://mitoflow40.com/): MitoFlow40
+## スキルセット
+### Creative
+- 映像制作 (Direction, Cinematography, Editing)
+- 写真撮影 (Portrait, Landscape, Documentary)
+- 執筆 (Interview, Essay, Tech Blog)
 
-## Contact
-- Email: info@shinealight.jp
+### Technology
+- Web制作 (Next.js, TypeScript, WordPress)
+- システム構築 (AI Workflow, Automation)
+
+### Healthcare
+- 精密栄養学
+- 血液検査データ解析
+- ヘルスケアカウンセリング
+
+## 主なセクション
+- [Home](https://www.shinealight.jp/): 作品ショーケースとイントロダクション
+- [Journal](https://www.shinealight.jp/journal): ブログ・記事一覧
+- [Works](https://www.shinealight.jp/#works): 制作実績（映像、Web、写真など）
+- [Contact](https://www.shinealight.jp/#contact): お問い合わせフォーム
+
+## 関連リンク
+- [note](https://note.com/elvin): エッセイ・思考の記録
+- [MitoFlow40](https://mitoflow40.com/): パーソナルヘルスケアサービス
+
+## サイトマップ
+https://www.shinealight.jp/sitemap.xml
