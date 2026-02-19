@@ -59,7 +59,9 @@ export default function Contact() {
                     <h2>Contact</h2>
                 </div>
                 <p className="contact-description">
-                    映像制作、Web関連などのお仕事に限らず、お気軽にご連絡ください
+                    映像制作、Web関連のほか、形式にとらわれないコラボレーションのご相談もお待ちしております。
+                    <br className="contact-break" />
+                    どうぞお気軽にお問い合わせください。
                 </p>
                 <form className="contact-form" onSubmit={handleSubmit}>
                     <div className="form-row">
