@@ -33,16 +33,16 @@ export default async function LabDetailPage({ params }: Props) {
     }
 
     return (
-        <div className="min-h-screen pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
-            <div className="mb-12">
-                <Link href="/lab" className="text-sm text-gray-500 hover:text-white mb-6 inline-block transition-colors">
+        <div className="lab-section">
+            <div className="lab-header">
+                <Link href="/lab" className="back-link">
                     ← Back to Lab
                 </Link>
-                <h1 className="text-3xl md:text-5xl font-bold mb-6">{project.title}</h1>
-                <p className="text-gray-400 max-w-2xl leading-relaxed">{project.description}</p>
+                <h1 className="lab-title" style={{ fontSize: '32px', marginTop: '24px' }}>{project.title}</h1>
+                <p className="lab-card-desc" style={{ fontSize: '16px', maxWidth: '800px' }}>{project.description}</p>
             </div>
 
-            <div className="border-t border-white/10 pt-12">
+            <div style={{ borderTop: 'var(--border)', paddingTop: '48px' }}>
                 <div className="w-full">
                     <LabProjectRenderer componentKey={project.componentKey} />
                 </div>

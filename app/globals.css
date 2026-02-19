@@ -591,6 +591,16 @@ a {
   line-height: 1.8;
 }
 
+.contact-break {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .contact-break {
+    display: inline;
+  }
+}
+
 .contact-form {
   max-width: 600px;
 }
@@ -1736,4 +1746,79 @@ textarea:disabled {
 .photo-credit a:hover {
   color: var(--accent-orange);
   border-bottom-color: var(--accent-orange);
+}
+
+/* ===================================
+   LAB - Experimental Grid
+   =================================== */
+.lab-section {
+  padding-top: 120px;
+  padding-bottom: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.lab-header {
+  margin-bottom: 64px;
+}
+
+.lab-title {
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -2px;
+  margin-bottom: 16px;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .lab-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .lab-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.lab-card {
+  display: block;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: var(--border);
+  padding: 32px;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.lab-card:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-4px);
+}
+
+.lab-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.lab-card:hover .lab-card-title {
+  color: var(--accent-orange);
+}
+
+.lab-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
 }
