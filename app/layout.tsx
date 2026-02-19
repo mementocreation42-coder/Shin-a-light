@@ -56,6 +56,27 @@ export default function RootLayout({
         <Nav />
         <main>{children}</main>
         <Footer />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "DAISUKE KOBAYASHI",
+              "url": "https://www.shinealight.jp",
+              "sameAs": [
+                // "https://twitter.com/yourhandle",
+                // "https://www.instagram.com/yourhandle"
+              ],
+              "jobTitle": "Video Creator / Photographer / Writer",
+              "worksFor": {
+                "@type": "Organization",
+                "name": "Shine a Light",
+                "url": "https://www.shinealight.jp"
+              }
+            }),
+          }}
+        />
       </body>
     </html>
   );

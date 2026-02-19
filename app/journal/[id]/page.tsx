@@ -69,6 +69,25 @@ export default async function JournalPostPage({ params }: PageProps) {
 
     return (
         <main className="journal-article-page">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "headline": post.title.rendered.replace(/<[^>]*>/g, ''),
+                        "datePublished": post.date,
+                        "dateModified": post.modified,
+                        "description": post.excerpt.rendered.replace(/<[^>]*>/g, '').slice(0, 160),
+                        "image": imageUrl ? [imageUrl] : [],
+                        "author": [{
+                            "@type": "Person",
+                            "name": "DAISUKE KOBAYASHI",
+                            "url": "https://www.shinealight.jp"
+                        }]
+                    })
+                }}
+            />
             <article className="journal-article">
                 <div className="journal-article-header">
                     <Link href="/journal" className="journal-back-link">
