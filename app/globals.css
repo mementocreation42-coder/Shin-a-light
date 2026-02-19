@@ -140,7 +140,7 @@ a {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   padding-top: 60px;
   position: relative;
   overflow: hidden;
@@ -178,14 +178,16 @@ a {
 }
 
 .hero-content {
-  text-align: center;
-  padding: 32px;
+  text-align: right;
+  padding: 32px 64px; /* Added more padding on sides */
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 1400px; /* Allow wide reach */
 }
 
 .hero-title {
-  font-size: clamp(48px, 12vw, 140px);
+  font-size: clamp(40px, 9vw, 100px); /* Reduced size */
   font-weight: 700;
   line-height: 0.9;
   letter-spacing: -4px;
