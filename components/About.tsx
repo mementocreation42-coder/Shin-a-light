@@ -15,6 +15,7 @@ export default function About() {
         '記事執筆',
         'フィッシング',
         'ハンティング',
+        'ドラムス',
     ];
 
     return (
