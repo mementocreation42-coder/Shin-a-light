@@ -3,6 +3,7 @@ import Image from 'next/image';
 export default function About() {
     const roles = [
         '精密栄養学',
+        '分子栄養学',
         '血液検査データ解析',
         'ヘルスケアカウンセリング',
         'システム構築',
@@ -16,7 +17,6 @@ export default function About() {
         'フィッシング',
         'ハンティング',
         'ドラムス',
-        '分子栄養学',
     ];
 
     return (
