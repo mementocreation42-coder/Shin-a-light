@@ -142,6 +142,74 @@ a {
   letter-spacing: 2px;
 }
 
+/* Document / Legal Pages Layout */
+.document-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.document-header {
+  max-width: 800px;
+  margin: 0 auto 48px auto;
+}
+
+.document-prose {
+  color: var(--text-secondary);
+  line-height: 2;
+  letter-spacing: 1px;
+}
+
+.document-prose p {
+  margin-bottom: 32px;
+}
+
+.document-prose h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 48px;
+  margin-bottom: 16px;
+}
+
+.document-prose ul {
+  list-style-type: disc;
+  margin-left: 24px;
+  margin-bottom: 24px;
+}
+
+.document-prose li {
+  margin-bottom: 8px;
+}
+
+.document-table {
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.document-table th,
+.document-table td {
+  padding: 16px 0;
+  vertical-align: top;
+  border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.document-table th {
+  font-weight: 700;
+  color: var(--text-primary);
+  width: 30%;
+}
+
+.document-table ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.document-table li {
+  margin-bottom: 12px;
+}
+
 /* ===================================
    HERO - Bold Typography + Video Background
    =================================== */
