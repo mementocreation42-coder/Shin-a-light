@@ -63,16 +63,44 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Person",
               "name": "DAISUKE KOBAYASHI",
+              "alternateName": "小林大介",
               "url": "https://www.shinealight.jp",
               "sameAs": [
                 // "https://twitter.com/yourhandle",
                 // "https://www.instagram.com/yourhandle"
               ],
-              "jobTitle": "Video Creator / Photographer / Writer",
+              "jobTitle": "Video Creator / Photographer / Writer / Web Engineer",
+              "knowsAbout": [
+                "精密栄養学",
+                "血液検査データ解析",
+                "映像制作",
+                "Web制作",
+                "フロントエンド実装",
+                "AIワークフロー構築",
+                "写真撮影",
+                "執筆"
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Mugi, Kaifu District",
+                "addressRegion": "Tokushima",
+                "postalCode": "775-0001",
+                "streetAddress": "1465 Kouchi",
+                "addressCountry": "JP"
+              },
               "worksFor": {
                 "@type": "Organization",
                 "name": "Shine a Light",
-                "url": "https://www.shinealight.jp"
+                "url": "https://www.shinealight.jp",
+                "areaServed": "JP",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "海部郡牟岐町",
+                  "addressRegion": "徳島県",
+                  "postalCode": "775-0001",
+                  "streetAddress": "大字河内1465",
+                  "addressCountry": "JP"
+                }
               }
             }),
           }}

@@ -92,6 +92,16 @@ export default function Contact() {
                         {status === 'submitting' ? 'Sending...' : 'Send Message'}
                     </button>
                 </form>
+
+                <div className="contact-info-footer" style={{ marginTop: '3rem', textAlign: 'center', fontSize: '0.9rem', opacity: 0.8 }} itemScope itemType="https://schema.org/LocalBusiness">
+                    <p itemProp="name" style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Shine a Light</p>
+                    <address itemProp="address" itemScope itemType="https://schema.org/PostalAddress" style={{ fontStyle: 'normal', lineHeight: 1.6 }}>
+                        <span itemProp="postalCode">〒775-0001</span><br />
+                        <span itemProp="addressRegion">徳島県</span>
+                        <span itemProp="addressLocality">海部郡牟岐町</span>
+                        <span itemProp="streetAddress">大字河内1465</span>
+                    </address>
+                </div>
             </div>
         </section>
     );

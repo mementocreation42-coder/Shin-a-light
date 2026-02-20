@@ -12,10 +12,10 @@ export default function PrivacyPage() {
     return (
         <div className="section">
             <div className="section-inner">
-                <div className="section-header">
+                <div className="section-header max-w-2xl mx-auto">
                     <h2>プライバシーポリシー</h2>
                 </div>
-                <div className="prose max-w-none text-gray-300">
+                <div className="prose max-w-2xl mx-auto text-gray-300 leading-relaxed tracking-wide">
                     <p className="mb-8">Shine a Light（以下，「当方」といいます。）は，本ウェブサイト上で提供するサービス（以下，「本サービス」といいます。）における，ユーザーの個人情報の取扱いについて，以下のとおりプライバシーポリシー（以下，「本ポリシー」といいます。）を定めます。</p>
 
                     <h3 className="text-xl font-bold mb-4 mt-8">第1条（個人情報）</h3>

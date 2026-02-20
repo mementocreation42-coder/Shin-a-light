@@ -12,10 +12,10 @@ export default function TermsPage() {
     return (
         <div className="section">
             <div className="section-inner">
-                <div className="section-header">
+                <div className="section-header max-w-2xl mx-auto">
                     <h2>利用規約</h2>
                 </div>
-                <div className="prose max-w-none text-gray-300">
+                <div className="prose max-w-2xl mx-auto text-gray-300 leading-relaxed tracking-wide">
                     <p className="mb-8">この利用規約（以下，「本規約」といいます。）は，Shine a Light（以下，「当方」といいます。）がこのウェブサイト上で提供するサービス（以下，「本サービス」といいます。）の利用条件を定めるものです。登録ユーザーの皆さま（以下，「ユーザー」といいます。）には，本規約に従って，本サービスをご利用いただきます。</p>
 
                     <h3 className="text-xl font-bold mb-4 mt-8">第1条（適用）</h3>
