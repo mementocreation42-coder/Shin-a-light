@@ -6,7 +6,7 @@ export default function Footer() {
             <div className="footer-links" style={{ marginBottom: "1.5rem" }}>
                 <Link href="/terms">利用規約</Link>
                 <Link href="/privacy">プライバシーポリシー</Link>
-                {/* <Link href="/legal">特定商取引法に基づく表記</Link> */}
+                <Link href="/legal">特定商取引法に基づく表記</Link>
             </div>
 
             <div className="footer-info" style={{ marginBottom: "1rem", fontSize: "0.85rem", opacity: 0.8 }} itemScope itemType="https://schema.org/LocalBusiness">
