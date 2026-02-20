@@ -16,6 +16,7 @@ export default function About() {
         'フィッシング',
         'ハンティング',
         'ドラムス',
+        '分子栄養学',
     ];
 
     return (
