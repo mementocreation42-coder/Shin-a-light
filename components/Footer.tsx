@@ -17,7 +17,7 @@ export default function Footer() {
                     <span itemProp="addressLocality">海部郡牟岐町</span>
                     <span itemProp="streetAddress">大字河内1465</span>
                 </address>
-                <p style={{ marginTop: "0.5rem" }}>徳島を拠点に全国へ映像・Web・AIクリエイティブを提供</p>
+                <p style={{ marginTop: "0.5rem" }}>徳島を拠点に全国へ映像・Web・AIクリエイティブ・ヘルスケアを提供</p>
             </div>
 
             <p>© DAISUKE KOBAYASHI</p>
