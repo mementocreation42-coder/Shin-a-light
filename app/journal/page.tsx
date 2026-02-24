@@ -5,7 +5,7 @@ import { getPosts, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/word
 
 export const metadata: Metadata = {
     title: 'Journal | Shine a Light',
-    description: '過去の出来事、技術、思想を未来の視点から再解釈するために書き残すブログメディア。',
+    description: 'Hyperpast Journal',
     alternates: {
         canonical: '/journal',
     },
@@ -25,14 +25,9 @@ export default async function JournalPage({ searchParams }: PageProps) {
     return (
         <main className="journal-page">
             <div className="section-inner">
-                <div className="section-header">
-                    <span className="section-number">Journal</span>
+                <div className="section-header" style={{ justifyContent: 'center' }}>
                     <h1>Hyperpast Journal</h1>
                 </div>
-
-                <p className="journal-description">
-                    過去の出来事、技術、思想を未来の視点から再解釈するために書き残すブログメディア。
-                </p>
 
                 <ul className="journal-grid">
                     {posts.length > 0 ? (

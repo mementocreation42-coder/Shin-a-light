@@ -1198,7 +1198,7 @@ textarea:disabled {
 
 .journal-page {
   padding: 120px 40px 80px;
-  max-width: 1400px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -1228,6 +1228,7 @@ textarea:disabled {
   display: block;
   background-color: var(--bg-secondary);
   border: var(--border);
+  border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
   color: inherit;
@@ -1317,6 +1318,7 @@ textarea:disabled {
   width: 100%;
   height: auto;
   border: var(--border);
+  border-radius: 16px;
 }
 
 .journal-article-content {
@@ -1351,6 +1353,7 @@ textarea:disabled {
   max-width: 100%;
   height: auto;
   margin: 24px 0;
+  border-radius: 16px;
 }
 
 .journal-article-content blockquote {

@@ -3,7 +3,7 @@ import { getPosts } from '@/lib/wordpress';
 import { works } from '@/data/works';
 import { products } from '@/data/products';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://shinealight.jp';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // 1. Static Routes
