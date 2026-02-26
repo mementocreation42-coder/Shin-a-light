@@ -53,7 +53,7 @@ export default function Contact() {
 
     return (
         <section id="contact" className="section">
-            <div className="section-inner">
+            <div className="section-inner narrow">
                 <div className="section-header">
                     <h2>Contact</h2>
                 </div>

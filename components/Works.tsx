@@ -5,7 +5,7 @@ import { works } from '@/data/works';
 export default function Works() {
     return (
         <section id="works" className="section">
-            <div className="section-inner">
+            <div className="section-inner narrow">
                 <div className="section-header">
                     <h2>Works &amp; Projects</h2>
                 </div>

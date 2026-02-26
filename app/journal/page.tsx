@@ -20,6 +20,7 @@ interface PageProps {
 export default async function JournalPage({ searchParams }: PageProps) {
     const params = await searchParams;
     const currentPage = parseInt(params.page || '1', 10);
+
     const { posts, totalPages } = await getPosts(currentPage, 12);
 
     return (

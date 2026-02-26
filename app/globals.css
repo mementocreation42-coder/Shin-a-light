@@ -122,6 +122,10 @@ a {
   padding: 80px 32px;
 }
 
+.section-inner.narrow {
+  max-width: 900px;
+}
+
 .section-header {
   display: flex;
   align-items: baseline;

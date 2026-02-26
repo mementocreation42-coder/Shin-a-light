@@ -21,7 +21,7 @@ export default function About() {
 
     return (
         <section id="about" className="section">
-            <div className="section-inner">
+            <div className="section-inner narrow">
                 <div className="section-header">
                     <h2>About</h2>
                 </div>
