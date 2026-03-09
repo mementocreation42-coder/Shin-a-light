@@ -30,13 +30,19 @@ export interface WPCategory {
     id: number;
     name: string;
     slug: string;
+    count: number;
 }
 
-// Fetch all posts with pagination
-export async function getPosts(page = 1, perPage = 12): Promise<{ posts: WPPost[]; totalPages: number }> {
+// Fetch all posts with pagination and optional category filter
+export async function getPosts(page = 1, perPage = 12, categoryId?: number): Promise<{ posts: WPPost[]; totalPages: number }> {
     try {
+        let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`;
+        if (categoryId) {
+            url += `&categories=${categoryId}`;
+        }
+
         const res = await fetch(
-            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
+            url,
             { next: { revalidate: 60 } }
         );
 
@@ -52,6 +58,55 @@ export async function getPosts(page = 1, perPage = 12): Promise<{ posts: WPPost[
     } catch (error) {
         console.error('WordPress API connection error:', error);
         return { posts: [], totalPages: 0 };
+    }
+}
+
+// Fetch all posts without pagination (useful for client-side filtering)
+export async function getAllPosts(): Promise<WPPost[]> {
+    try {
+        const perPage = 100; // WP Max is 100
+        let page = 1;
+        let allPosts: WPPost[] = [];
+        let totalPages = 1;
+
+        // Fetch first page to get totalPages
+        const firstRes = await fetch(
+            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
+            { next: { revalidate: 60 } }
+        );
+
+        if (!firstRes.ok) {
+            console.error('Failed to fetch initial posts:', firstRes.statusText);
+            return [];
+        }
+
+        const firstPosts = await firstRes.json();
+        allPosts = [...firstPosts];
+        totalPages = parseInt(firstRes.headers.get('X-WP-TotalPages') || '1', 10);
+
+        // Fetch remaining pages in parallel
+        if (totalPages > 1) {
+            const promises = [];
+            for (let i = 2; i <= totalPages; i++) {
+                promises.push(
+                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&_embed`, {
+                        next: { revalidate: 60 },
+                    }).then((res) => (res.ok ? res.json() : []))
+                );
+            }
+
+            const remainingPages = await Promise.all(promises);
+            for (const pagePosts of remainingPages) {
+                if (Array.isArray(pagePosts)) {
+                    allPosts = [...allPosts, ...pagePosts];
+                }
+            }
+        }
+
+        return allPosts;
+    } catch (error) {
+        console.error('WordPress API connection error (getAllPosts):', error);
+        return [];
     }
 }
 

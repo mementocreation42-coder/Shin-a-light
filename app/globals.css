@@ -1947,3 +1947,170 @@ textarea:disabled {
 .footer-links a:hover {
   color: var(--accent-orange);
 }
+
+/* ===================================
+   JOURNAL FILTERS & BADGES
+   =================================== */
+.journal-content-adapter {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.journal-categories-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  /* For scrollbar clear */
+  -webkit-overflow-scrolling: touch;
+}
+
+.journal-categories {
+  display: flex;
+  gap: 12px;
+  list-style: none;
+  background-color: var(--bg-secondary);
+  padding: 8px;
+  border-radius: 100px;
+  border: var(--border);
+}
+
+.journal-category-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.journal-category-btn:hover {
+  color: var(--text-primary);
+}
+
+.journal-category-btn.active {
+  background-color: var(--accent-orange);
+  color: var(--bg-primary);
+  font-weight: 700;
+}
+
+.journal-card-category-badges {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 80%;
+}
+
+.journal-card-category-badge {
+  background-color: var(--accent-orange);
+  color: var(--bg-primary);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 100px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Category-Specific Colors */
+
+/* Fishing */
+.journal-category-btn[data-category="fishing"].active,
+.journal-card-category-badge[data-category="fishing"] {
+  background-color: var(--accent-blue) !important;
+}
+
+.journal-category-btn[data-category="fishing"]:hover:not(.active) {
+  color: var(--accent-blue) !important;
+}
+
+/* Health */
+.journal-category-btn[data-category="health"].active,
+.journal-card-category-badge[data-category="health"] {
+  background-color: var(--accent-green) !important;
+}
+
+.journal-category-btn[data-category="health"]:hover:not(.active) {
+  color: var(--accent-green) !important;
+}
+
+/* AI */
+.journal-category-btn[data-category="ai"].active,
+.journal-card-category-badge[data-category="ai"] {
+  background-color: var(--accent-purple) !important;
+}
+
+.journal-category-btn[data-category="ai"]:hover:not(.active) {
+  color: var(--accent-purple) !important;
+}
+
+/* Photo */
+.journal-category-btn[data-category="photo"].active,
+.journal-card-category-badge[data-category="photo"] {
+  background-color: var(--accent-red) !important;
+}
+
+.journal-category-btn[data-category="photo"]:hover:not(.active) {
+  color: var(--accent-red) !important;
+}
+
+/* Video */
+.journal-category-btn[data-category="video"].active,
+.journal-card-category-badge[data-category="video"] {
+  background-color: var(--accent-yellow) !important;
+  color: var(--bg-primary) !important;
+  /* Yellow text on dark bg is hard to read */
+}
+
+.journal-category-btn[data-category="video"]:hover:not(.active) {
+  color: var(--accent-yellow) !important;
+}
+
+/* Web */
+.journal-category-btn[data-category="web"].active,
+.journal-card-category-badge[data-category="web"] {
+  background-color: #58d8d8 !important;
+  /* Cyan */
+}
+
+.journal-category-btn[data-category="web"]:hover:not(.active) {
+  color: #58d8d8 !important;
+}
+
+/* Gear */
+.journal-category-btn[data-category="gear"].active,
+.journal-card-category-badge[data-category="gear"] {
+  background-color: #f368e0 !important;
+  /* Pink */
+}
+
+.journal-category-btn[data-category="gear"]:hover:not(.active) {
+  color: #f368e0 !important;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
