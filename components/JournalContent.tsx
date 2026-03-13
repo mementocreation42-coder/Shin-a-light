@@ -9,8 +9,11 @@ interface JournalContentProps {
     categories: WPCategory[];
 }
 
+const POSTS_PER_PAGE = 12;
+
 export default function JournalContent({ initialPosts, categories }: JournalContentProps) {
     const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Filter posts based on selected category
     const filteredPosts = useMemo(() => {
@@ -22,14 +25,39 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
         );
     }, [initialPosts, selectedCategory]);
 
+    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
+
+    const paginatedPosts = useMemo(() => {
+        const start = (currentPage - 1) * POSTS_PER_PAGE;
+        return filteredPosts.slice(start, start + POSTS_PER_PAGE);
+    }, [filteredPosts, currentPage]);
+
     const handleCategoryClick = (categoryId: number | null) => {
         setSelectedCategory(categoryId);
+        setCurrentPage(1);
+    };
+
+    const getPageNumbers = (): (number | '...')[] => {
+        if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
+        const pages: (number | '...')[] = [1];
+        if (currentPage > 3) pages.push('...');
+        for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+            pages.push(i);
+        }
+        if (currentPage < totalPages - 2) pages.push('...');
+        pages.push(totalPages);
+        return pages;
     };
 
     // Desired category order based on slug
     const categoryOrder = [
-        'ai', 'health', 'fishing', 'video', 'photo', 'web', 'gear', 'hpmj'
+        'ai', 'video', 'photo', 'web', 'tools', 'hpmj'
     ];
+
+    // Display name overrides (slug → label)
+    const categoryLabels: Record<string, string> = {
+        hpmj: 'HpMJ',
+    };
 
     const sortedCategories = useMemo(() => {
         return [...categories].sort((a, b) => {
@@ -51,7 +79,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                         className={`journal-category-btn ${selectedCategory === null ? 'active' : ''}`}
                         onClick={() => handleCategoryClick(null)}
                     >
-                        すべて
+                        ALL
                     </button>
                     {sortedCategories.map((category) => (
                         <button
@@ -60,7 +88,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                             onClick={() => handleCategoryClick(category.id)}
                             data-category={category.slug}
                         >
-                            {category.name}
+                            {categoryLabels[category.slug] ?? category.name}
                         </button>
                     ))}
                 </nav>
@@ -68,8 +96,8 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
 
             {/* Posts Grid */}
             <ul className="journal-grid">
-                {filteredPosts.length > 0 ? (
-                    filteredPosts.map((post) => {
+                {paginatedPosts.length > 0 ? (
+                    paginatedPosts.map((post) => {
                         const imageUrl = getFeaturedImageUrl(post);
 
                         // Find all categories for badges
@@ -98,7 +126,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                                                             className="journal-card-category-badge"
                                                             data-category={cat.slug}
                                                         >
-                                                            {cat.name}
+                                                            {categoryLabels[cat.slug] ?? cat.name}
                                                         </span>
                                                     ))}
                                                 </div>
@@ -127,6 +155,39 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                     </li>
                 )}
             </ul>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="journal-pagination">
+                    <button
+                        className={`pagination-arrow${currentPage === 1 ? ' disabled' : ''}`}
+                        onClick={() => setCurrentPage(p => p - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        ← Prev
+                    </button>
+                    <div className="pagination-numbers">
+                        {getPageNumbers().map((page, i) =>
+                            page === '...'
+                                ? <span key={`ellipsis-${i}`} className="pagination-ellipsis">...</span>
+                                : <button
+                                    key={page}
+                                    className={`pagination-link${currentPage === page ? ' active' : ''}`}
+                                    onClick={() => setCurrentPage(page)}
+                                >
+                                    {page}
+                                </button>
+                        )}
+                    </div>
+                    <button
+                        className={`pagination-arrow${currentPage === totalPages ? ' disabled' : ''}`}
+                        onClick={() => setCurrentPage(p => p + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        Next →
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

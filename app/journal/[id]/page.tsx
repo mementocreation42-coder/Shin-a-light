@@ -1,6 +1,10 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getPostById, getPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
+import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
+
+const categoryLabels: Record<string, string> = {
+    hpmj: 'HpMJ',
+};
 
 export const revalidate = 60;
 
@@ -62,13 +66,26 @@ export async function generateMetadata({ params }: PageProps) {
 
 export default async function JournalPostPage({ params }: PageProps) {
     const { id } = await params;
-    const post = await getPostById(id);
+    const [post, allCategories] = await Promise.all([
+        getPostById(id),
+        getCategories(),
+    ]);
 
     if (!post) {
         notFound();
     }
 
     const imageUrl = getFeaturedImageUrl(post);
+    const postCategories = post.categories
+        .map(catId => allCategories.find(c => c.id === catId))
+        .filter(Boolean);
+
+    // Fetch related posts from same category
+    const firstCategoryId = post.categories[0];
+    const { posts: relatedRaw } = firstCategoryId
+        ? await getPosts(1, 4, firstCategoryId)
+        : { posts: [] };
+    const relatedPosts = relatedRaw.filter(p => p.id !== post.id).slice(0, 3);
 
     return (
         <main className="journal-article-page">
@@ -103,6 +120,19 @@ export default async function JournalPostPage({ params }: PageProps) {
                         className="journal-article-title"
                         dangerouslySetInnerHTML={{ __html: post.title.rendered }}
                     />
+                    {postCategories.length > 0 && (
+                        <div className="journal-article-tags">
+                            {postCategories.map((cat) => cat && (
+                                <span
+                                    key={cat.id}
+                                    className="journal-card-category-badge"
+                                    data-category={cat.slug}
+                                >
+                                    {categoryLabels[cat.slug] ?? cat.name}
+                                </span>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {imageUrl && (
@@ -115,6 +145,38 @@ export default async function JournalPostPage({ params }: PageProps) {
                     className="journal-article-content"
                     dangerouslySetInnerHTML={{ __html: post.content.rendered }}
                 />
+
+                {relatedPosts.length > 0 && (
+                    <section className="journal-related">
+                        <h2 className="journal-related-title">Related Posts</h2>
+                        <ul className="journal-related-grid">
+                            {relatedPosts.map((relPost) => {
+                                const relImageUrl = getFeaturedImageUrl(relPost);
+                                return (
+                                    <li key={relPost.id}>
+                                        <Link href={`/journal/${relPost.id}`} className="journal-card">
+                                            {relImageUrl && (
+                                                <div
+                                                    className="journal-card-image"
+                                                    style={{ backgroundImage: `url(${relImageUrl})` }}
+                                                />
+                                            )}
+                                            <div className="journal-card-content">
+                                                <time className="journal-card-date">
+                                                    {formatDate(relPost.date)}
+                                                </time>
+                                                <h3
+                                                    className="journal-card-title"
+                                                    dangerouslySetInnerHTML={{ __html: relPost.title.rendered }}
+                                                />
+                                            </div>
+                                        </Link>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </section>
+                )}
 
                 <div className="journal-article-footer">
                     <Link href="/journal" className="journal-back-link">

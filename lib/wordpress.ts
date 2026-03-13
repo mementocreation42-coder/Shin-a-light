@@ -191,15 +191,26 @@ export async function getCategories(): Promise<WPCategory[]> {
 
 // Helper to get featured image URL from embedded data
 export function getFeaturedImageUrl(post: WPPost & { _embedded?: { 'wp:featuredmedia'?: WPMedia[] } }): string | null {
-    if (post._embedded?.['wp:featuredmedia']?.[0]?.source_url) {
-        return post._embedded['wp:featuredmedia'][0].source_url;
+    const url = post._embedded?.['wp:featuredmedia']?.[0]?.source_url;
+    if (url) {
+        // Encode non-ASCII characters (e.g. Japanese filenames) for safe CSS url() use
+        return encodeURI(url);
     }
     return null;
 }
 
-// Helper to strip HTML tags from excerpt
+// Helper to strip HTML tags and decode HTML entities from excerpt
 export function stripHtml(html: string): string {
-    return html.replace(/<[^>]*>/g, '').trim();
+    return html
+        .replace(/<[^>]*>/g, '')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+        .trim();
 }
 
 // Helper to format date
