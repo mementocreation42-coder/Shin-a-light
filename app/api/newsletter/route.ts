@@ -11,24 +11,37 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // TODO: ここにResend / Beehiiv等のAPI連携を追加
-        // 例) Resend Audiences:
-        // await resend.contacts.create({ email, audienceId: process.env.RESEND_AUDIENCE_ID });
-        //
-        // 例) Beehiiv:
-        // await fetch(`https://api.beehiiv.com/v2/publications/${id}/subscriptions`, {
-        //     method: 'POST',
-        //     headers: { Authorization: `Bearer ${process.env.BEEHIIV_API_KEY}` },
-        //     body: JSON.stringify({ email }),
-        // });
+        const gasUrl = process.env.GAS_WEBHOOK_URL;
+        if (!gasUrl) {
+            console.error('[Newsletter] GAS_WEBHOOK_URL is not set');
+            return NextResponse.json(
+                { error: 'サーバー設定エラーです。' },
+                { status: 500 }
+            );
+        }
 
-        console.log('[Newsletter] New subscriber:', email);
+        // GAS Web App に POST（リダイレクトを自動追跡）
+        const gasRes = await fetch(gasUrl, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email,
+                referer: req.headers.get('referer') ?? 'https://www.shinealight.jp/newsletter',
+            }),
+        });
 
+        if (!gasRes.ok) {
+            throw new Error(`GAS responded with ${gasRes.status}`);
+        }
+
+        console.log('[Newsletter] Registered:', email);
         return NextResponse.json({ success: true });
+
     } catch (error) {
         console.error('[Newsletter] Error:', error);
         return NextResponse.json(
-            { error: 'サーバーエラーが発生しました。' },
+            { error: '送信に失敗しました。しばらくしてからお試しください。' },
             { status: 500 }
         );
     }
