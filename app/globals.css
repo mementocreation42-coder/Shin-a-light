@@ -2467,21 +2467,48 @@ textarea:disabled {
 .nl-topics-block {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 20px;
+  text-align: center;
 }
 
 .nl-tags {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 10px;
+  justify-content: center;
+  gap: 12px;
 }
+
+/* Capsule tag — gradient, equal size, text centered across seam */
+.nl-capsule {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 26px;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent-orange) 50%, #e0e0e0 50%);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #111;
+}
+
+/* Per-category gradient */
+.nl-capsule[data-category="ai"]     { background: linear-gradient(90deg, var(--accent-purple) 50%, #e0e0e0 50%); }
+.nl-capsule[data-category="video"]  { background: linear-gradient(90deg, var(--accent-yellow) 50%, #e0e0e0 50%); }
+.nl-capsule[data-category="photo"]  { background: linear-gradient(90deg, var(--accent-red)    50%, #e0e0e0 50%); }
+.nl-capsule[data-category="web"]    { background: linear-gradient(90deg, #58d8d8              50%, #e0e0e0 50%); }
+.nl-capsule[data-category="health"] { background: linear-gradient(90deg, var(--accent-green)  50%, #e0e0e0 50%); }
 
 .nl-desc {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.8;
+  text-align: left;
+  align-self: flex-start;
 }
 
 /* Form */
