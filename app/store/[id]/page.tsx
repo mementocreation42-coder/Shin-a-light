@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { products, getProductById } from '@/data/products';
 import BuyButton from '@/components/BuyButton';
+import EmailCaptureForm from '@/components/EmailCaptureForm';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -18,15 +19,15 @@ export async function generateMetadata({ params }: PageProps) {
     const product = getProductById(id);
     if (!product) return { title: 'Product Not Found' };
     return {
-        title: `${product.name} - Shine a Light Shop`,
+        title: `${product.name} - Shine a Light Store`,
         description: product.description,
         alternates: {
-            canonical: `/shop/${id}`,
+            canonical: `/store/${id}`,
         },
         openGraph: {
-            title: `${product.name} - Shine a Light Shop`,
+            title: `${product.name} - Shine a Light Store`,
             description: product.description,
-            url: `/shop/${id}`,
+            url: `/store/${id}`,
             siteName: 'Shine a Light',
             locale: 'ja_JP',
             type: 'website',
@@ -41,7 +42,7 @@ export async function generateMetadata({ params }: PageProps) {
         },
         twitter: {
             card: 'summary_large_image',
-            title: `${product.name} - Shine a Light Shop`,
+            title: `${product.name} - Shine a Light Store`,
             description: product.description,
             images: [product.image],
         },
@@ -74,7 +75,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                         },
                         "offers": {
                             "@type": "Offer",
-                            "url": `https://www.shinealight.jp/shop/${product.id}`,
+                            "url": `https://www.shinealight.jp/store/${product.id}`,
                             "priceCurrency": "JPY",
                             "price": product.price,
                             "availability": "https://schema.org/InStock",
@@ -85,8 +86,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
             />
             <header className="product-detail-header">
                 <div className="product-detail-header-inner">
-                    <Link href="/shop" className="back-link">
-                        ← Back to Shop
+                    <Link href="/store" className="back-link">
+                        ← Back to Store
                     </Link>
                 </div>
             </header>
@@ -104,7 +105,26 @@ export default async function ProductDetailPage({ params }: PageProps) {
                             <span className="product-badge">DIGITAL DOWNLOAD</span>
                         )}
                         <h1 className="product-detail-name">{product.name}</h1>
-                        <p className="product-detail-price">¥{product.price.toLocaleString()}</p>
+                        <div className="product-detail-price-container">
+                            {product.originalPrice && (
+                                <span className="product-detail-price-original">
+                                    ¥{product.originalPrice.toLocaleString()}
+                                </span>
+                            )}
+                            <p className="product-detail-price">¥{product.price.toLocaleString()}</p>
+                        </div>
+
+                        {product.stock && (
+                            <span className="product-detail-stock">限定残り {product.stock} セット / 個</span>
+                        )}
+
+                        {product.tags && product.tags.length > 0 && (
+                            <div className="product-tags" style={{ marginBottom: '24px' }}>
+                                {product.tags.map((tag) => (
+                                    <span key={tag} className="tag">{tag}</span>
+                                ))}
+                            </div>
+                        )}
 
                         <div className="product-detail-description">
                             {product.details.split('\n').map((line, i) => (
@@ -129,7 +149,18 @@ export default async function ProductDetailPage({ params }: PageProps) {
                         )}
 
                         <div className="product-actions">
-                            <BuyButton productId={product.id} price={product.price} />
+                            {product.ctaType === 'contact' ? (
+                                <Link href="/#contact" className="contact-cta-btn">
+                                    Inquiry / お問い合わせ
+                                </Link>
+                            ) : product.ctaType === 'download' ? (
+                                <EmailCaptureForm
+                                    productId={product.id}
+                                    downloadPath={product.downloadPath}
+                                />
+                            ) : (
+                                <BuyButton productId={product.id} price={product.price} />
+                            )}
                         </div>
                     </div>
                 </div>

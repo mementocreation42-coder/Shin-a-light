@@ -40,7 +40,7 @@ export default function SuccessPage() {
                         届かない場合は迷惑メールフォルダをご確認ください。
                     </p>
                     <Link
-                        href="/shop"
+                        href="/store"
                         style={{
                             display: 'inline-block',
                             padding: '12px 32px',
@@ -53,7 +53,7 @@ export default function SuccessPage() {
                             letterSpacing: 1,
                         }}
                     >
-                        ← Back to Shop
+                        ← Back to Store
                     </Link>
                 </div>
             </section>

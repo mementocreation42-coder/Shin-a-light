@@ -44,8 +44,8 @@ export async function POST(request: NextRequest) {
                 },
             ],
             mode: 'payment',
-            success_url: `${baseUrl}/shop/success?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${baseUrl}/shop/${product.id}`,
+            success_url: `${baseUrl}/store/success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${baseUrl}/store/${product.id}`,
             customer_email: undefined, // Stripe will ask for email
             metadata: {
                 productId: product.id,

@@ -45,13 +45,13 @@ export async function POST(request: NextRequest) {
                             Authorization: `Bearer ${resendApiKey}`,
                         },
                         body: JSON.stringify({
-                            from: 'Shine a Light Shop <shop@shinealight.jp>',
+                            from: 'Shine a Light Store <shop@shinealight.jp>',
                             to: customerEmail,
                             subject: `ご購入ありがとうございます - ${metadata.productName}`,
                             html: `
                                 <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
                                     <h1 style="font-size: 24px; margin-bottom: 8px;">ご購入ありがとうございます</h1>
-                                    <p style="color: #666; margin-bottom: 32px;">Shine a Light Shop をご利用いただきありがとうございます。</p>
+                                    <p style="color: #666; margin-bottom: 32px;">Shine a Light Store をご利用いただきありがとうございます。</p>
                                     
                                     <div style="background: #f5f5f5; padding: 24px; border-radius: 8px; margin-bottom: 32px;">
                                         <p style="margin: 0 0 8px 0; font-weight: bold;">${metadata.productName}</p>

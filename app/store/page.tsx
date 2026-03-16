@@ -3,10 +3,10 @@ import Link from 'next/link';
 import { products } from '@/data/products';
 
 export const metadata: Metadata = {
-    title: 'Shop | Shine a Light',
+    title: 'Store | Shine a Light',
     description: 'Official Merch & Digital Goods',
     alternates: {
-        canonical: '/shop',
+        canonical: '/store',
     },
 };
 
@@ -18,7 +18,7 @@ export default function ShopPage() {
                     <Link href="/" className="back-link">
                         ← Back to Home
                     </Link>
-                    <h1 className="shop-title">Online Store</h1>
+                    <h1 className="shop-title">STORE</h1>
                     <p className="shop-subtitle">Official Merch & Digital Goods</p>
                 </div>
             </header>
@@ -28,17 +28,37 @@ export default function ShopPage() {
                     {products.map((product) => (
                         <Link
                             key={product.id}
-                            href={`/shop/${product.id}`}
+                            href={`/store/${product.id}`}
                             className={`product-card ${product.color}`}
                         >
                             <div className="product-image">
                                 <img src={product.image} alt={product.name} />
+                                {product.badge && (
+                                    <span className="product-card-badge">{product.badge}</span>
+                                )}
                             </div>
                             <div className="product-info">
                                 <div className="product-header">
                                     <h2 className="product-name">{product.name}</h2>
-                                    <p className="product-price">¥{product.price.toLocaleString()}</p>
+                                    <div className="product-price-container">
+                                        {product.originalPrice && (
+                                            <span className="product-price-original">
+                                                ¥{product.originalPrice.toLocaleString()}
+                                            </span>
+                                        )}
+                                        <p className="product-price">¥{product.price.toLocaleString()}</p>
+                                    </div>
+                                    {product.stock && (
+                                        <span className="product-stock">限定 {product.stock} 個</span>
+                                    )}
                                 </div>
+                                {product.tags && product.tags.length > 0 && (
+                                    <div className="product-tags">
+                                        {product.tags.map((tag) => (
+                                            <span key={tag} className="tag">{tag}</span>
+                                        ))}
+                                    </div>
+                                )}
                                 <p className="product-desc">{product.description}</p>
                                 <span className="view-detail-btn">
                                     View Details →
@@ -47,7 +67,7 @@ export default function ShopPage() {
                         </Link>
                     ))}
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 }

@@ -11,7 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '',
         '/chronicle',
         '/journal',
-        '/shop',
+        '/store',
     ];
 
     const routes = staticRoutes.map((route) => ({
@@ -46,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // 4. Shop Products (Dynamic from local data)
     const shopRoutes = products.map((product) => ({
-        url: `${BASE_URL}/shop/${product.id}`,
+        url: `${BASE_URL}/store/${product.id}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.8,
