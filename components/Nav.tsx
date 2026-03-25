@@ -4,7 +4,7 @@ export default function Nav() {
     return (
         <nav className="nav">
             <Link href="/" className="nav-logo">
-                SaL
+                SAL
             </Link>
             <ul className="nav-links">
                 <li><Link href="/#about">About</Link></li>

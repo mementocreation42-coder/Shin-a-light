@@ -436,6 +436,10 @@ a {
   gap: 10px;
 }
 
+.profile-actions + .profile-actions {
+  margin-top: 10px;
+}
+
 .profile-btn {
   flex: 1;
   display: block;
@@ -461,6 +465,34 @@ a {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 24px;
+}
+
+.profile-other-sites {
+  margin-top: 32px;
+}
+
+.other-sites-btns {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.other-site-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  letter-spacing: 2px;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.other-site-btn:hover {
+  border-color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 .role-tag {
@@ -1152,7 +1184,12 @@ textarea:disabled {
   }
 
   .profile-visual {
-    max-width: 200px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .profile-actions {
+    justify-content: center;
   }
 
   .works-grid {

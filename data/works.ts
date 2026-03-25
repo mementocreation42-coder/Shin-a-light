@@ -165,7 +165,6 @@ export const works: Work[] = [
         process: '本プロジェクトの最大の特徴は、これらすべての工程を**「ワンマンオペレーション」**で完遂した点にあります。 限られたリソースの中でライブの躍動感を最大化するため、自身のメイン機（α7S III / α7 IV）による撮影に加え、数名のスタッフにiPhoneでのサブカメラ撮影を依頼。これまでの現場経験をフルに活かし、複数の視点を巧みにスイッチング・編集することで、ワンマンとは思えない多角的な映像表現を実現しました。',
         result: '納品後、クライアント様からは「あの日の熱狂が鮮明に蘇る」と大変高い評価をいただきました。「記録としてプロに依頼して本当に良かった」というお言葉をいただき、グループにとっての大切な節目に、映像という形で深く寄与することができました。',
         youtubeId: 'EILMCYSX3tE',
-        link: 'https://masatoshikaeriyama.com/',
         photoBy: 'Photo by Masatoshi Kaeriyama',
         photoByLink: 'https://masatoshikaeriyama.com/',
         gallery: [
@@ -298,14 +297,13 @@ export const works: Work[] = [
         title: 'HL FISHING',
         category: 'Lifestyle / Outdoor',
         color: 'color-5',
-        image: 'https://img.youtube.com/vi/Iij57aSVKHs/maxresdefault.jpg',
+        image: '/images/works/hl-fishing/hero-bg.jpg',
         year: '2025-',
         client: 'オウンドプロジェクト',
         role: 'プロデュース',
         tools: 'ANYWHERE',
         toolsLabel: 'Field',
-        youtubeId: 'Iij57aSVKHs',
-        link: 'https://hlfishing.studio.site/',
+        link: 'https://www.hlfishing.net/',
         videos: [
             { id: 'nYmtN_0h_JQ', title: 'Lines & Lives' }
         ],

@@ -39,9 +39,6 @@ export default function NewsletterPage() {
                             </span>
                         ))}
                     </div>
-                    <p className="nl-desc">
-                        AIツールの活用法・最新動向、映像制作のTipsや機材レビュー、写真表現・撮影テクニック、Web開発の知見など、各分野の"効く"知見や発見を不定期でお届けします！
-                    </p>
                 </div>
 
                 {/* Form */}
