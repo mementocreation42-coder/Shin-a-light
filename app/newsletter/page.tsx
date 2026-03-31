@@ -7,6 +7,28 @@ export const metadata: Metadata = {
     alternates: {
         canonical: '/newsletter',
     },
+    openGraph: {
+        title: 'Newsletter | Shine a Light',
+        description: 'AI、映像、写真、Web、健康——各分野の知見や発見を不定期でお届けします。',
+        url: '/newsletter',
+        siteName: 'Shine a Light',
+        locale: 'ja_JP',
+        type: 'website',
+        images: [
+            {
+                url: '/images/profile.jpg',
+                width: 587,
+                height: 587,
+                alt: 'Shine a Light Newsletter',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Newsletter | Shine a Light',
+        description: 'AI、映像、写真、Web、健康——各分野の知見や発見を不定期でお届けします。',
+        images: ['/images/profile.jpg'],
+    },
 };
 
 const tags = [
