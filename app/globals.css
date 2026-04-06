@@ -1267,12 +1267,12 @@ textarea:disabled {
 
 .journal-card {
   display: block;
-  background-color: var(--bg-secondary);
-  border: var(--border);
+  background-color: #FAEBDD;
+  border: 1px solid rgba(250, 235, 221, 0.5);
   border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
-  color: inherit;
+  color: #1a1a1a;
   overflow: hidden;
   height: 100%;
   /* Semantic update: ensure full height */
@@ -1281,13 +1281,14 @@ textarea:disabled {
 .journal-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: rgba(250, 235, 221, 0.7);
 }
 
 .journal-card-image {
   aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
-  background-color: var(--bg-primary);
+  background-color: #FAEBDD;
 }
 
 .journal-card-content {
@@ -1296,9 +1297,10 @@ textarea:disabled {
 
 .journal-card-date {
   font-size: 12px;
-  color: var(--accent-orange);
+  color: #333;
   text-transform: uppercase;
   letter-spacing: 1px;
+  font-weight: 600;
 }
 
 .journal-card-title {
@@ -1310,7 +1312,7 @@ textarea:disabled {
 
 .journal-card-excerpt {
   font-size: 14px;
-  color: var(--text-secondary);
+  color: #444;
   line-height: 1.6;
 }
 
@@ -1373,12 +1375,16 @@ textarea:disabled {
 .journal-article-content {
   font-size: 16px;
   line-height: 2;
-  color: var(--text-secondary);
+  color: #333;
+  background-color: #FAEBDD;
+  border: 1px solid rgba(250, 235, 221, 0.5);
+  border-radius: 16px;
+  padding: 32px;
 }
 
 .journal-article-content h2,
 .journal-article-content h3 {
-  color: var(--text-primary);
+  color: #1a1a1a;
   margin: 40px 0 20px;
 }
 
@@ -1395,7 +1401,7 @@ textarea:disabled {
 }
 
 .journal-article-content a {
-  color: var(--accent-orange);
+  color: #c0392b;
 }
 
 .journal-article-content img {
@@ -1406,11 +1412,11 @@ textarea:disabled {
 }
 
 .journal-article-content blockquote {
-  border-left: 3px solid var(--accent-orange);
+  border-left: 3px solid #555;
   padding-left: 20px;
   margin: 24px 0;
   font-style: italic;
-  color: var(--text-secondary);
+  color: #555;
 }
 
 .journal-article-content ul,
@@ -1444,8 +1450,10 @@ textarea:disabled {
 
 .journal-related {
   margin-top: 80px;
-  padding-top: 48px;
-  border-top: var(--border);
+  padding: 32px;
+  background-color: #FAEBDD;
+  border: 1px solid rgba(250, 235, 221, 0.5);
+  border-radius: 16px;
 }
 
 .journal-related-title {
@@ -1453,7 +1461,7 @@ textarea:disabled {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--text-secondary);
+  color: #333;
   margin-bottom: 24px;
 }
 
@@ -1501,9 +1509,10 @@ textarea:disabled {
   min-width: 40px;
   height: 40px;
   padding: 0 12px;
-  background-color: var(--bg-secondary);
-  border: var(--border);
-  color: var(--text-primary);
+  background-color: #FAEBDD;
+  border: 1px solid rgba(250, 235, 221, 0.5);
+  border-radius: 10px;
+  color: #1a1a1a;
   text-decoration: none;
   font-size: 12px;
   text-transform: uppercase;
@@ -2066,10 +2075,10 @@ textarea:disabled {
   display: flex;
   gap: 8px;
   list-style: none;
-  background-color: var(--bg-secondary);
+  background-color: #FAEBDD;
   padding: 8px;
   border-radius: 100px;
-  border: var(--border);
+  border: 1px solid rgba(250, 235, 221, 0.5);
 }
 
 @media (max-width: 640px) {
@@ -2095,7 +2104,7 @@ textarea:disabled {
 .journal-category-btn {
   background: none;
   border: none;
-  color: var(--text-secondary);
+  color: #444;
   font-family: var(--font-mono);
   font-size: 13px;
   padding: 6px 16px;
@@ -2106,7 +2115,7 @@ textarea:disabled {
 }
 
 .journal-category-btn:hover {
-  color: var(--text-primary);
+  color: #1a1a1a;
 }
 
 .journal-category-btn.active {
