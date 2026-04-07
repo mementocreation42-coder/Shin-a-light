@@ -7,14 +7,20 @@ const categoryLabels: Record<string, string> = {
     hpmj: 'HpMJ',
 };
 
-export const revalidate = 60;
+// Revalidate at most once per hour. Blog posts rarely change after publication,
+// so 60s revalidation was burning invocations on every visitor after the cache
+// window expired (once per minute per post, multiplied by CDN regions).
+export const revalidate = 3600;
 
 interface PageProps {
     params: Promise<{ id: string }>;
 }
 
 export async function generateStaticParams() {
-    const { posts } = await getPosts(1, 20);
+    // Pre-build all 100 most recent posts at deploy time so they are served as
+    // static HTML. Previously only 20 were pre-built; the remainder were SSR
+    // on first visit AND re-rendered every 60 seconds thereafter.
+    const { posts } = await getPosts(1, 100);
     return posts.map((post) => ({
         id: String(post.id),
     }));
@@ -110,42 +116,45 @@ export default async function JournalPostPage({ params }: PageProps) {
                 }}
             />
             <article className="journal-article">
-                <div className="journal-article-header">
-                    <Link href="/journal" className="journal-back-link">
-                        ← Back to Journal
-                    </Link>
-                    <time className="journal-article-date">
-                        {formatDate(post.date)}
-                    </time>
-                    <h1
-                        className="journal-article-title"
-                        dangerouslySetInnerHTML={{ __html: post.title.rendered }}
-                    />
-                    {postCategories.length > 0 && (
-                        <div className="journal-article-tags">
-                            {postCategories.map((cat) => cat && (
-                                <span
-                                    key={cat.id}
-                                    className="journal-card-category-badge"
-                                    data-category={cat.slug}
-                                >
-                                    {categoryLabels[cat.slug] ?? cat.name}
-                                </span>
-                            ))}
+                <Link href="/journal" className="journal-back-link">
+                    ← Back to Journal
+                </Link>
+
+                <div className="journal-article-body">
+                    <div className="journal-article-header">
+                        <time className="journal-article-date">
+                            {formatDate(post.date)}
+                        </time>
+                        <h1
+                            className="journal-article-title"
+                            dangerouslySetInnerHTML={{ __html: post.title.rendered }}
+                        />
+                        {postCategories.length > 0 && (
+                            <div className="journal-article-tags">
+                                {postCategories.map((cat) => cat && (
+                                    <span
+                                        key={cat.id}
+                                        className="journal-card-category-badge"
+                                        data-category={cat.slug}
+                                    >
+                                        {categoryLabels[cat.slug] ?? cat.name}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {imageUrl && (
+                        <div className="journal-article-hero">
+                            <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
                         </div>
                     )}
+
+                    <div
+                        className="journal-article-content"
+                        dangerouslySetInnerHTML={{ __html: processYouTubeEmbeds(post.content.rendered) }}
+                    />
                 </div>
-
-                {imageUrl && (
-                    <div className="journal-article-hero">
-                        <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
-                    </div>
-                )}
-
-                <div
-                    className="journal-article-content"
-                    dangerouslySetInnerHTML={{ __html: processYouTubeEmbeds(post.content.rendered) }}
-                />
 
                 {relatedPosts.length > 0 && (
                     <section className="journal-related">
