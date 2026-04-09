@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
+import { processLinkCards } from '@/lib/ogp';
 
 const categoryLabels: Record<string, string> = {
     hpmj: 'HpMJ',
@@ -152,7 +153,7 @@ export default async function JournalPostPage({ params }: PageProps) {
 
                     <div
                         className="journal-article-content"
-                        dangerouslySetInnerHTML={{ __html: processYouTubeEmbeds(post.content.rendered) }}
+                        dangerouslySetInnerHTML={{ __html: await processLinkCards(processYouTubeEmbeds(post.content.rendered)) }}
                     />
                 </div>
 
