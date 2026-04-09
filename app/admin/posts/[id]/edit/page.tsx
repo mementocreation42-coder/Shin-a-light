@@ -17,7 +17,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     date: post.date.split('T')[0],
     categoryIds: post.categories,
     content: post.content.rendered,
-    status: post.status,
+    status: post.status === 'private' ? 'publish' : post.status,
   };
 
   return (
