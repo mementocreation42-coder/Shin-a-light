@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
 import { processLinkCards } from '@/lib/ogp';
+import { processAffiliateCards } from '@/lib/affiliate';
 
 const categoryLabels: Record<string, string> = {
     hpmj: 'HpMJ',
@@ -122,6 +123,12 @@ export default async function JournalPostPage({ params }: PageProps) {
                 </Link>
 
                 <div className="journal-article-body">
+                    {imageUrl && (
+                        <div className="journal-article-hero">
+                            <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
+                        </div>
+                    )}
+
                     <div className="journal-article-header">
                         <time className="journal-article-date">
                             {formatDate(post.date)}
@@ -145,15 +152,9 @@ export default async function JournalPostPage({ params }: PageProps) {
                         )}
                     </div>
 
-                    {imageUrl && (
-                        <div className="journal-article-hero">
-                            <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
-                        </div>
-                    )}
-
                     <div
                         className="journal-article-content"
-                        dangerouslySetInnerHTML={{ __html: await processLinkCards(processYouTubeEmbeds(post.content.rendered)) }}
+                        dangerouslySetInnerHTML={{ __html: await processLinkCards(await processAffiliateCards(processYouTubeEmbeds(post.content.rendered))) }}
                     />
                 </div>
 

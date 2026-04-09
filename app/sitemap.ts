@@ -3,6 +3,11 @@ import { getPosts } from '@/lib/wordpress';
 import { works } from '@/data/works';
 import { products } from '@/data/products';
 
+// Sitemap is regenerated at most once per day.
+// Without this, every crawler request (Google, Bing, etc.) triggers a fresh
+// WordPress API call and a new function invocation.
+export const revalidate = 86400;
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

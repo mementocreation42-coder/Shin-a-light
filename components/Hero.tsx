@@ -9,7 +9,7 @@ export default function Hero() {
                     muted
                     playsInline
                     className="hero-video"
-                    poster="/images/hero_poster.png"
+                    poster="/images/hero_poster.jpg"
                 >
                     <source src="/videos/hero.mp4" type="video/mp4" />
                 </video>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
@@ -7,6 +8,13 @@ import Footer from "@/components/Footer";
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+});
+
+const notoSansJP = Noto_Sans_JP({
+  variable: "--font-sans-jp",
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
@@ -42,20 +50,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const pathname = headersList.get('x-pathname') || '';
+  const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
+
   return (
     <html lang="ja">
       <head>
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
-      <body className={jetbrainsMono.variable}>
-        <Nav />
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable}`}>
+        {!isAdmin && <Nav />}
         <main>{children}</main>
-        <Footer />
+        {!isAdmin && <Footer />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

@@ -56,7 +56,7 @@ export const works: Work[] = [
     },
     {
         slug: 'beyond-borders-prayer',
-        title: '国境を越えて・祈り',
+        title: '香川県豊島・国境を越えて・祈り',
         category: 'Promotion / Documentary',
         color: 'color-6',
         image: 'https://img.youtube.com/vi/nBt3BryfMa0/maxresdefault.jpg',

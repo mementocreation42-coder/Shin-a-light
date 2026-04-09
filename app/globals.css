@@ -45,6 +45,7 @@ body {
   font-family: var(--font-mono);
   font-size: 14px;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 a {
@@ -1361,6 +1362,7 @@ textarea:disabled {
   line-height: 1.3;
   margin-bottom: 16px;
   color: #333;
+  font-family: var(--font-sans-jp), 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
 }
 
 .journal-article-tags {
@@ -1371,19 +1373,23 @@ textarea:disabled {
 }
 
 .journal-article-hero {
-  margin: 0 0 32px;
+  margin: -32px -32px 32px;
 }
 
 .journal-article-hero img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: 8px;
+  border-radius: 16px 16px 0 0;
 }
 
 .journal-article-content {
   font-size: 16px;
   line-height: 2;
+  font-family: var(--font-sans-jp), 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+  font-weight: 500;
+  overflow-wrap: break-word;
+  word-break: break-word;
   color: #333;
 }
 
@@ -1434,7 +1440,30 @@ textarea:disabled {
   margin-bottom: 8px;
 }
 
-/* YouTube 埋め込み */
+/* WordPress content — overflow protection */
+.journal-article-content pre {
+  overflow-x: auto;
+  max-width: 100%;
+  white-space: pre-wrap;
+}
+
+.journal-article-content code {
+  word-break: break-all;
+}
+
+.journal-article-content table {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.journal-article-content figure {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* YouTube 埋め込み（processYouTubeEmbeds で生成される wrapper） */
 .youtube-embed-wrapper {
   position: relative;
   width: 100%;
@@ -1451,6 +1480,185 @@ textarea:disabled {
   width: 100%;
   height: 100%;
   border: none;
+}
+
+/* WordPress oEmbed ブロック（<figure class="wp-block-embed">）*/
+.journal-article-content figure.wp-block-embed {
+  margin: 32px 0;
+  width: 100%;
+}
+
+.journal-article-content figure.wp-block-embed .wp-block-embed__wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+}
+
+.journal-article-content figure.wp-block-embed .wp-block-embed__wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+}
+
+/* アフィリエイトカード */
+.sal-affiliate-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  margin: 32px 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.sal-affiliate-image {
+  flex: 0 0 160px;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.sal-affiliate-image img {
+  max-width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+}
+
+.sal-affiliate-body {
+  flex: 1;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.sal-affiliate-brand {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #999;
+  font-weight: 500;
+}
+
+.sal-affiliate-title {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #1a1a1a;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sal-affiliate-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sal-affiliate-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.sal-affiliate-tax {
+  font-size: 11px;
+  color: #999;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+.sal-affiliate-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sal-affiliate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sal-affiliate-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+.sal-affiliate-btn--amazon {
+  background: #ff9900;
+  color: #000;
+}
+
+.sal-affiliate-amazon-logo {
+  filter: brightness(0);
+}
+
+.sal-affiliate-btn--rakuten {
+  background: #bf0000;
+  color: #fff;
+}
+
+.sal-affiliate-rakuten-r {
+  background: #fff;
+  color: #bf0000;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+@media (max-width: 600px) {
+  .sal-affiliate-card {
+    flex-direction: column;
+  }
+
+  .sal-affiliate-image {
+    flex: none;
+    height: 160px;
+  }
+
+  .sal-affiliate-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sal-affiliate-buttons {
+    width: 100%;
+  }
+
+  .sal-affiliate-btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 /* リンクカード */
@@ -1689,7 +1897,19 @@ textarea:disabled {
   }
 
   .journal-article-page {
-    padding: 100px 20px 60px;
+    padding: 100px 16px 60px;
+  }
+
+  .journal-article-body {
+    padding: 20px;
+  }
+
+  .journal-article-hero {
+    margin: -20px -20px 24px;
+  }
+
+  .journal-related {
+    padding: 20px;
   }
 
   .journal-article-title {

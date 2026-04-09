@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
 
 interface JournalContentProps {
@@ -12,17 +13,24 @@ interface JournalContentProps {
 const POSTS_PER_PAGE = 12;
 
 export default function JournalContent({ initialPosts, categories }: JournalContentProps) {
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const selectedCategory = searchParams.get('cat') ? Number(searchParams.get('cat')) : null;
+    const currentPage = Number(searchParams.get('page') ?? '1');
+
+    const updateParams = useCallback((page: number, cat: number | null) => {
+        const params = new URLSearchParams();
+        if (cat) params.set('cat', String(cat));
+        if (page > 1) params.set('page', String(page));
+        const query = params.toString();
+        router.push(`/journal${query ? `?${query}` : ''}`, { scroll: false });
+    }, [router]);
 
     // Filter posts based on selected category
     const filteredPosts = useMemo(() => {
-        if (!selectedCategory) {
-            return initialPosts;
-        }
-        return initialPosts.filter(post =>
-            post.categories.includes(selectedCategory)
-        );
+        if (!selectedCategory) return initialPosts;
+        return initialPosts.filter(post => post.categories.includes(selectedCategory));
     }, [initialPosts, selectedCategory]);
 
     const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
@@ -33,19 +41,17 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
     }, [filteredPosts, currentPage]);
 
     const handleCategoryClick = (categoryId: number | null) => {
-        setSelectedCategory(categoryId);
-        setCurrentPage(1);
+        updateParams(1, categoryId);
     };
 
+    // 現在地の前後1ページを表示。最終ページは番号に出さず ... で示す
     const getPageNumbers = (): (number | '...')[] => {
-        if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
-        const pages: (number | '...')[] = [1];
-        if (currentPage > 3) pages.push('...');
-        for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-            pages.push(i);
-        }
-        if (currentPage < totalPages - 2) pages.push('...');
-        pages.push(totalPages);
+        const pages: (number | '...')[] = [];
+        const start = Math.max(1, currentPage - 1);
+        const end = Math.min(currentPage + 1, totalPages - 1); // 最終ページは含めない
+        for (let i = start; i <= end; i++) pages.push(i);
+        if (pages[pages.length - 1] < totalPages - 1) pages.push('...');
+        else pages.push('...'); // 最終ページの手前でも … を常に表示
         return pages;
     };
 
@@ -64,7 +70,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
             const indexA = categoryOrder.indexOf(a.slug);
             const indexB = categoryOrder.indexOf(b.slug);
             if (indexA === -1 && indexB === -1) return 0;
-            if (indexA === -1) return 1; // Put unknown categories at the end
+            if (indexA === -1) return 1;
             if (indexB === -1) return -1;
             return indexA - indexB;
         });
@@ -161,7 +167,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                 <div className="journal-pagination">
                     <button
                         className={`pagination-arrow${currentPage === 1 ? ' disabled' : ''}`}
-                        onClick={() => setCurrentPage(p => p - 1)}
+                        onClick={() => updateParams(currentPage - 1, selectedCategory)}
                         disabled={currentPage === 1}
                     >
                         ← Prev
@@ -173,7 +179,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                                 : <button
                                     key={page}
                                     className={`pagination-link${currentPage === page ? ' active' : ''}`}
-                                    onClick={() => setCurrentPage(page)}
+                                    onClick={() => updateParams(page, selectedCategory)}
                                 >
                                     {page}
                                 </button>
@@ -181,7 +187,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                     </div>
                     <button
                         className={`pagination-arrow${currentPage === totalPages ? ' disabled' : ''}`}
-                        onClick={() => setCurrentPage(p => p + 1)}
+                        onClick={() => updateParams(currentPage + 1, selectedCategory)}
                         disabled={currentPage === totalPages}
                     >
                         Next →

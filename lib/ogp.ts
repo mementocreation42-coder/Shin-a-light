@@ -93,20 +93,44 @@ function isYouTubeUrl(url: string): boolean {
   return /(?:youtube\.com|youtu\.be)/i.test(url);
 }
 
+function isAffiliateUrl(url: string): boolean {
+  return /(?:amazon\.co\.jp|amzn\.to|amzn\.asia|item\.rakuten\.co\.jp|search\.rakuten\.co\.jp|rakuten\.co\.jp\/item)/i.test(url);
+}
+
 export async function processLinkCards(html: string): Promise<string> {
-  const urlPattern =
+  // パターン1: <p> の中身がURLだけ
+  const soloPattern =
     /<p>\s*(?:<a[^>]*href="([^"]*)"[^>]*>[^<]*<\/a>|([^\s<>]+))\s*<\/p>/g;
 
-  const matches: { full: string; url: string; index: number }[] = [];
+  // パターン2: <p>テキスト<br>URL</p> — URLが <br> の後に末尾に来る形
+  const brPattern =
+    /<p>((?:(?!<br).)+?)<br\s*\/?>\s*(?:<a[^>]*href="([^"]*)"[^>]*>[^<]*<\/a>|([^\s<>]+))\s*<\/p>/g;
+
+  type Match = { full: string; url: string; index: number; prefix?: string };
+  const matches: Match[] = [];
   let m: RegExpExecArray | null;
 
-  while ((m = urlPattern.exec(html)) !== null) {
+  while ((m = soloPattern.exec(html)) !== null) {
     const url = m[1] ?? m[2] ?? '';
-    if (!url.startsWith('http') || isYouTubeUrl(url)) continue;
+    if (!url.startsWith('http') || isYouTubeUrl(url) || isAffiliateUrl(url)) continue;
     matches.push({ full: m[0], url, index: m.index });
   }
 
+  while ((m = brPattern.exec(html)) !== null) {
+    const url = m[2] ?? m[3] ?? '';
+    if (!url.startsWith('http') || isYouTubeUrl(url) || isAffiliateUrl(url)) continue;
+    // すでにパターン1でマッチしている範囲と重複しないか確認
+    const alreadyMatched = matches.some(
+      (ex) => m!.index >= ex.index && m!.index < ex.index + ex.full.length
+    );
+    if (alreadyMatched) continue;
+    matches.push({ full: m[0], url, index: m.index, prefix: `<p>${m[1]}</p>` });
+  }
+
   if (matches.length === 0) return html;
+
+  // インデックス順にソート（後ろから置換するため）
+  matches.sort((a, b) => a.index - b.index);
 
   const ogpResults = await Promise.all(
     matches.map(({ url }) => fetchOGP(url).catch(() => null))
@@ -116,8 +140,9 @@ export async function processLinkCards(html: string): Promise<string> {
   for (let i = matches.length - 1; i >= 0; i--) {
     const ogp = ogpResults[i];
     if (!ogp?.title) continue;
-    const { full, index } = matches[i];
-    result = result.slice(0, index) + renderLinkCard(ogp) + result.slice(index + full.length);
+    const { full, index, prefix } = matches[i];
+    const replacement = (prefix ?? '') + renderLinkCard(ogp);
+    result = result.slice(0, index) + replacement + result.slice(index + full.length);
   }
 
   return result;

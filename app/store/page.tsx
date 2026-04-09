@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { products } from '@/data/products';
 
 export const metadata: Metadata = {
-    title: 'Store | Shine a Light',
-    description: 'Official Merch & Digital Goods',
+    title: 'SAL STORE | Shine a Light',
+    description: 'Creative Assets & Tools - For those who make their own.',
     alternates: {
         canonical: '/store',
     },
@@ -18,8 +18,8 @@ export default function ShopPage() {
                     <Link href="/" className="back-link">
                         ← Back to Home
                     </Link>
-                    <h1 className="shop-title">STORE</h1>
-                    <p className="shop-subtitle">Official Merch & Digital Goods</p>
+                    <h1 className="shop-title">SAL STORE</h1>
+                    <p className="shop-subtitle">Creative Assets & Tools - For those who make their own.</p>
                 </div>
             </header>
 

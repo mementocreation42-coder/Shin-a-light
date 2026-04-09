@@ -43,7 +43,7 @@ export async function getPosts(page = 1, perPage = 12, categoryId?: number): Pro
 
         const res = await fetch(
             url,
-            { next: { revalidate: 60 } }
+            { next: { revalidate: 3600 } }
         );
 
         if (!res.ok) {
@@ -72,7 +72,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
         // Fetch first page to get totalPages
         const firstRes = await fetch(
             `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
-            { next: { revalidate: 60 } }
+            { next: { revalidate: 3600 } }
         );
 
         if (!firstRes.ok) {
@@ -90,7 +90,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
             for (let i = 2; i <= totalPages; i++) {
                 promises.push(
                     fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&_embed`, {
-                        next: { revalidate: 60 },
+                        next: { revalidate: 3600 },
                     }).then((res) => (res.ok ? res.json() : []))
                 );
             }
@@ -115,7 +115,7 @@ export async function getPost(slug: string): Promise<WPPost | null> {
     try {
         const res = await fetch(
             `${WP_REST_BASE}/posts&slug=${slug}&_embed`,
-            { next: { revalidate: 60 } }
+            { next: { revalidate: 3600 } }
         );
 
         if (!res.ok) {
@@ -135,7 +135,7 @@ export async function getPostById(id: string): Promise<WPPost | null> {
     try {
         const res = await fetch(
             `${WP_REST_BASE}/posts/${id}&_embed`,
-            { next: { revalidate: 60 } }
+            { next: { revalidate: 3600 } }
         );
 
         if (!res.ok) {
@@ -211,6 +211,111 @@ export function stripHtml(html: string): string {
         .replace(/&nbsp;/g, ' ')
         .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
         .trim();
+}
+
+// ===================================
+// ADMIN — authenticated WordPress API
+// ===================================
+
+function authHeader(): string {
+  const user = process.env.WORDPRESS_APP_USERNAME!;
+  const pass = process.env.WORDPRESS_APP_PASSWORD!;
+  return `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`;
+}
+
+export interface WPPostAdmin extends WPPost {
+  status: 'publish' | 'draft' | 'private';
+  _embedded?: {
+    'wp:featuredmedia'?: WPMedia[];
+    'wp:term'?: Array<Array<WPCategory>>;
+  };
+}
+
+export async function getAdminPosts(page = 1, perPage = 20): Promise<{
+  posts: WPPostAdmin[];
+  totalPages: number;
+  total: number;
+}> {
+  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=publish,draft`;
+  const res = await fetch(url, {
+    headers: { Authorization: authHeader() },
+    cache: 'no-store',
+  });
+  if (!res.ok) return { posts: [], totalPages: 0, total: 0 };
+  const posts = await res.json();
+  return {
+    posts,
+    totalPages: parseInt(res.headers.get('X-WP-TotalPages') || '1', 10),
+    total: parseInt(res.headers.get('X-WP-Total') || '0', 10),
+  };
+}
+
+export async function getAdminPostById(id: string): Promise<WPPostAdmin | null> {
+  const res = await fetch(`${WP_REST_BASE}/posts/${id}&_embed`, {
+    headers: { Authorization: authHeader() },
+    cache: 'no-store',
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+export async function createWPPost(data: {
+  title: string;
+  content: string;
+  excerpt?: string;
+  date?: string;
+  status: 'publish' | 'draft';
+  categories?: number[];
+  featured_media?: number;
+}): Promise<WPPost> {
+  const res = await fetch(`${WP_REST_BASE}/posts`, {
+    method: 'POST',
+    headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`Create post failed: ${await res.text()}`);
+  return res.json();
+}
+
+export async function updateWPPost(id: number, data: {
+  title?: string;
+  content?: string;
+  excerpt?: string;
+  date?: string;
+  status?: 'publish' | 'draft';
+  categories?: number[];
+  featured_media?: number;
+}): Promise<WPPost> {
+  const res = await fetch(`${WP_REST_BASE}/posts/${id}`, {
+    method: 'POST',
+    headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`Update post failed: ${await res.text()}`);
+  return res.json();
+}
+
+export async function deleteWPPost(id: number): Promise<void> {
+  const res = await fetch(`${WP_REST_BASE}/posts/${id}&force=true`, {
+    method: 'DELETE',
+    headers: { Authorization: authHeader() },
+  });
+  if (!res.ok) throw new Error(`Delete post failed: ${await res.text()}`);
+}
+
+export async function uploadMedia(file: File, filename: string): Promise<WPMedia> {
+  const buffer = await file.arrayBuffer();
+  const res = await fetch(`${WP_REST_BASE}/media`, {
+    method: 'POST',
+    headers: {
+      Authorization: authHeader(),
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
+      'Content-Type': file.type || 'image/jpeg',
+    },
+    body: buffer,
+  });
+  if (!res.ok) throw new Error(`Upload failed: ${await res.text()}`);
+  return res.json();
 }
 
 // Helper to format date

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getAllPosts, getCategories } from '@/lib/wordpress';
 import JournalContent from '@/components/JournalContent';
 
@@ -12,7 +11,10 @@ export const metadata: Metadata = {
     },
 };
 
-export const revalidate = 60;
+// Revalidate once per hour instead of every 60 seconds.
+// The journal index doesn't need minute-level freshness, and 60s was causing
+// continuous function invocations proportional to traffic volume.
+export const revalidate = 3600;
 
 export default async function JournalPage() {
     // サーバーサイドで全投稿と全カテゴリーを一括取得
@@ -35,10 +37,12 @@ export default async function JournalPage() {
                     <h1>Hyperpast Journal</h1>
                 </div>
 
-                <JournalContent
-                    initialPosts={posts}
-                    categories={activeCategories}
-                />
+                <Suspense>
+                    <JournalContent
+                        initialPosts={posts}
+                        categories={activeCategories}
+                    />
+                </Suspense>
             </div>
         </main>
     );
