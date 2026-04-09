@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
 
@@ -146,7 +147,14 @@ export default async function JournalPostPage({ params }: PageProps) {
 
                     {imageUrl && (
                         <div className="journal-article-hero">
-                            <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
+                            <Image
+                                src={imageUrl}
+                                alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'}
+                                width={1200}
+                                height={630}
+                                priority
+                                style={{ width: '100%', height: 'auto' }}
+                            />
                         </div>
                     )}
 
@@ -166,10 +174,15 @@ export default async function JournalPostPage({ params }: PageProps) {
                                     <li key={relPost.id}>
                                         <Link href={`/journal/${relPost.id}`} className="journal-card">
                                             {relImageUrl && (
-                                                <div
-                                                    className="journal-card-image"
-                                                    style={{ backgroundImage: `url(${relImageUrl})` }}
-                                                />
+                                                <div className="journal-card-image">
+                                                    <Image
+                                                        src={relImageUrl}
+                                                        alt={relPost.title.rendered.replace(/<[^>]*>/g, '')}
+                                                        fill
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                        style={{ objectFit: 'cover' }}
+                                                    />
+                                                </div>
                                             )}
                                             <div className="journal-card-content">
                                                 <time className="journal-card-date">

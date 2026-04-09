@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="preload" href="/images/hero_poster.png" as="image" />
+        <link rel="preload" href="/images/hero_poster.webp" as="image" type="image/webp" fetchPriority="high" />
       </head>
       <body className={jetbrainsMono.variable}>
         <Nav />

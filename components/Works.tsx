@@ -10,7 +10,7 @@ export default function Works() {
                     <h2>Works &amp; Projects</h2>
                 </div>
                 <ul className="works-grid">
-                    {works.map((work) => (
+                    {works.map((work, index) => (
                         <li key={work.slug} className={`work-card-wrapper`}>
                             <Link href={`/works/${work.slug}`} className={`work-card ${work.color}`}>
                                 <div className="work-thumb">
@@ -20,6 +20,7 @@ export default function Works() {
                                         fill
                                         className="work-image"
                                         sizes="(max-width: 768px) 100vw, (max-width: 900px) 50vw, 33vw"
+                                        priority={index < 3}
                                     />
                                 </div>
                                 <div className="work-info">

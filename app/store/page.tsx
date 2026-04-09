@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { products } from '@/data/products';
 
 export const metadata: Metadata = {
@@ -32,7 +33,13 @@ export default function ShopPage() {
                             className={`product-card ${product.color}`}
                         >
                             <div className="product-image">
-                                <img src={product.image} alt={product.name} />
+                                <Image
+                                    src={product.image}
+                                    alt={product.name}
+                                    width={800}
+                                    height={800}
+                                    style={{ width: '100%', height: 'auto' }}
+                                />
                                 {product.badge && (
                                     <span className="product-card-badge">{product.badge}</span>
                                 )}

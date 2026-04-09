@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
 
 interface JournalContentProps {
@@ -114,10 +115,14 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                                     className="journal-card"
                                 >
                                     {imageUrl && (
-                                        <div
-                                            className="journal-card-image"
-                                            style={{ backgroundImage: `url(${imageUrl})` }}
-                                        >
+                                        <div className="journal-card-image">
+                                            <Image
+                                                src={imageUrl}
+                                                alt={post.title.rendered.replace(/<[^>]*>/g, '')}
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                style={{ objectFit: 'cover' }}
+                                            />
                                             {postCategories.length > 0 && (
                                                 <div className="journal-card-category-badges">
                                                     {postCategories.map((cat) => (

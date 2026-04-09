@@ -1,6 +1,11 @@
 const WP_BASE = 'https://journal.shinealight.jp';
 const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
 
+// Minimal fields needed for list/card view. _embed=wp:featuredmedia limits
+// embedding to featured image only (vs full _embed which inflates to 3MB+
+// per page, exceeding Next.js's 2MB fetch cache limit and breaking ISR).
+const LIST_FIELDS = '_fields=id,slug,date,title,excerpt,categories,_links,_embedded&_embed=wp:featuredmedia';
+
 export interface WPPost {
     id: number;
     slug: string;
@@ -36,7 +41,7 @@ export interface WPCategory {
 // Fetch all posts with pagination and optional category filter
 export async function getPosts(page = 1, perPage = 12, categoryId?: number): Promise<{ posts: WPPost[]; totalPages: number }> {
     try {
-        let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`;
+        let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${LIST_FIELDS}`;
         if (categoryId) {
             url += `&categories=${categoryId}`;
         }
@@ -71,7 +76,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
 
         // Fetch first page to get totalPages
         const firstRes = await fetch(
-            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
+            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${LIST_FIELDS}`,
             { next: { revalidate: 60 } }
         );
 
@@ -89,7 +94,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
             const promises = [];
             for (let i = 2; i <= totalPages; i++) {
                 promises.push(
-                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&_embed`, {
+                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&${LIST_FIELDS}`, {
                         next: { revalidate: 60 },
                     }).then((res) => (res.ok ? res.json() : []))
                 );

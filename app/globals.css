@@ -1285,9 +1285,9 @@ textarea:disabled {
 }
 
 .journal-card-image {
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 16 / 9;
-  background-size: cover;
-  background-position: center;
   background-color: #F6DBC3;
 }
 

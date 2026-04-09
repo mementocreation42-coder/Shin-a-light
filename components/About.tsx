@@ -57,6 +57,7 @@ export default function About() {
                                 src="/images/profile.jpg"
                                 alt="DAISUKE KOBAYASHI"
                                 fill
+                                priority
                                 style={{ objectFit: 'cover' }}
                             />
                         </div>

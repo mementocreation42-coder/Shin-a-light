@@ -8,9 +8,11 @@ export default function Hero() {
                     loop
                     muted
                     playsInline
+                    preload="none"
                     className="hero-video"
-                    poster="/images/hero_poster.png"
+                    poster="/images/hero_poster.webp"
                 >
+                    <source src="/videos/hero.webm" type="video/webm" />
                     <source src="/videos/hero.mp4" type="video/mp4" />
                 </video>
             </div>
