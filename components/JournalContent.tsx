@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
 
 interface JournalContentProps {
@@ -13,6 +12,14 @@ interface JournalContentProps {
     selectedCategory: number | null;
 }
 
+function buildUrl(page: number, cat: number | null): string {
+    const params = new URLSearchParams();
+    if (cat) params.set('cat', String(cat));
+    if (page > 1) params.set('page', String(page));
+    const query = params.toString();
+    return `/journal${query ? `?${query}` : ''}`;
+}
+
 export default function JournalContent({
     posts,
     categories,
@@ -20,30 +27,6 @@ export default function JournalContent({
     totalPages,
     selectedCategory,
 }: JournalContentProps) {
-    const router = useRouter();
-    const [isTransitioning, setIsTransitioning] = useState(false);
-
-    // propsが変わった（=新しいデータが来た）らトランジション解除
-    useEffect(() => {
-        setIsTransitioning(false);
-    }, [posts, currentPage, selectedCategory]);
-
-    const navigate = useCallback((page: number, cat: number | null) => {
-        const params = new URLSearchParams();
-        if (cat) params.set('cat', String(cat));
-        if (page > 1) params.set('page', String(page));
-        const query = params.toString();
-        setIsTransitioning(true);
-        router.push(`/journal${query ? `?${query}` : ''}`);
-    }, [router]);
-
-    const handleCategoryClick = (categoryId: number | null) => {
-        navigate(1, categoryId);
-    };
-
-    const handlePageClick = (page: number) => {
-        navigate(page, selectedCategory);
-    };
 
     // ページ番号リスト
     const getPageNumbers = (): (number | '...')[] => {
@@ -61,7 +44,6 @@ export default function JournalContent({
         return pages;
     };
 
-    // Desired category order based on slug
     const categoryOrder = ['ai', 'video', 'photo', 'web', 'tools', 'hpmj'];
 
     const categoryLabels: Record<string, string> = {
@@ -84,30 +66,27 @@ export default function JournalContent({
             {/* Category Filter Bar */}
             <div className="journal-categories-wrapper">
                 <nav className="journal-categories" aria-label="Category filter">
-                    <button
+                    <Link
+                        href="/journal"
                         className={`journal-category-btn ${selectedCategory === null ? 'active' : ''}`}
-                        onClick={() => handleCategoryClick(null)}
                     >
                         ALL
-                    </button>
+                    </Link>
                     {sortedCategories.map((category) => (
-                        <button
+                        <Link
                             key={category.id}
+                            href={buildUrl(1, category.id)}
                             className={`journal-category-btn ${selectedCategory === category.id ? 'active' : ''}`}
-                            onClick={() => handleCategoryClick(category.id)}
                             data-category={category.slug}
                         >
                             {categoryLabels[category.slug] ?? category.name}
-                        </button>
+                        </Link>
                     ))}
                 </nav>
             </div>
 
             {/* Posts Grid */}
-            <ul className="journal-grid" style={{
-                opacity: isTransitioning ? 0 : 1,
-                transition: 'opacity 0.15s ease',
-            }}>
+            <ul className="journal-grid">
                 {posts.length > 0 ? (
                     posts.map((post) => {
                         const imageUrl = getFeaturedImageUrl(post);
@@ -183,33 +162,39 @@ export default function JournalContent({
             {/* Pagination */}
             {totalPages > 1 && (
                 <div className="journal-pagination">
-                    <button
-                        className={`pagination-arrow${currentPage === 1 ? ' disabled' : ''}`}
-                        onClick={() => handlePageClick(currentPage - 1)}
-                        disabled={currentPage === 1}
-                    >
-                        ← Prev
-                    </button>
+                    {currentPage > 1 ? (
+                        <Link
+                            href={buildUrl(currentPage - 1, selectedCategory)}
+                            className="pagination-arrow"
+                        >
+                            ← Prev
+                        </Link>
+                    ) : (
+                        <span className="pagination-arrow disabled">← Prev</span>
+                    )}
                     <div className="pagination-numbers">
                         {getPageNumbers().map((page, i) =>
                             page === '...'
                                 ? <span key={`ellipsis-${i}`} className="pagination-ellipsis">...</span>
-                                : <button
+                                : <Link
                                     key={page}
+                                    href={buildUrl(page, selectedCategory)}
                                     className={`pagination-link${currentPage === page ? ' active' : ''}`}
-                                    onClick={() => handlePageClick(page)}
                                 >
                                     {page}
-                                </button>
+                                </Link>
                         )}
                     </div>
-                    <button
-                        className={`pagination-arrow${currentPage === totalPages ? ' disabled' : ''}`}
-                        onClick={() => handlePageClick(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                    >
-                        Next →
-                    </button>
+                    {currentPage < totalPages ? (
+                        <Link
+                            href={buildUrl(currentPage + 1, selectedCategory)}
+                            className="pagination-arrow"
+                        >
+                            Next →
+                        </Link>
+                    ) : (
+                        <span className="pagination-arrow disabled">Next →</span>
+                    )}
                 </div>
             )}
         </div>
