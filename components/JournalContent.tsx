@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useTransition } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
@@ -15,6 +15,7 @@ const POSTS_PER_PAGE = 12;
 export default function JournalContent({ initialPosts, categories }: JournalContentProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
     const selectedCategory = searchParams.get('cat') ? Number(searchParams.get('cat')) : null;
     const currentPage = Number(searchParams.get('page') ?? '1');
@@ -24,7 +25,10 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
         if (cat) params.set('cat', String(cat));
         if (page > 1) params.set('page', String(page));
         const query = params.toString();
+        setIsTransitioning(true);
         router.push(`/journal${query ? `?${query}` : ''}`, { scroll: false });
+        // Short fade transition
+        setTimeout(() => setIsTransitioning(false), 150);
     }, [router]);
 
     // Filter posts based on selected category
@@ -100,7 +104,10 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
             </div>
 
             {/* Posts Grid */}
-            <ul className="journal-grid">
+            <ul className="journal-grid" style={{
+                opacity: isTransitioning ? 0 : 1,
+                transition: 'opacity 0.15s ease',
+            }}>
                 {paginatedPosts.length > 0 ? (
                     paginatedPosts.map((post) => {
                         const imageUrl = getFeaturedImageUrl(post);
@@ -146,6 +153,19 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                                             className="journal-card-title"
                                             dangerouslySetInnerHTML={{ __html: post.title.rendered }}
                                         />
+                                        {postCategories.length > 0 && (
+                                            <div className="journal-card-category-badges-inline">
+                                                {postCategories.map((cat) => (
+                                                    <span
+                                                        key={cat.id}
+                                                        className="journal-card-category-badge"
+                                                        data-category={cat.slug}
+                                                    >
+                                                        {categoryLabels[cat.slug] ?? cat.name}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
                                         <p className="journal-card-excerpt">
                                             {stripHtml(post.excerpt.rendered).slice(0, 100)}...
                                         </p>
