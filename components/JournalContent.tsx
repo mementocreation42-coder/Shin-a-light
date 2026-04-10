@@ -50,8 +50,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
         const start = Math.max(1, currentPage - 1);
         const end = Math.min(currentPage + 1, totalPages - 1); // 最終ページは含めない
         for (let i = start; i <= end; i++) pages.push(i);
-        if (pages[pages.length - 1] < totalPages - 1) pages.push('...');
-        else pages.push('...'); // 最終ページの手前でも … を常に表示
+        pages.push('...');
         return pages;
     };
 
