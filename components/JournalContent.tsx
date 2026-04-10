@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useCallback, useState } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
@@ -22,6 +22,11 @@ export default function JournalContent({
 }: JournalContentProps) {
     const router = useRouter();
     const [isTransitioning, setIsTransitioning] = useState(false);
+
+    // propsが変わった（=新しいデータが来た）らトランジション解除
+    useEffect(() => {
+        setIsTransitioning(false);
+    }, [posts, currentPage, selectedCategory]);
 
     const navigate = useCallback((page: number, cat: number | null) => {
         const params = new URLSearchParams();
