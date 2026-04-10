@@ -1,69 +1,64 @@
 'use client';
 
-import React, { useMemo, useCallback, useState, useTransition } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
 
 interface JournalContentProps {
-    initialPosts: WPPost[];
+    posts: WPPost[];
     categories: WPCategory[];
+    currentPage: number;
+    totalPages: number;
+    selectedCategory: number | null;
 }
 
-const POSTS_PER_PAGE = 12;
-
-export default function JournalContent({ initialPosts, categories }: JournalContentProps) {
+export default function JournalContent({
+    posts,
+    categories,
+    currentPage,
+    totalPages,
+    selectedCategory,
+}: JournalContentProps) {
     const router = useRouter();
-    const searchParams = useSearchParams();
     const [isTransitioning, setIsTransitioning] = useState(false);
 
-    const selectedCategory = searchParams.get('cat') ? Number(searchParams.get('cat')) : null;
-    const currentPage = Number(searchParams.get('page') ?? '1');
-
-    const updateParams = useCallback((page: number, cat: number | null) => {
+    const navigate = useCallback((page: number, cat: number | null) => {
         const params = new URLSearchParams();
         if (cat) params.set('cat', String(cat));
         if (page > 1) params.set('page', String(page));
         const query = params.toString();
         setIsTransitioning(true);
-        router.push(`/journal${query ? `?${query}` : ''}`, { scroll: false });
-        // Short fade transition
-        setTimeout(() => setIsTransitioning(false), 150);
+        router.push(`/journal${query ? `?${query}` : ''}`);
     }, [router]);
 
-    // Filter posts based on selected category
-    const filteredPosts = useMemo(() => {
-        if (!selectedCategory) return initialPosts;
-        return initialPosts.filter(post => post.categories.includes(selectedCategory));
-    }, [initialPosts, selectedCategory]);
-
-    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-
-    const paginatedPosts = useMemo(() => {
-        const start = (currentPage - 1) * POSTS_PER_PAGE;
-        return filteredPosts.slice(start, start + POSTS_PER_PAGE);
-    }, [filteredPosts, currentPage]);
-
     const handleCategoryClick = (categoryId: number | null) => {
-        updateParams(1, categoryId);
+        navigate(1, categoryId);
     };
 
-    // 現在地の前後1ページを表示。最終ページは番号に出さず ... で示す
+    const handlePageClick = (page: number) => {
+        navigate(page, selectedCategory);
+    };
+
+    // ページ番号リスト
     const getPageNumbers = (): (number | '...')[] => {
+        if (totalPages <= 5) {
+            return Array.from({ length: totalPages }, (_, i) => i + 1);
+        }
         const pages: (number | '...')[] = [];
         const start = Math.max(1, currentPage - 1);
-        const end = Math.min(currentPage + 1, totalPages - 1); // 最終ページは含めない
+        const end = Math.min(currentPage + 1, totalPages);
+        if (start > 1) pages.push(1);
+        if (start > 2) pages.push('...');
         for (let i = start; i <= end; i++) pages.push(i);
-        pages.push('...');
+        if (end < totalPages - 1) pages.push('...');
+        if (end < totalPages) pages.push(totalPages);
         return pages;
     };
 
     // Desired category order based on slug
-    const categoryOrder = [
-        'ai', 'video', 'photo', 'web', 'tools', 'hpmj'
-    ];
+    const categoryOrder = ['ai', 'video', 'photo', 'web', 'tools', 'hpmj'];
 
-    // Display name overrides (slug → label)
     const categoryLabels: Record<string, string> = {
         hpmj: 'HpMJ',
     };
@@ -108,11 +103,10 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                 opacity: isTransitioning ? 0 : 1,
                 transition: 'opacity 0.15s ease',
             }}>
-                {paginatedPosts.length > 0 ? (
-                    paginatedPosts.map((post) => {
+                {posts.length > 0 ? (
+                    posts.map((post) => {
                         const imageUrl = getFeaturedImageUrl(post);
 
-                        // Find all categories for badges
                         const postCategories = post.categories
                             ? (post.categories
                                 .map((catId) => categories.find((c) => c.id === catId))
@@ -186,7 +180,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                 <div className="journal-pagination">
                     <button
                         className={`pagination-arrow${currentPage === 1 ? ' disabled' : ''}`}
-                        onClick={() => updateParams(currentPage - 1, selectedCategory)}
+                        onClick={() => handlePageClick(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
                         ← Prev
@@ -198,7 +192,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                                 : <button
                                     key={page}
                                     className={`pagination-link${currentPage === page ? ' active' : ''}`}
-                                    onClick={() => updateParams(page, selectedCategory)}
+                                    onClick={() => handlePageClick(page)}
                                 >
                                     {page}
                                 </button>
@@ -206,7 +200,7 @@ export default function JournalContent({ initialPosts, categories }: JournalCont
                     </div>
                     <button
                         className={`pagination-arrow${currentPage === totalPages ? ' disabled' : ''}`}
-                        onClick={() => updateParams(currentPage + 1, selectedCategory)}
+                        onClick={() => handlePageClick(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >
                         Next →

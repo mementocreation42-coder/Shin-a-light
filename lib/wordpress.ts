@@ -36,7 +36,8 @@ export interface WPCategory {
 // Fetch all posts with pagination and optional category filter
 export async function getPosts(page = 1, perPage = 12, categoryId?: number): Promise<{ posts: WPPost[]; totalPages: number }> {
     try {
-        let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`;
+        const listFields = '_fields=id,title,excerpt,date,categories,featured_media,_links&_embed=wp:featuredmedia';
+        let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${listFields}`;
         if (categoryId) {
             url += `&categories=${categoryId}`;
         }
