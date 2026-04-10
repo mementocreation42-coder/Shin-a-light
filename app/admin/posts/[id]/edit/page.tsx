@@ -3,7 +3,10 @@ import { notFound } from 'next/navigation';
 import { getAdminPostById, getCategories } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
 
-export const metadata = { title: { absolute: '投稿を編集 | SAL Admin' } };
+export const metadata = {
+  title: { absolute: 'Edit Post | Shine a Light' },
+  robots: { index: false, follow: false },
+};
 
 export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

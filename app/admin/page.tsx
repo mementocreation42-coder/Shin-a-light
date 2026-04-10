@@ -3,7 +3,10 @@ import { getAdminPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress'
 import { logout } from '@/app/login/actions';
 import PostActions from '@/components/admin/PostActions';
 
-export const metadata = { title: { absolute: 'ダッシュボード | SAL Admin' } };
+export const metadata = {
+  title: { absolute: 'Admin | Shine a Light' },
+  robots: { index: false, follow: false },
+};
 export const dynamic = 'force-dynamic';
 
 const s = {

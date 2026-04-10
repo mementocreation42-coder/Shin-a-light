@@ -2,7 +2,10 @@ import Link from 'next/link';
 import { getCategories } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
 
-export const metadata = { title: { absolute: '新規投稿 | SAL Admin' } };
+export const metadata = {
+  title: { absolute: 'New Post | Shine a Light' },
+  robots: { index: false, follow: false },
+};
 
 export default async function NewPostPage() {
   const categories = await getCategories();
