@@ -62,6 +62,7 @@ export async function getPosts(page = 1, perPage = 12, categoryId?: number): Pro
 }
 
 // Fetch all posts without pagination (useful for client-side filtering)
+// Uses _fields to minimize payload — content is NOT needed for listing.
 export async function getAllPosts(): Promise<WPPost[]> {
     try {
         const perPage = 100; // WP Max is 100
@@ -69,9 +70,11 @@ export async function getAllPosts(): Promise<WPPost[]> {
         let allPosts: WPPost[] = [];
         let totalPages = 1;
 
+        const listFields = '_fields=id,title,excerpt,date,categories,featured_media,_links&_embed=wp:featuredmedia';
+
         // Fetch first page to get totalPages
         const firstRes = await fetch(
-            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed`,
+            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${listFields}`,
             { next: { revalidate: 3600 } }
         );
 
@@ -89,7 +92,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
             const promises = [];
             for (let i = 2; i <= totalPages; i++) {
                 promises.push(
-                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&_embed`, {
+                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&${listFields}`, {
                         next: { revalidate: 3600 },
                     }).then((res) => (res.ok ? res.json() : []))
                 );
