@@ -30,17 +30,13 @@ export default function JournalContent({
 
     // ページ番号リスト
     const getPageNumbers = (): (number | '...')[] => {
-        if (totalPages <= 5) {
-            return Array.from({ length: totalPages }, (_, i) => i + 1);
-        }
         const pages: (number | '...')[] = [];
         const start = Math.max(1, currentPage - 1);
         const end = Math.min(currentPage + 1, totalPages);
         if (start > 1) pages.push(1);
         if (start > 2) pages.push('...');
         for (let i = start; i <= end; i++) pages.push(i);
-        if (end < totalPages - 1) pages.push('...');
-        if (end < totalPages) pages.push(totalPages);
+        if (end < totalPages) pages.push('...');
         return pages;
     };
 
