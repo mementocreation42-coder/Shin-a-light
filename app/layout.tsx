@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Noto_Sans_JP } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -8,6 +8,20 @@ import Footer from "@/components/Footer";
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+});
+
+const orbitron = Orbitron({
+  variable: "--font-display",
+  subsets: ["latin"],
+  weight: ["700", "900"],
+  display: "swap",
+});
+
+const permanentMarker = Permanent_Marker({
+  variable: "--font-handwriting",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
 const notoSansJP = Noto_Sans_JP({
@@ -64,7 +78,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable}`}>
         {!isAdmin && <Nav />}
         <main>{children}</main>
         {!isAdmin && <Footer />}
