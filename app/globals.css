@@ -1239,9 +1239,64 @@ textarea:disabled {
    =================================== */
 
 .journal-page {
-  padding: 120px 40px 80px;
+  padding: 80px 40px 80px;
   max-width: 1100px;
   margin: 0 auto;
+}
+
+.journal-page .section-inner {
+  padding-top: 32px;
+}
+
+.journal-page-title {
+  position: relative;
+  display: inline-block;
+  font-size: 32px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.journal-main-word {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #d0d0d0 20%,
+    #f8f8f8 40%,
+    #909090 55%,
+    #e0e0e0 70%,
+    #b0b0b0 85%,
+    #f0f0f0 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: block;
+  line-height: 1;
+  text-shadow: none;
+  transform: scaleX(0.85);
+  transform-origin: top left;
+}
+
+.hyperpast-label {
+  position: absolute;
+  top: -16px;
+  left: -36px;
+  font-family: var(--font-handwriting);
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--accent-orange);
+  transform: rotate(-8deg);
+  transform-origin: left bottom;
+  letter-spacing: 0.5px;
+  text-transform: none;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .journal-description {
@@ -2579,7 +2634,12 @@ textarea:disabled {
 }
 
 .journal-category-btn:hover {
-  color: #1a1a1a;
+  color: var(--text-primary);
+}
+
+/* ALL ボタンのホバー */
+.journal-category-btn:not([data-category]):hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .journal-category-btn.active {
@@ -2624,7 +2684,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="fishing"]:hover:not(.active) {
-  color: var(--accent-blue) !important;
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-blue) !important;
 }
 
 /* Health */
@@ -2634,7 +2695,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="health"]:hover:not(.active) {
-  color: var(--accent-green) !important;
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-green) !important;
 }
 
 /* AI */
@@ -2644,7 +2706,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="ai"]:hover:not(.active) {
-  color: var(--accent-purple) !important;
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-purple) !important;
 }
 
 /* Photo */
@@ -2654,7 +2717,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="photo"]:hover:not(.active) {
-  color: var(--accent-red) !important;
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-red) !important;
 }
 
 /* Video */
@@ -2666,7 +2730,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="video"]:hover:not(.active) {
-  color: var(--accent-yellow) !important;
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-yellow) !important;
 }
 
 /* Web */
@@ -2677,7 +2742,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="web"]:hover:not(.active) {
-  color: #58d8d8 !important;
+  color: var(--bg-primary) !important;
+  background-color: #58d8d8 !important;
 }
 
 /* Gear (legacy) */
@@ -2687,7 +2753,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="gear"]:hover:not(.active) {
-  color: #f368e0 !important;
+  color: var(--bg-primary) !important;
+  background-color: #f368e0 !important;
 }
 
 /* Tools */
@@ -2697,7 +2764,8 @@ textarea:disabled {
 }
 
 .journal-category-btn[data-category="tools"]:hover:not(.active) {
-  color: #f368e0 !important;
+  color: var(--bg-primary) !important;
+  background-color: #f368e0 !important;
 }
 
 .animate-fade-in {
@@ -3039,6 +3107,7 @@ textarea:disabled {
 .nl-capsule[data-category="video"]  { background: linear-gradient(90deg, var(--accent-yellow) 50%, #e0e0e0 50%); }
 .nl-capsule[data-category="photo"]  { background: linear-gradient(90deg, var(--accent-red)    50%, #e0e0e0 50%); }
 .nl-capsule[data-category="web"]    { background: linear-gradient(90deg, #58d8d8              50%, #e0e0e0 50%); }
+.nl-capsule[data-category="tools"]  { background: linear-gradient(90deg, #f368e0              50%, #e0e0e0 50%); }
 .nl-capsule[data-category="health"] { background: linear-gradient(90deg, var(--accent-green)  50%, #e0e0e0 50%); }
 
 .nl-desc {

@@ -24,7 +24,7 @@ export default async function JournalPage({ searchParams }: PageProps) {
 
     // サーバーサイドで該当ページ分だけ取得（12件）
     const [{ posts, totalPages }, categories] = await Promise.all([
-        getPosts(page, 12, categoryId),
+        getPosts(page, 20, categoryId),
         getCategories()
     ]);
 
@@ -36,7 +36,10 @@ export default async function JournalPage({ searchParams }: PageProps) {
         <main className="journal-page">
             <div className="section-inner">
                 <div className="section-header" style={{ justifyContent: 'center' }}>
-                    <h1>Hyperpast Journal</h1>
+                    <h1 className="journal-page-title">
+                        <span className="hyperpast-label">Hyperpast</span>
+                        <span className="journal-main-word">Journal</span>
+                    </h1>
                 </div>
 
                 <JournalContent

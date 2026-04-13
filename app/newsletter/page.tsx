@@ -36,7 +36,8 @@ const tags = [
     { slug: 'video',  label: 'Video' },
     { slug: 'photo',  label: 'Photo' },
     { slug: 'web',    label: 'Web' },
-    { slug: 'health', label: '健康' },
+    { slug: 'tools',  label: 'Tools' },
+    { slug: 'health', label: 'Health' },
 ];
 
 export default function NewsletterPage() {
