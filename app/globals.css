@@ -1245,7 +1245,7 @@ textarea:disabled {
 }
 
 .journal-page .section-inner {
-  padding-top: 32px;
+  padding-top: 56px;
 }
 
 .journal-page-title {
@@ -1280,13 +1280,13 @@ textarea:disabled {
   line-height: 1;
   text-shadow: none;
   transform: scaleX(0.85);
-  transform-origin: top left;
+  transform-origin: top center;
 }
 
 .hyperpast-label {
   position: absolute;
-  top: -16px;
-  left: -36px;
+  top: -18px;
+  left: 0;
   font-family: var(--font-handwriting);
   font-size: 22px;
   font-weight: 600;
