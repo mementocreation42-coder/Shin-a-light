@@ -2551,6 +2551,205 @@ textarea:disabled {
 }
 
 /* ===================================
+   UNIVERSE
+   =================================== */
+.universe-page {
+  min-height: 100vh;
+  padding: 96px 32px 96px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.universe-hero {
+  text-align: center;
+  margin-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.universe-hero-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(96px, 18vw, 220px);
+  font-weight: 700;
+  letter-spacing: -8px;
+  line-height: 0.9;
+  color: #ffffff;
+  margin: 0;
+  text-shadow:
+    -4px 0 0 rgba(255, 0, 80, 0.85),
+    4px 0 0 rgba(0, 220, 255, 0.85);
+  filter: blur(0.6px);
+}
+
+.universe-hero-sub {
+  font-size: clamp(13px, 1.6vw, 15px);
+  color: var(--text-muted);
+  letter-spacing: 4px;
+  margin: 0;
+}
+
+.universe-grid {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.universe-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease, background-color 0.35s ease, box-shadow 0.35s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.universe-card {
+  position: relative;
+}
+
+.universe-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--card-accent, transparent);
+  z-index: 2;
+  opacity: 0.85;
+}
+
+.universe-card:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--card-accent, rgba(255, 255, 255, 0.3));
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -20px var(--card-accent, rgba(0, 0, 0, 0.6));
+}
+
+.universe-card:hover .universe-card-domain {
+  color: var(--card-accent, var(--text-muted));
+}
+
+.universe-card-visual {
+  position: relative;
+  flex: 0 0 160px;
+  width: 160px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 540px) {
+  .universe-card-visual {
+    flex: 0 0 110px;
+    width: 110px;
+  }
+}
+
+.universe-card-visual::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.25), transparent 55%);
+  pointer-events: none;
+}
+
+.universe-card-image {
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.universe-card:hover .universe-card-image {
+  transform: scale(1.05);
+}
+
+.universe-card-glyph {
+  position: relative;
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  z-index: 1;
+  transition: transform 0.6s ease;
+}
+
+.universe-card:hover .universe-card-glyph {
+  transform: scale(1.08);
+}
+
+.universe-card-arrow {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  border-radius: 999px;
+  z-index: 2;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.universe-card:hover .universe-card-arrow {
+  transform: translate(2px, -2px);
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.universe-card-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.universe-card-domain {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  text-transform: lowercase;
+}
+
+.universe-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.universe-card:hover .universe-card-title {
+  color: var(--card-accent, #ffffff);
+}
+
+.universe-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ===================================
    FOOTER LINKS
    =================================== */
 .footer-links {

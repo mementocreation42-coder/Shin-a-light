@@ -72,6 +72,7 @@ export default async function RootLayout({
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') || '';
   const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
+  const isChromeless = pathname === '/universe' || pathname.startsWith('/universe/');
 
   return (
     <html lang="ja">
@@ -79,9 +80,9 @@ export default async function RootLayout({
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
       <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable}`}>
-        {!isAdmin && <Nav />}
+        {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
-        {!isAdmin && <Footer />}
+        {!isAdmin && !isChromeless && <Footer />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
