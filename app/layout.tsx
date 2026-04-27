@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Bebas_Neue } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Barlow_Condensed } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -24,10 +24,10 @@ const permanentMarker = Permanent_Marker({
   display: "swap",
 });
 
-const bebasNeue = Bebas_Neue({
+const barlowCondensed = Barlow_Condensed({
   variable: "--font-bebas",
   subsets: ["latin"],
-  weight: "400",
+  weight: ["700", "800", "900"],
   display: "swap",
 });
 
@@ -86,7 +86,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${bebasNeue.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${barlowCondensed.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}

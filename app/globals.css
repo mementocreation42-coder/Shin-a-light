@@ -2588,10 +2588,10 @@ textarea:disabled {
 }
 
 .universe-hero-title {
-  font-family: var(--font-bebas), "Bebas Neue", "Impact", Arial Narrow, sans-serif;
+  font-family: var(--font-bebas), "Barlow Condensed", "Trade Gothic", Arial Narrow, sans-serif;
   font-size: clamp(80px, 15vw, 180px);
-  font-weight: 400;
-  letter-spacing: 8px;
+  font-weight: 900;
+  letter-spacing: 12px;
   line-height: 0.9;
   color: #ffffff;
   margin: 0 0 24px;
