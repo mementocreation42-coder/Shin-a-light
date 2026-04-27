@@ -20,6 +20,12 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // ユーザーの実IPを取得（Vercel環境）
+        const ip =
+            req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+            req.headers.get('x-real-ip') ??
+            '127.0.0.1';
+
         // GAS Web App に POST（リダイレクトを自動追跡）
         const gasRes = await fetch(gasUrl, {
             method: 'POST',
@@ -28,6 +34,7 @@ export async function POST(req: NextRequest) {
             body: JSON.stringify({
                 email,
                 referer: req.headers.get('referer') ?? 'https://www.shinealight.jp/newsletter',
+                ip_address: ip,
             }),
         });
 
