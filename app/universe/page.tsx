@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import { universeLinks } from './data';
+import NewsletterForm from '@/components/NewsletterForm';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
     title: 'SAL - すべての活動をここから',
@@ -12,10 +14,11 @@ export const metadata: Metadata = {
 
 export default function UniversePage() {
     return (
-        <div className="universe-page">
+        <>
+<div className="universe-page">
             <header className="universe-hero">
                 <h1 className="universe-hero-title">SAL</h1>
-                <p className="universe-hero-sub">すべての活動をここから</p>
+                <p className="universe-hero-sub">疲れた身体を整え、ともに創り、自然に触れ、自身の時間を取り戻す知恵と技術を。</p>
             </header>
 
             <div className="universe-grid">
@@ -26,7 +29,10 @@ export default function UniversePage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="universe-card"
-                        style={{ ['--card-accent' as string]: link.accent }}
+                        style={{
+                            ['--card-accent' as string]: link.accent,
+                            ['--card-gradient' as string]: link.gradient,
+                        }}
                     >
                         <div
                             className="universe-card-visual"
@@ -43,7 +49,6 @@ export default function UniversePage() {
                             ) : (
                                 <span className="universe-card-glyph">{link.glyph}</span>
                             )}
-                            <span className="universe-card-arrow" aria-hidden="true">↗</span>
                         </div>
                         <div className="universe-card-body">
                             <div className="universe-card-domain">{link.domain}</div>
@@ -53,6 +58,19 @@ export default function UniversePage() {
                     </a>
                 ))}
             </div>
+
+            <section className="universe-newsletter">
+                <div className="universe-newsletter-inner">
+                    <p className="universe-newsletter-label">NEWSLETTER</p>
+                    <h2 className="universe-newsletter-title">知恵と技術を、定期的に届ける</h2>
+                    <p className="universe-newsletter-desc">
+                        SALの活動・思考・近況をまとめてお届けします！
+                    </p>
+                    <NewsletterForm />
+                </div>
+            </section>
         </div>
+        <Footer />
+        </>
     );
 }

@@ -2572,14 +2572,29 @@ textarea:disabled {
   gap: 16px;
 }
 
+.universe-hero-title-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.universe-grain {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.55;
+}
+
 .universe-hero-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(96px, 18vw, 220px);
+  font-size: clamp(72px, 13vw, 160px);
   font-weight: 700;
-  letter-spacing: -8px;
+  letter-spacing: 2px;
   line-height: 0.9;
   color: #ffffff;
-  margin: 0;
+  margin: 0 0 24px;
   text-shadow:
     -4px 0 0 rgba(255, 0, 80, 0.85),
     4px 0 0 rgba(0, 220, 255, 0.85);
@@ -2589,7 +2604,7 @@ textarea:disabled {
 .universe-hero-sub {
   font-size: clamp(13px, 1.6vw, 15px);
   color: var(--text-muted);
-  letter-spacing: 4px;
+  letter-spacing: 0;
   margin: 0;
 }
 
@@ -2605,7 +2620,8 @@ textarea:disabled {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  background-color: rgba(255, 255, 255, 0.03);
+  isolation: isolate;
+  background-color: #f5f2ee;
   border: var(--border);
   border-radius: 16px;
   overflow: hidden;
@@ -2621,30 +2637,27 @@ textarea:disabled {
 .universe-card::before {
   content: "";
   position: absolute;
-  left: 0;
+  right: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 20px;
   background: var(--card-accent, transparent);
   z-index: 2;
-  opacity: 0.85;
 }
 
 .universe-card:hover {
-  background-color: rgba(255, 255, 255, 0.06);
-  border-color: var(--card-accent, rgba(255, 255, 255, 0.3));
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px -20px var(--card-accent, rgba(0, 0, 0, 0.6));
+  background-color: #edeae5;
+  transform: translateY(-4px);
 }
 
 .universe-card:hover .universe-card-domain {
-  color: var(--card-accent, var(--text-muted));
+  color: var(--text-muted);
 }
 
 .universe-card-visual {
   position: relative;
-  flex: 0 0 160px;
-  width: 160px;
+  flex: 0 0 220px;
+  width: 220px;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   display: flex;
@@ -2654,8 +2667,8 @@ textarea:disabled {
 
 @media (max-width: 540px) {
   .universe-card-visual {
-    flex: 0 0 110px;
-    width: 110px;
+    flex: 0 0 140px;
+    width: 140px;
   }
 }
 
@@ -2725,28 +2738,95 @@ textarea:disabled {
 
 .universe-card-domain {
   font-size: 11px;
-  color: var(--text-muted);
+  color: #999;
   letter-spacing: 1px;
   margin-bottom: 10px;
   text-transform: lowercase;
 }
 
 .universe-card-title {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   margin-bottom: 10px;
-  color: var(--text-primary);
+  color: #111;
   transition: color 0.3s ease;
 }
 
 .universe-card:hover .universe-card-title {
-  color: var(--card-accent, #ffffff);
+  color: #000;
 }
 
 .universe-card-desc {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #666;
   line-height: 1.6;
+}
+
+/* UNIVERSE — Page grain */
+.page-grain {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
+  opacity: 0.22;
+  image-rendering: pixelated;
+}
+
+/* UNIVERSE — Newsletter */
+.universe-newsletter {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 80px;
+  padding-top: 56px;
+  border-top: var(--border);
+}
+
+.universe-newsletter-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: #f5f2ee;
+  border-radius: 16px;
+  padding: 32px;
+}
+
+.universe-newsletter-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #999;
+  margin: 0;
+}
+
+.universe-newsletter-title {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: #111;
+  margin: 0;
+}
+
+.universe-newsletter-desc {
+  font-size: 13px;
+  color: #666;
+  margin: 0 0 8px;
+}
+
+.universe-newsletter-inner .nl-privacy {
+  color: #999;
+}
+
+.universe-newsletter-inner .email-input {
+  background: #fff;
+  color: #111;
+  border-color: #ddd;
+}
+
+.universe-newsletter-inner .email-input::placeholder {
+  color: #bbb;
 }
 
 /* ===================================
