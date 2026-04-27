@@ -66,7 +66,11 @@ export default function NewsletterPage() {
 
                 {/* Form */}
                 <div className="nl-form-wrapper">
-                    <NewsletterForm />
+                    <NewsletterForm benefits={[
+                        '🎁 登録者には、SAL謹製写真現像プリセット「selpico3」をプレゼント。',
+                        '📬 映像・写真・健康・AI・自然、暮らしのヒントを不定期に届ける。',
+                        '🔧 使っているツール・ワークフロー・機材の話を共有。',
+                    ]} />
                 </div>
 
             </div>

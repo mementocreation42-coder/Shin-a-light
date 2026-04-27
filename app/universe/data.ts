@@ -1,21 +1,25 @@
-export type UniverseCategory = 'web' | 'media' | 'social';
+export type UniverseTag = 'ai' | 'video' | 'photo' | 'web' | 'tools' | 'health';
 
 export interface UniverseLink {
     title: string;
     url: string;
     description: string;
-    category: UniverseCategory;
+    tags: UniverseTag[];
     domain: string;
     image?: string;
     gradient: string;
     accent: string;
     glyph: string;
+    sameTab?: boolean;
 }
 
-export const categoryLabels: Record<UniverseCategory, string> = {
-    web: 'WEB',
-    media: 'MEDIA',
-    social: 'SOCIAL',
+export const tagMeta: Record<UniverseTag, { label: string; color: string }> = {
+    ai:     { label: 'AI',     color: '#9b6fd4' },
+    video:  { label: 'VIDEO',  color: '#e8c840' },
+    photo:  { label: 'PHOTO',  color: '#e85050' },
+    web:    { label: 'WEB',    color: '#30c8c0' },
+    tools:  { label: 'TOOLS',  color: '#e040b0' },
+    health: { label: 'HEALTH', color: '#50c870' },
 };
 
 export const universeLinks: UniverseLink[] = [
@@ -23,18 +27,19 @@ export const universeLinks: UniverseLink[] = [
         title: 'Shine a Light',
         url: 'https://www.shinealight.jp/',
         description: '映像・写真・Web・AIクリエイティブを軸に活動するDaisuke Kobayashiのポートフォリオサイト',
-        category: 'web',
+        tags: ['web', 'video', 'photo', 'ai'],
         domain: 'shinealight.jp',
         image: '/universe/shinealight.jpg',
         gradient: 'linear-gradient(135deg, #ff764d 0%, #c8351a 100%)',
         accent: '#ff764d',
         glyph: 'S',
+        sameTab: true,
     },
     {
         title: 'HL Fishing',
         url: 'https://www.hlfishing.net/',
         description: '徳島を舞台にしたフィッシングメディア。Less is Moreで釣りを追求する',
-        category: 'web',
+        tags: ['web', 'video'],
         domain: 'hlfishing.net',
         image: '/universe/hlfishing.jpg',
         gradient: 'linear-gradient(135deg, #2f3d2a 0%, #4a5d3a 50%, #6b7a4a 100%)',
@@ -45,7 +50,7 @@ export const universeLinks: UniverseLink[] = [
         title: 'Mitoflow40',
         url: 'https://mitoflow40.com/',
         description: '精密栄養学をベースに、40代の身体のステータス異常を見つけて解除するヘルスケアサービス',
-        category: 'web',
+        tags: ['web', 'health'],
         domain: 'mitoflow40.com',
         image: '/universe/mitoflow40.png',
         gradient: 'linear-gradient(135deg, #6cb6e8 0%, #f5a76b 60%, #f47a3d 100%)',
@@ -56,7 +61,7 @@ export const universeLinks: UniverseLink[] = [
         title: 'YouTube - @sal-flims',
         url: 'https://www.youtube.com/@sal-flims',
         description: '釣り、自然、日常、生活圏そのものを映像でアーカイブするSAL Films',
-        category: 'media',
+        tags: ['video'],
         domain: 'youtube.com',
         image: '/universe/youtube.jpg',
         gradient: 'linear-gradient(135deg, #282828 0%, #ff0033 100%)',

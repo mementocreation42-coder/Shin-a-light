@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ giftText, benefits }: { giftText?: string; benefits?: string[] } = {}) {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
@@ -76,8 +76,14 @@ export default function NewsletterForm() {
             {status === 'error' && (
                 <p className="email-error-text">{errorMessage}</p>
             )}
+            {benefits && benefits.map((text, i) => (
+                <p key={i} className="nl-gift">{text}</p>
+            ))}
+            {giftText && (
+                <p className="nl-gift">{giftText}</p>
+            )}
             <p className="nl-privacy">
-                スパムは送りません。いつでも解除できます。
+                🍖 スパムは送りません。いつでも解除できます。
             </p>
         </form>
     );

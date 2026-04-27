@@ -2611,6 +2611,61 @@ textarea:disabled {
   margin: 0;
 }
 
+/* Filter buttons */
+.universe-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+  width: 100%;
+  max-width: 640px;
+}
+
+.universe-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: none;
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  height: 34px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition: opacity 0.2s;
+  opacity: 0.5;
+}
+
+.universe-filter-btn.is-active {
+  opacity: 1;
+}
+
+.universe-filter-btn:hover {
+  opacity: 0.85;
+}
+
+.universe-filter-dot {
+  display: block;
+  width: 34px;
+  height: 34px;
+  background: var(--filter-color);
+  flex-shrink: 0;
+}
+
+.universe-filter-label {
+  display: block;
+  padding: 0 14px;
+  height: 34px;
+  line-height: 34px;
+  background: #e8e4de;
+  color: #222;
+}
+
 .universe-grid {
   width: 100%;
   max-width: 640px;
@@ -2659,8 +2714,8 @@ textarea:disabled {
 
 .universe-card-visual {
   position: relative;
-  flex: 0 0 220px;
-  width: 220px;
+  flex: 0 0 160px;
+  width: 160px;
   aspect-ratio: 1 / 1;
   overflow: hidden;
   display: flex;
@@ -2669,9 +2724,15 @@ textarea:disabled {
 }
 
 @media (max-width: 540px) {
+  .universe-page {
+    padding: 72px 20px 72px;
+  }
   .universe-card-visual {
-    flex: 0 0 140px;
-    width: 140px;
+    flex: 0 0 120px;
+    width: 120px;
+  }
+  .universe-card-body {
+    padding: 16px 16px 16px 16px;
   }
 }
 
@@ -2731,7 +2792,7 @@ textarea:disabled {
 }
 
 .universe-card-body {
-  padding: 20px 24px;
+  padding: 20px 44px 20px 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2818,18 +2879,26 @@ textarea:disabled {
   margin: 0 0 24px;
 }
 
+.universe-newsletter-inner .nl-gift {
+  font-size: 12px;
+  color: #777;
+  margin: 0 0 4px;
+}
+
 .universe-newsletter-inner .nl-privacy {
-  color: #999;
+  font-size: 12px;
+  color: #777;
+  opacity: 1;
 }
 
 .universe-newsletter-inner .email-input {
-  background: #fff;
+  background: #e8e4df;
   color: #111;
-  border-color: #ddd;
+  border-color: #ccc;
 }
 
 .universe-newsletter-inner .email-input::placeholder {
-  color: #bbb;
+  color: #999;
 }
 
 /* ===================================
@@ -3421,10 +3490,12 @@ textarea:disabled {
   margin-bottom: 12px;
 }
 
+.nl-gift,
 .nl-privacy {
   font-size: 12px;
-  color: var(--text-secondary);
-  opacity: 0.7;
+  color: #999;
+  opacity: 1;
+  margin: 0 0 4px;
 }
 
 /* Success */
