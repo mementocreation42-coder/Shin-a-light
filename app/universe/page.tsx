@@ -60,12 +60,12 @@ export default function UniversePage() {
             </div>
 
             <section className="universe-newsletter">
+                <p className="universe-newsletter-label">NEWSLETTER</p>
+                <h2 className="universe-newsletter-title">知恵と技術を、定期的に届ける</h2>
+                <p className="universe-newsletter-desc">
+                    SALの活動・思考・近況をまとめてお届けします！
+                </p>
                 <div className="universe-newsletter-inner">
-                    <p className="universe-newsletter-label">NEWSLETTER</p>
-                    <h2 className="universe-newsletter-title">知恵と技術を、定期的に届ける</h2>
-                    <p className="universe-newsletter-desc">
-                        SALの活動・思考・近況をまとめてお届けします！
-                    </p>
                     <NewsletterForm />
                 </div>
             </section>

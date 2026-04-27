@@ -2588,16 +2588,17 @@ textarea:disabled {
 }
 
 .universe-hero-title {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(72px, 13vw, 160px);
-  font-weight: 700;
-  letter-spacing: 2px;
+  font-family: var(--font-bebas), "Bebas Neue", "Impact", Arial Narrow, sans-serif;
+  font-size: clamp(80px, 15vw, 180px);
+  font-weight: 400;
+  letter-spacing: 8px;
   line-height: 0.9;
   color: #ffffff;
   margin: 0 0 24px;
   text-shadow:
-    -4px 0 0 rgba(255, 0, 80, 0.85),
-    4px 0 0 rgba(0, 220, 255, 0.85);
+    -3px -2px 0 rgba(255, 0, 80, 0.7),
+    3px 2px 0 rgba(0, 220, 255, 0.7),
+    2px -2px 0 rgba(80, 220, 60, 0.6);
   filter: blur(0.6px);
 }
 
@@ -2797,7 +2798,7 @@ textarea:disabled {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #999;
+  color: var(--text-muted);
   margin: 0;
 }
 
@@ -2805,14 +2806,14 @@ textarea:disabled {
   font-size: clamp(20px, 3vw, 28px);
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: #111;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .universe-newsletter-desc {
   font-size: 13px;
-  color: #666;
-  margin: 0 0 8px;
+  color: var(--text-muted);
+  margin: 0 0 24px;
 }
 
 .universe-newsletter-inner .nl-privacy {

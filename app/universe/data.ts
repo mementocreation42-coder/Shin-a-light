@@ -22,7 +22,7 @@ export const universeLinks: UniverseLink[] = [
     {
         title: 'Shine a Light',
         url: 'https://www.shinealight.jp/',
-        description: 'ポートフォリオサイト',
+        description: '映像・写真・Web・AIクリエイティブを軸に活動するDaisuke Kobayashiのポートフォリオサイト',
         category: 'web',
         domain: 'shinealight.jp',
         image: '/universe/shinealight.jpg',
@@ -33,7 +33,7 @@ export const universeLinks: UniverseLink[] = [
     {
         title: 'HL Fishing',
         url: 'https://www.hlfishing.net/',
-        description: 'フィッシングプロジェクト',
+        description: '徳島を舞台にしたフィッシングメディア。Less is Moreで釣りを追求する',
         category: 'web',
         domain: 'hlfishing.net',
         image: '/universe/hlfishing.jpg',
@@ -44,7 +44,7 @@ export const universeLinks: UniverseLink[] = [
     {
         title: 'Mitoflow40',
         url: 'https://mitoflow40.com/',
-        description: 'ミトコンドリア活性化で40代からの人生をフローさせる',
+        description: '精密栄養学をベースに、40代の身体のステータス異常を見つけて解除するヘルスケアサービス',
         category: 'web',
         domain: 'mitoflow40.com',
         image: '/universe/mitoflow40.png',
@@ -55,7 +55,7 @@ export const universeLinks: UniverseLink[] = [
     {
         title: 'YouTube - @sal-flims',
         url: 'https://www.youtube.com/@sal-flims',
-        description: '映像作品/記録',
+        description: '釣り、自然、日常、生活圏そのものを映像でアーカイブするSAL Films',
         category: 'media',
         domain: 'youtube.com',
         image: '/universe/youtube.jpg',
