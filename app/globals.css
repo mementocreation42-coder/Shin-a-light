@@ -110,6 +110,100 @@ a {
   color: var(--text-primary);
 }
 
+.nav-letter-tag {
+  border: 1px solid var(--accent-orange) !important;
+  color: var(--accent-orange) !important;
+  padding: 3px 10px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+}
+
+.nav-letter-tag:hover {
+  background-color: var(--accent-orange) !important;
+  color: #000 !important;
+}
+
+/* Hamburger button - hidden on desktop */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 110;
+}
+
+.nav-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--text-primary);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+}
+
+.nav-hamburger.is-open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-hamburger.is-open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-hamburger.is-open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile menu overlay */
+.nav-mobile {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-primary);
+  z-index: 105;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.nav-mobile.is-open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.nav-mobile-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-mobile-links a {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  transition: color 0.2s;
+}
+
+.nav-mobile-links a:hover {
+  color: var(--accent-orange);
+}
+
 /* ===================================
    SECTIONS - Grid-based Layout
    =================================== */
@@ -1158,11 +1252,15 @@ textarea:disabled {
   }
 
   .nav-links {
-    gap: 16px;
+    display: none;
   }
 
-  .nav-links a {
-    font-size: 10px;
+  .nav-hamburger {
+    display: flex;
+  }
+
+  .nav-mobile {
+    display: flex;
   }
 
   .section-inner {
