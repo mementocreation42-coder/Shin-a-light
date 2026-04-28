@@ -69,8 +69,8 @@ export default function About() {
                             </a>
                         </div>
                         <div className="profile-actions">
-                            <a href="/newsletter" className="profile-btn newsletter">
-                                Newsletter
+                            <a href="/universe" className="profile-btn universe">
+                                Universe
                             </a>
                         </div>
                     </div>

@@ -79,7 +79,7 @@ export default async function RootLayout({
   const headersList = await headers();
   const pathname = headersList.get('x-pathname') || '';
   const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
-  const isChromeless = pathname === '/universe' || pathname.startsWith('/universe/');
+  const isChromeless = false;
 
   return (
     <html lang="ja">

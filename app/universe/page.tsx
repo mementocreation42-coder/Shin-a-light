@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import UniverseGrid from './UniverseGrid';
 import NewsletterForm from '@/components/NewsletterForm';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
     title: 'SAL - すべての活動をここから',
@@ -13,8 +12,7 @@ export const metadata: Metadata = {
 
 export default function UniversePage() {
     return (
-        <>
-            <div className="universe-page">
+        <div className="universe-page">
                 <header className="universe-hero">
                     <h1 className="universe-hero-title">SAL</h1>
                     <p className="universe-hero-sub">疲れた身体を整え、ともに創り、自然に触れ、自身の時間を取り戻す知恵と技術を。</p>
@@ -50,8 +48,6 @@ export default function UniversePage() {
                         ]} />
                     </div>
                 </section>
-            </div>
-            <Footer />
-        </>
+        </div>
     );
 }

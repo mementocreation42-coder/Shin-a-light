@@ -23,7 +23,7 @@ export default function Nav() {
                 <li><Link href="/journal">Journal</Link></li>
                 <li><Link href="/store">Store</Link></li>
                 <li><Link href="/#contact">Contact</Link></li>
-                <li><Link href="/newsletter" className="nav-letter-tag">Letter</Link></li>
+                <li><Link href="/newsletter" className="nav-letter-tag">Newsletter</Link></li>
             </ul>
 
             {/* Hamburger button */}
@@ -45,7 +45,7 @@ export default function Nav() {
                     <li><Link href="/journal" onClick={close}>Journal</Link></li>
                     <li><Link href="/store" onClick={close}>Store</Link></li>
                     <li><Link href="/#contact" onClick={close}>Contact</Link></li>
-                    <li><Link href="/newsletter" className="nav-letter-tag" onClick={close}>Letter</Link></li>
+                    <li><Link href="/newsletter" className="nav-letter-tag" onClick={close}>Newsletter</Link></li>
                 </ul>
             </div>
         </nav>

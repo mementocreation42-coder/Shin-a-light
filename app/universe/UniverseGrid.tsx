@@ -51,7 +51,7 @@ export default function UniverseGrid() {
             </div>
 
             <div className="universe-sns-section">
-                <p className="universe-sns-label">SNS</p>
+                <p className="universe-sns-label">Social Media</p>
                 <div className="universe-grid universe-grid--sns">
                     {snsLinks.map((link) => (
                         <UniverseCard key={link.url} link={link} />
