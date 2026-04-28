@@ -44,19 +44,11 @@ export default function BuyButton({ productId, price, label }: BuyButtonProps) {
         <div>
             <button
                 className="buy-now-btn product-buy-btn"
-                onClick={handleBuy}
-                disabled={loading}
-                style={{ opacity: loading ? 0.6 : 1 }}
+                disabled
+                style={{ opacity: 0.5, cursor: 'not-allowed' }}
             >
-                {loading
-                    ? 'Processing...'
-                    : label || `Buy Now — ¥${price.toLocaleString()}`}
+                準備中
             </button>
-            {error && (
-                <p style={{ color: 'var(--accent-orange)', fontSize: 12, marginTop: 8 }}>
-                    {error}
-                </p>
-            )}
         </div>
     );
 }

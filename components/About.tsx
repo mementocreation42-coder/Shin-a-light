@@ -94,17 +94,6 @@ export default function About() {
                             ))}
                         </div>
 
-                        <div className="profile-other-sites">
-                            <p className="meta-label">Other Sites</p>
-                            <div className="other-sites-btns">
-                                <a href="https://mitoflow40.com/" target="_blank" rel="noopener noreferrer" className="other-site-btn">
-                                    MITOFLOW40
-                                </a>
-                                <a href="https://www.hlfishing.net/" target="_blank" rel="noopener noreferrer" className="other-site-btn">
-                                    HL FISHING
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { products, getProductById } from '@/data/products';
 import BuyButton from '@/components/BuyButton';
 import EmailCaptureForm from '@/components/EmailCaptureForm';
+import ProductHeroImage from '@/components/ProductHeroImage';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -84,24 +85,23 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     })
                 }}
             />
-            <header className="product-detail-header">
-                <div className="product-detail-header-inner">
-                    <Link href="/store" className="back-link">
-                        ← Back to Store
-                    </Link>
-                </div>
-            </header>
 
             <section className="product-detail-content">
                 <div className="product-detail-grid">
-                    {/* Image */}
+                    {/* Image + Gallery */}
                     <div className="product-detail-image">
-                        <img src={product.image} alt={product.name} />
+                        <ProductHeroImage
+                            src={product.image}
+                            alt={product.name}
+                            gallery={product.gallery}
+                        />
                     </div>
 
                     {/* Info */}
                     <div className="product-detail-info">
-                        {product.type === 'digital' && (
+                        {product.category ? (
+                            <span className="product-badge">{product.category}</span>
+                        ) : product.type === 'digital' && (
                             <span className="product-badge">DIGITAL DOWNLOAD</span>
                         )}
                         <h1 className="product-detail-name">{product.name}</h1>
@@ -111,7 +111,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                                     ¥{product.originalPrice.toLocaleString()}
                                 </span>
                             )}
-                            <p className="product-detail-price">¥{product.price.toLocaleString()}</p>
+                            <p className="product-detail-price">{product.priceLabel ?? `¥${product.price.toLocaleString()}`}</p>
                         </div>
 
                         {product.stock && (
@@ -121,7 +121,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                         {product.tags && product.tags.length > 0 && (
                             <div className="product-tags" style={{ marginBottom: '24px' }}>
                                 {product.tags.map((tag) => (
-                                    <span key={tag} className="tag">{tag}</span>
+                                    <span key={tag} className="tag" data-tag={tag.toLowerCase()}>{tag}</span>
                                 ))}
                             </div>
                         )}
@@ -165,19 +165,12 @@ export default async function ProductDetailPage({ params }: PageProps) {
                     </div>
                 </div>
 
-                {product.gallery && product.gallery.length > 0 && (
-                    <div className="product-gallery">
-                        <h2 className="gallery-title">Gallery</h2>
-                        <div className="gallery-grid">
-                            {product.gallery.map((image, index) => (
-                                <div key={index} className="gallery-item">
-                                    <img src={image} alt={`${product.name} sample ${index + 1}`} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
+
             </section>
+
+            <div className="product-detail-footer-link">
+                <Link href="/store" className="back-link">← Back to Store</Link>
+            </div>
         </div>
     );
 }

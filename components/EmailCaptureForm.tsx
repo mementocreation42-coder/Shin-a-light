@@ -79,8 +79,9 @@ export default function EmailCaptureForm({ productId, downloadPath }: EmailCaptu
         <form onSubmit={handleSubmit} className="email-capture-form">
             <h3 className="email-capture-title">無料でダウンロードする</h3>
             <p className="email-capture-desc">
-                メールアドレスをご登録いただくと、そのままダウンロードが開始されます。<br />
-                (ニュースレターやお知らせをお送りする場合がございます)
+                メールアドレスをご登録いただくと、そのままダウンロードが開始されます。
+                <br /><br />
+                <span style={{ color: '#999', fontSize: '12px' }}>🍖 スパムは送りません。<br />💌 SAL LETTERを不定期でお届けします。</span>
             </p>
 
             <div className="email-input-group">

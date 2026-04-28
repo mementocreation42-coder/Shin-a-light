@@ -24,7 +24,7 @@ export default function UniversePage() {
 
                 <section className="universe-newsletter">
                     <p className="universe-newsletter-label">NEWSLETTER</p>
-                    <h2 className="universe-newsletter-title">知恵と技術を、定期的に届ける</h2>
+                    <h2 className="universe-newsletter-title">サバイブする知恵と技術を</h2>
                     <p className="universe-newsletter-desc">
                         SALの活動・思考・近況をまとめてお届けします！
                     </p>

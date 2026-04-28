@@ -15,9 +15,6 @@ export default function ShopPage() {
         <div className="shop-page">
             <header className="shop-hero">
                 <div className="shop-hero-inner">
-                    <Link href="/" className="back-link">
-                        ← Back to Home
-                    </Link>
                     <h1 className="shop-title">SAL STORE</h1>
                     <p className="shop-subtitle">Creative Assets & Tools - For those who make their own.</p>
                 </div>
@@ -36,32 +33,38 @@ export default function ShopPage() {
                                 {product.badge && (
                                     <span className="product-card-badge">{product.badge}</span>
                                 )}
+                                {product.category && (
+                                    <div className="product-image-overlay">
+                                        <span className="product-image-overlay-category">{product.category}</span>
+                                        <span className="product-image-overlay-name">{product.name}</span>
+                                    </div>
+                                )}
                             </div>
                             <div className="product-info">
                                 <div className="product-header">
-                                    <h2 className="product-name">{product.name}</h2>
+                                    {!product.category && <h2 className="product-name">{product.name}</h2>}
                                     <div className="product-price-container">
                                         {product.originalPrice && (
                                             <span className="product-price-original">
                                                 ¥{product.originalPrice.toLocaleString()}
                                             </span>
                                         )}
-                                        <p className="product-price">¥{product.price.toLocaleString()}</p>
+                                        <p className="product-price">{product.priceLabel ?? `¥${product.price.toLocaleString()}`}</p>
+                                        {product.stock && (
+                                            <span className="product-stock">限定 {product.stock} 個</span>
+                                        )}
                                     </div>
-                                    {product.stock && (
-                                        <span className="product-stock">限定 {product.stock} 個</span>
-                                    )}
                                 </div>
                                 {product.tags && product.tags.length > 0 && (
                                     <div className="product-tags">
                                         {product.tags.map((tag) => (
-                                            <span key={tag} className="tag">{tag}</span>
+                                            <span key={tag} className="tag" data-tag={tag.toLowerCase()}>{tag}</span>
                                         ))}
                                     </div>
                                 )}
                                 <p className="product-desc">{product.description}</p>
-                                <span className="view-detail-btn">
-                                    View Details →
+                                <span className={`view-detail-btn ${product.comingSoon ? 'coming-soon-btn' : ''}`}>
+                                    {product.comingSoon ? 'Coming Soon' : 'View Details →'}
                                 </span>
                             </div>
                         </Link>

@@ -11,6 +11,7 @@ export interface UniverseLink {
     accent: string;
     glyph: string;
     sameTab?: boolean;
+    section?: 'main' | 'sns';
 }
 
 export const tagMeta: Record<UniverseTag, { label: string; color: string }> = {
@@ -58,7 +59,7 @@ export const universeLinks: UniverseLink[] = [
         glyph: 'M40',
     },
     {
-        title: 'YouTube - @sal-flims',
+        title: 'SAL Films',
         url: 'https://www.youtube.com/@sal-flims',
         description: '釣り、自然、日常、生活圏そのものを映像でアーカイブするSAL Films',
         tags: ['video'],
@@ -67,5 +68,18 @@ export const universeLinks: UniverseLink[] = [
         gradient: 'linear-gradient(135deg, #282828 0%, #ff0033 100%)',
         accent: '#ff0033',
         glyph: '▶',
+        section: 'sns',
+    },
+    {
+        title: 'SAL / DAISUKE KOBAYASHI',
+        url: 'https://note.com/elvin',
+        description: '映像・写真・健康・AI・自然——日々の思考と発見を言葉でアーカイブするSALのnote',
+        tags: ['web', 'ai', 'health'],
+        domain: 'note.com',
+        image: '/universe/note.webp',
+        gradient: 'linear-gradient(135deg, #41c9b4 0%, #1a9e8a 100%)',
+        accent: '#41c9b4',
+        glyph: 'n',
+        section: 'sns',
     },
 ];
