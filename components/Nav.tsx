@@ -43,9 +43,9 @@ export default function Nav() {
                     <li><Link href="/#about" onClick={close}>About</Link></li>
                     <li><Link href="/#works" onClick={close}>Works</Link></li>
                     <li><Link href="/journal" onClick={close}>Journal</Link></li>
-                    <li><Link href="/newsletter" onClick={close}>Letter</Link></li>
                     <li><Link href="/store" onClick={close}>Store</Link></li>
                     <li><Link href="/#contact" onClick={close}>Contact</Link></li>
+                    <li><Link href="/newsletter" className="nav-letter-tag" onClick={close}>Letter</Link></li>
                 </ul>
             </div>
         </nav>
