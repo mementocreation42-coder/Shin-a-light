@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ProductHeroImageProps {
     src: string;
@@ -9,14 +9,14 @@ interface ProductHeroImageProps {
 }
 
 export default function ProductHeroImage({ src, alt, gallery }: ProductHeroImageProps) {
-    const initialSrc = useMemo(() => {
-        if (gallery && gallery.length > 0) {
-            return gallery[Math.floor(Math.random() * gallery.length)];
-        }
-        return src;
-    }, []);
+    const [activeSrc, setActiveSrc] = useState(src);
 
-    const [activeSrc, setActiveSrc] = useState(initialSrc);
+    useEffect(() => {
+        if (gallery && gallery.length > 0) {
+            const random = gallery[Math.floor(Math.random() * gallery.length)];
+            setActiveSrc(random);
+        }
+    }, []);
 
     if (!gallery || gallery.length === 0) {
         return <img src={src} alt={alt} />;
