@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous, Sacramento, Great_Vibes, Allura, Caveat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -26,6 +26,34 @@ const permanentMarker = Permanent_Marker({
 
 const righteous = Righteous({
   variable: "--font-righteous",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const sacramento = Sacramento({
+  variable: "--font-script",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const greatVibes = Great_Vibes({
+  variable: "--font-vibes",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const allura = Allura({
+  variable: "--font-allura",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const caveat = Caveat({
+  variable: "--font-caveat",
   subsets: ["latin"],
   weight: "400",
   display: "swap",
@@ -86,7 +114,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${sacramento.variable} ${greatVibes.variable} ${allura.variable} ${caveat.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}
