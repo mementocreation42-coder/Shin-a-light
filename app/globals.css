@@ -855,7 +855,7 @@ textarea:disabled {
   font-size: 12px;
   color: var(--text-muted);
   text-decoration: none;
-  margin-bottom: 32px;
+  margin-bottom: 0;
   transition: color 0.2s;
 }
 
@@ -2337,7 +2337,7 @@ textarea:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 48px 32px;
+  padding: 24px 32px;
   border-top: var(--border);
   border-bottom: var(--border);
 }

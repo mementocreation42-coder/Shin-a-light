@@ -83,7 +83,7 @@ export const products: Product[] = [
     },
     {
         id: 'original-camera-strap',
-        name: 'オリジナルカメラストラップ',
+        name: 'マルチカメラストラップ',
         price: 3900,
         description: 'Shine a Lightのロゴが入ったオリジナルカメラストラップ。',
         details: 'しなやかで丈夫な素材を使用した、長時間の撮影でも疲れにくいカメラストラップ。\n\nシンプルなデザインでどんなカメラにもマッチします。',
@@ -94,6 +94,13 @@ export const products: Product[] = [
         tags: ['Photo', 'Video', 'Tool'],
         ctaType: 'buy',
         category: 'Camera Gear',
+        gallery: [
+            '/store/camera-strap/DSC09665_1.jpg',
+            '/store/camera-strap/DSC09666_1.jpg',
+            '/store/camera-strap/DSC09671_1.jpg',
+            '/store/camera-strap/DSC09675_1.jpg',
+            '/store/camera-strap/DSC09678_1.jpg',
+        ],
         comingSoon: true,
         specs: [
             { label: 'Color', value: 'Black' },
