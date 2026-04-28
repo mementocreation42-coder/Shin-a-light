@@ -111,7 +111,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
                                     ¥{product.originalPrice.toLocaleString()}
                                 </span>
                             )}
-                            <p className="product-detail-price">{product.priceLabel ?? `¥${product.price.toLocaleString()}`}</p>
+                            <p className="product-detail-price">{product.priceLabel ?? (product.price === 0 ? 'FREE' : `¥${product.price.toLocaleString()}`)}</p>
                         </div>
 
                         {product.stock && (

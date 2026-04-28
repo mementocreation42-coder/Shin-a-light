@@ -8,9 +8,9 @@ export default function Nav() {
             </Link>
             <ul className="nav-links">
                 <li><Link href="/#about">About</Link></li>
-                <li><Link href="/journal">Journal</Link></li>
                 {/* <li><Link href="/lab">Lab</Link></li> */}
                 <li><Link href="/#works">Works</Link></li>
+                <li><Link href="/journal">Journal</Link></li>
                 <li><Link href="/store">Store</Link></li>
                 <li><Link href="/#contact">Contact</Link></li>
             </ul>

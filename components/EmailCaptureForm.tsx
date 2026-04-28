@@ -24,17 +24,22 @@ export default function EmailCaptureForm({ productId, downloadPath }: EmailCaptu
         try {
             setStatus('loading');
 
-            const response = await fetch('/api/download', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, productId }),
-            });
+            const [downloadResponse] = await Promise.all([
+                fetch('/api/download', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, productId }),
+                }),
+                fetch('/api/newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, referer: `store/${productId}` }),
+                }),
+            ]);
 
-            const data = await response.json();
+            const data = await downloadResponse.json();
 
-            if (!response.ok) {
+            if (!downloadResponse.ok) {
                 throw new Error(data.error || 'エラーが発生しました。');
             }
 
@@ -42,7 +47,6 @@ export default function EmailCaptureForm({ productId, downloadPath }: EmailCaptu
 
             // Automatically trigger download if path is provided
             if (downloadPath) {
-                // Since downloadPath might be a zip file in the public directory
                 const a = document.createElement('a');
                 a.href = downloadPath;
                 a.download = downloadPath.split('/').pop() || 'download';

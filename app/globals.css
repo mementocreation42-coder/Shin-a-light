@@ -2117,27 +2117,59 @@ textarea:disabled {
 }
 
 .shop-hero {
-  padding: 80px 32px 40px;
+  padding: 80px 32px 56px;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 90% at 50% 50%, rgba(210, 120, 0, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 20% 80%, rgba(180, 0, 60, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 80% 20%, rgba(100, 0, 160, 0.06) 0%, transparent 60%);
+  pointer-events: none;
 }
 
 .shop-hero-inner {
   max-width: 1000px;
   margin: 0 auto;
+  position: relative;
 }
 
 .shop-title {
-  font-size: clamp(36px, 6vw, 60px);
-  font-weight: 700;
-  margin-bottom: 16px;
-  letter-spacing: -1px;
+  font-size: clamp(48px, 8vw, 88px);
+  font-family: var(--font-righteous), sans-serif;
+  font-weight: 400;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+  line-height: 0.85;
+  text-transform: uppercase;
+  background: repeating-linear-gradient(
+    45deg,
+    #e8000a 0px,   #e8000a 20px,
+    #ff7700 20px,  #ff7700 40px,
+    #ffd600 40px,  #ffd600 60px,
+    #00b800 60px,  #00b800 80px,
+    #0066ff 80px,  #0066ff 100px,
+    #6600cc 100px, #6600cc 120px,
+    #cc00aa 120px, #cc00aa 140px
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
+
 
 .shop-subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
-  letter-spacing: 1px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
+  opacity: 0.55;
 }
 
 .shop-content {
@@ -2157,6 +2189,8 @@ textarea:disabled {
   border: var(--border);
   display: flex;
   flex-direction: column;
+  border-radius: 16px;
+  overflow: hidden;
 }
 
 .product-image {
@@ -3383,6 +3417,7 @@ textarea:disabled {
 .tag[data-tag="photo"] { background: linear-gradient(90deg, var(--accent-red)    50%, #e0e0e0 50%); }
 .tag[data-tag="ai"]    { background: linear-gradient(90deg, var(--accent-purple)  50%, #e0e0e0 50%); }
 .tag[data-tag="video"] { background: linear-gradient(90deg, var(--accent-yellow)  50%, #e0e0e0 50%); }
+.tag[data-tag="tool"]  { background: linear-gradient(90deg, var(--accent-green)   50%, #e0e0e0 50%); }
 
 @keyframes badgePop {
   0% {

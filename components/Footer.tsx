@@ -13,9 +13,9 @@ export default function Footer() {
                 <p itemProp="name" style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>Shine a Light</p>
                 <address itemProp="address" itemScope itemType="https://schema.org/PostalAddress" style={{ fontStyle: "normal", lineHeight: 1.6 }}>
                     <span itemProp="postalCode">〒775-0001</span><br />
-                    <span itemProp="addressRegion">徳島県</span>
-                    <span itemProp="addressLocality">海部郡牟岐町</span>
-                    <span itemProp="streetAddress">大字河内1465</span>
+                    <span itemProp="streetAddress">1465 Kochi</span>,&nbsp;
+                    <span itemProp="addressLocality">Mugi-cho</span>,&nbsp;
+                    <span itemProp="addressRegion">Kaifu-gun, Tokushima</span>
                 </address>
                 <p style={{ marginTop: "0.5rem" }}>徳島を拠点に全国へ映像・Web・AIクリエイティブ・ヘルスケアを提供</p>
             </div>

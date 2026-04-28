@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -19,6 +19,13 @@ const orbitron = Orbitron({
 
 const permanentMarker = Permanent_Marker({
   variable: "--font-handwriting",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const righteous = Righteous({
+  variable: "--font-righteous",
   subsets: ["latin"],
   weight: "400",
   display: "swap",
@@ -79,7 +86,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/images/hero_poster.png" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}
@@ -122,10 +129,10 @@ export default async function RootLayout({
                 "areaServed": "JP",
                 "address": {
                   "@type": "PostalAddress",
-                  "addressLocality": "海部郡牟岐町",
-                  "addressRegion": "徳島県",
+                  "addressLocality": "Mugi-cho, Kaifu-gun",
+                  "addressRegion": "Tokushima",
                   "postalCode": "775-0001",
-                  "streetAddress": "大字河内1465",
+                  "streetAddress": "1465 Kochi",
                   "addressCountry": "JP"
                 }
               }

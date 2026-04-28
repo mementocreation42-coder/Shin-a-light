@@ -15,7 +15,7 @@ export default function ShopPage() {
         <div className="shop-page">
             <header className="shop-hero">
                 <div className="shop-hero-inner">
-                    <h1 className="shop-title">SAL STORE</h1>
+                    <h1 className="shop-title">SAL<br />STORE</h1>
                     <p className="shop-subtitle">Creative Assets & Tools - For those who make their own.</p>
                 </div>
             </header>
@@ -49,7 +49,7 @@ export default function ShopPage() {
                                                 ¥{product.originalPrice.toLocaleString()}
                                             </span>
                                         )}
-                                        <p className="product-price">{product.priceLabel ?? `¥${product.price.toLocaleString()}`}</p>
+                                        <p className="product-price">{product.priceLabel ?? (product.price === 0 ? 'FREE' : `¥${product.price.toLocaleString()}`)}</p>
                                         {product.stock && (
                                             <span className="product-stock">限定 {product.stock} 個</span>
                                         )}
