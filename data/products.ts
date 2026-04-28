@@ -18,6 +18,7 @@ export interface Product {
     category?: string;
     comingSoon?: boolean;
     priceLabel?: string;
+    thumbnailLabel?: string;
 }
 
 export const products: Product[] = [
@@ -27,7 +28,7 @@ export const products: Product[] = [
         price: 0,
         description: 'SAL謹製の写真現像プリセット「selpico3」。ニュースレター登録で無料ダウンロード。',
         details: '仕事からプライベートまで、実際の撮影現場で使い続けてきたLightroomプリセット「selpico3」です。\n\nアル・パチーノ主演の映画『セルピコ』のような質感を目指して制作したため、「selpico（セルピコ）」と名付けました。フィルムライクな粒感と落ち着いた色調が特徴で、風景・自然・日常スナップなど幅広いシーンで活躍します。\n\nメールアドレスをご登録いただくと、そのままダウンロードが開始されます。',
-        image: 'https://placehold.co/800x800/58d8d8/1e1e1e.png?text=selpico3',
+        image: 'https://placehold.co/800x800/58d8d8/1e1e1e.png?text=PHOTOGRAPHER%0APRESET',
         color: 'color-5',
         type: 'digital',
         downloadPath: '/presets/selpico3.xmp',
@@ -43,10 +44,13 @@ export const products: Product[] = [
             '/store/selpico3/DSC05029.jpg',
             '/store/selpico3/DSC05070.jpg',
             '/store/selpico3/DSC05146.jpg',
+            '/store/selpico3/DSC05319.jpg',
             '/store/selpico3/DSC05709.jpg',
             '/store/selpico3/DSC06844.jpg',
+            '/store/selpico3/DSC07340.jpg',
             '/store/selpico3/DSC08027.jpg',
             '/store/selpico3/DSCF6443.jpg',
+            '/store/selpico3/DSCF7079.jpg',
             '/store/selpico3/DSCF7275.jpg',
             '/store/selpico3/DSCF7943.jpg',
         ],

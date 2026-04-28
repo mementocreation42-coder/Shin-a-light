@@ -11,6 +11,7 @@ export default function Nav() {
                 <li><Link href="/journal">Journal</Link></li>
                 {/* <li><Link href="/lab">Lab</Link></li> */}
                 <li><Link href="/#works">Works</Link></li>
+                <li><Link href="/store">Store</Link></li>
                 <li><Link href="/#contact">Contact</Link></li>
             </ul>
         </nav>
