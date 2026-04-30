@@ -40,7 +40,7 @@ export default function JournalContent({
         return pages;
     };
 
-    const categoryOrder = ['ai', 'video', 'photo', 'web', 'tools', 'hpmj'];
+    const categoryOrder = ['ai', 'video', 'photo', 'life', 'web', 'tools', 'hpmj'];
 
     const categoryLabels: Record<string, string> = {
         hpmj: 'HpMJ',

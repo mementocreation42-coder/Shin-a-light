@@ -71,7 +71,7 @@ export const universeLinks: UniverseLink[] = [
         section: 'sns',
     },
     {
-        title: 'SAL / DAISUKE KOBAYASHI',
+        title: 'SAL note',
         url: 'https://note.com/elvin',
         description: '映像・写真・健康・AI・自然——日々の思考と発見を言葉でアーカイブするSALのnote',
         tags: ['web', 'ai', 'health'],

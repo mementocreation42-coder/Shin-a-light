@@ -3374,6 +3374,18 @@ textarea:disabled {
   background-color: #f368e0 !important;
 }
 
+/* Life */
+.journal-category-btn[data-category="life"].active,
+.journal-card-category-badge[data-category="life"] {
+  background-color: var(--accent-green) !important;
+  color: var(--bg-primary) !important;
+}
+
+.journal-category-btn[data-category="life"]:hover:not(.active) {
+  color: var(--bg-primary) !important;
+  background-color: var(--accent-green) !important;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.4s ease forwards;
 }
