@@ -10,6 +10,15 @@ export const metadata: Metadata = {
     },
 };
 
+const storeCapsules: { label: string; slug: string }[] = [
+    { label: 'AI',     slug: 'ai' },
+    { label: 'Video',  slug: 'video' },
+    { label: 'Photo',  slug: 'photo' },
+    { label: 'Web',    slug: 'web' },
+    { label: 'Tools',  slug: 'tools' },
+    { label: 'Health', slug: 'health' },
+];
+
 export default function ShopPage() {
     return (
         <div className="shop-page">
@@ -19,6 +28,19 @@ export default function ShopPage() {
                     <p className="shop-subtitle">Creative Assets & Tools - For those who make their own.</p>
                 </div>
             </header>
+
+            {/* Category capsules */}
+            <div className="store-category-filter nl-tags">
+                {storeCapsules.map(({ label, slug }) => (
+                    <span
+                        key={label}
+                        className="nl-capsule"
+                        data-category={slug || undefined}
+                    >
+                        {label}
+                    </span>
+                ))}
+            </div>
 
             <section className="shop-content">
                 <div className="products-grid">
@@ -70,7 +92,7 @@ export default function ShopPage() {
                         </Link>
                     ))}
                 </div>
-            </section >
-        </div >
+            </section>
+        </div>
     );
 }

@@ -554,6 +554,7 @@ a {
   text-transform: uppercase;
   letter-spacing: 2px;
   text-decoration: none;
+  font-weight: 700;
   transition: opacity 0.2s ease;
 }
 
@@ -2276,6 +2277,47 @@ textarea:disabled {
   opacity: 0.55;
 }
 
+.store-category-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 32px 32px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.store-category-filter .nl-capsule {
+  width: auto;
+  padding: 0 20px;
+}
+
+.store-category-btn {
+  padding: 6px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.store-category-btn:hover {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+}
+
+.store-category-btn.active {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: var(--bg-primary);
+  font-weight: 700;
+}
+
 .shop-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -2804,7 +2846,7 @@ textarea:disabled {
 
 .universe-hero-title {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: clamp(72px, 13vw, 160px);
+  font-size: clamp(56px, 10vw, 120px);
   font-weight: 700;
   letter-spacing: 2px;
   line-height: 0.9;

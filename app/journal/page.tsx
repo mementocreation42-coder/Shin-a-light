@@ -22,9 +22,8 @@ export default async function JournalPage({ searchParams }: PageProps) {
     const page = Number(params.page ?? '1');
     const categoryId = params.cat ? Number(params.cat) : undefined;
 
-    // サーバーサイドで該当ページ分だけ取得（12件）
     const [{ posts, totalPages }, categories] = await Promise.all([
-        getPosts(page, 20, categoryId),
+        getPosts(page, 24, categoryId),
         getCategories()
     ]);
 
