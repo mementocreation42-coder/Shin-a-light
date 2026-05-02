@@ -30,7 +30,7 @@ export default function LegalPage() {
                                 <th>所在地</th>
                                 <td>
                                     〒775-0001<br />
-                                    1465 Kochi, Mugi-cho, Kaifu-gun, Tokushima
+                                    1465 Kochi Mugi Kaifu, Tokushima
                                 </td>
                             </tr>
                             <tr>
