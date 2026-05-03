@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import NewsletterForm from '@/components/NewsletterForm';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
 import { processLinkCards } from '@/lib/ogp';
@@ -118,10 +119,6 @@ export default async function JournalPostPage({ params }: PageProps) {
                 }}
             />
             <article className="journal-article">
-                <Link href="/journal" className="journal-back-link">
-                    ← Back to Journal
-                </Link>
-
                 <div className="journal-article-body">
                     {imageUrl && (
                         <div className="journal-article-hero">
@@ -158,8 +155,25 @@ export default async function JournalPostPage({ params }: PageProps) {
                     />
                 </div>
 
-                {relatedPosts.length > 0 && (
-                    <section className="journal-related">
+                <div className="journal-nl-banner">
+                    <p className="journal-nl-banner-label">NEWSLETTER</p>
+                    <p className="journal-nl-banner-copy">領域を横断する、クリエイティブのB面を。</p>
+                    <NewsletterForm benefits={[
+                        '🎁 登録者には、SAL謹製写真現像プリセット「selpico3」をプレゼント。',
+                        '📬 映像・写真・健康・AI・自然、暮らしのヒントを不定期に届ける。',
+                        '🔧 使っているツール・ワークフロー・機材の話を共有。',
+                    ]} />
+                    <div className="journal-author-box">
+                        <img src="/images/profile.jpg" alt="DAISUKE KOBAYASHI" className="journal-author-avatar" />
+                        <div className="journal-author-info">
+                            <p className="journal-author-name">DAISUKE KOBAYASHI</p>
+                            <p className="journal-author-bio">映像制作・写真・Web・AIを軸に徳島を拠点に活動するクリエイター。釣りと健康にも本気。</p>
+                            <Link href="/#about" className="journal-author-about-link">About →</Link>
+                        </div>
+                    </div>
+
+                    {relatedPosts.length > 0 && (
+                    <section className="journal-related journal-related--inline">
                         <h2 className="journal-related-title">Related Posts</h2>
                         <ul className="journal-related-grid">
                             {relatedPosts.map((relPost) => {
@@ -188,7 +202,8 @@ export default async function JournalPostPage({ params }: PageProps) {
                             })}
                         </ul>
                     </section>
-                )}
+                    )}
+                </div>
 
                 <div className="journal-article-footer">
                     <Link href="/journal" className="journal-back-link">
