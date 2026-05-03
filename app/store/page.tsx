@@ -16,7 +16,8 @@ const storeCapsules: { label: string; slug: string }[] = [
     { label: 'Photo',  slug: 'photo' },
     { label: 'Web',    slug: 'web' },
     { label: 'Tools',  slug: 'tools' },
-    { label: 'Health', slug: 'health' },
+    { label: 'Health',  slug: 'health' },
+    { label: 'Fishing', slug: 'fishing' },
 ];
 
 export default function ShopPage() {
