@@ -4129,3 +4129,26 @@ textarea:disabled {
   background: rgba(255, 255, 255, 0.15);
   margin: 0 4px;
 }
+
+@media (max-width: 640px) {
+  .floating-nav {
+    bottom: 20px;
+    padding: 9px 16px;
+  }
+
+  .floating-nav__link {
+    font-size: 11px;
+    letter-spacing: 1px;
+    padding: 2px 10px;
+  }
+
+  .floating-nav__link--accent {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
+
+  .floating-nav__divider {
+    height: 11px;
+    margin: 0 2px;
+  }
+}

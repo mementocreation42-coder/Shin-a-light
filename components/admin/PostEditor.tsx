@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './PostEditor.module.css';
 
@@ -203,9 +203,45 @@ export default function PostEditor({ categories, initialData }: Props) {
   const [isDragging, setIsDragging] = useState(false);
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
+  const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'fetching' | 'done' | 'error'>('idle');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const autoFetchedUrlRef = useRef<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // note.com URLを本文から検出してアイキャッチを自動取得
+  useEffect(() => {
+    const match = body.match(/https:\/\/note\.com\/[^\s"'<>]+/);
+    const noteUrl = match?.[0] ?? '';
+
+    if (!noteUrl || noteUrl === autoFetchedUrlRef.current) return;
+    if (images.length > 0) return; // 手動アップロードがあれば何もしない
+
+    autoFetchedUrlRef.current = noteUrl;
+    setEyecatchStatus('fetching');
+
+    (async () => {
+      try {
+        const ogpRes = await fetch(`/api/ogp?url=${encodeURIComponent(noteUrl)}`);
+        const ogp = await ogpRes.json();
+        if (!ogp.image) throw new Error('OGP image not found');
+
+        const imgRes = await fetch(`/api/fetch-image?url=${encodeURIComponent(ogp.image)}`);
+        if (!imgRes.ok) throw new Error('Image fetch failed');
+
+        const blob = await imgRes.blob();
+        const ext = blob.type.includes('png') ? 'png' : 'jpg';
+        const file = new File([blob], `note-eyecatch-${Date.now()}.${ext}`, { type: blob.type || 'image/jpeg' });
+
+        await addFiles([file]);
+        setEyecatchStatus('done');
+      } catch {
+        setEyecatchStatus('error');
+        autoFetchedUrlRef.current = ''; // リセットして再試行可能に
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [body]);
   const uidRef = useRef(parsed?.images.length ?? 0);
 
   function toggleCategory(id: number) {
@@ -386,6 +422,9 @@ export default function PostEditor({ categories, initialData }: Props) {
             onChange={(e) => e.target.files && void addFiles(e.target.files)} />
           <p className={styles.dropzoneText}>クリックまたはドラッグ&ドロップで画像を追加</p>
           <p className={styles.dropzoneHint}>JPG・PNG・HEIC 複数枚OK ／ 最初の1枚がアイキャッチになります</p>
+          {eyecatchStatus === 'fetching' && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>noteのアイキャッチを取得中...</p>}
+          {eyecatchStatus === 'done' && <p className={styles.dropzoneHint} style={{ color: '#4caf50' }}>noteのアイキャッチを自動設定しました</p>}
+          {eyecatchStatus === 'error' && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>アイキャッチの自動取得に失敗しました</p>}
         </div>
 
         {images.length > 0 && (
