@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAdminPostById, getCategories } from '@/lib/wordpress';
+import { getAdminPostById, getCategories, getFeaturedImageUrl } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
 
 export const metadata = {
@@ -21,6 +21,8 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     categoryIds: post.categories,
     content: post.content.rendered,
     status: post.status === 'private' ? 'publish' : post.status,
+    featuredMediaId: post.featured_media ?? 0,
+    featuredImageUrl: getFeaturedImageUrl(post) ?? undefined,
   };
 
   return (

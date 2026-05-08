@@ -102,6 +102,7 @@ interface Category { id: number; name: string; slug: string; }
 interface InitialData {
   id: string; title: string; date: string; categoryIds: number[];
   content: string; status: 'publish' | 'draft';
+  featuredMediaId?: number; featuredImageUrl?: string;
 }
 interface Props { categories: Category[]; initialData?: InitialData; }
 
@@ -216,6 +217,7 @@ export default function PostEditor({ categories, initialData }: Props) {
 
     if (!noteUrl || noteUrl === autoFetchedUrlRef.current) return;
     if (images.length > 0) return; // 手動アップロードがあれば何もしない
+    if (initialData?.featuredMediaId && initialData.featuredMediaId > 0) return; // 既存アイキャッチがあれば何もしない
 
     autoFetchedUrlRef.current = noteUrl;
     setEyecatchStatus('fetching');
@@ -426,6 +428,14 @@ export default function PostEditor({ categories, initialData }: Props) {
           {eyecatchStatus === 'done' && <p className={styles.dropzoneHint} style={{ color: '#4caf50' }}>noteのアイキャッチを自動設定しました</p>}
           {eyecatchStatus === 'error' && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>アイキャッチの自動取得に失敗しました</p>}
         </div>
+
+        {initialData?.featuredImageUrl && images.length === 0 && (
+          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={initialData.featuredImageUrl} alt="現在のアイキャッチ" style={{ width: '80px', height: '54px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #3a3a3a' }} />
+            <span style={{ fontSize: '11px', color: '#666' }}>現在のアイキャッチ（新しい画像をアップロードすると差し替わります）</span>
+          </div>
+        )}
 
         {images.length > 0 && (
           <div className={styles.previewGrid}>
