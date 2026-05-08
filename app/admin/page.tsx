@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getAdminPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { logout } from '@/app/login/actions';
 import PostActions from '@/components/admin/PostActions';
-import FixEyecatchButton from '@/components/admin/FixEyecatchButton';
+import AdminToolbar from '@/components/admin/AdminToolbar';
 
 export const metadata = {
   title: { absolute: 'Admin | Shine a Light' },
@@ -66,7 +66,7 @@ export default async function AdminPage({
             <h1 style={{ fontSize: '20px', fontWeight: 700 }}>投稿一覧</h1>
             <span style={s.count}>{total}件</span>
           </div>
-          <FixEyecatchButton />
+          <AdminToolbar />
         </div>
 
         <div style={s.list}>
