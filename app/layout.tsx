@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import FloatingNav from "@/components/FloatingNav";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -118,6 +119,7 @@ export default async function RootLayout({
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}
+        {!isAdmin && !isChromeless && <FloatingNav />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

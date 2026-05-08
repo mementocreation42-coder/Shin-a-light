@@ -148,6 +148,14 @@ export default async function JournalPostPage({ params }: PageProps) {
                             </div>
                         )}
                     </div>
+                        <div className="journal-article-author-strip">
+                            <img src="/images/profile.jpg" alt="DAISUKE KOBAYASHI" className="journal-article-author-avatar" />
+                            <div className="journal-article-author-text">
+                                <span className="journal-article-author-name">DAISUKE KOBAYASHI</span>
+                                <span className="journal-article-author-bio">映像・写真・Web・AI・健康 / 徳島</span>
+                            </div>
+                            <Link href="/#about" className="journal-article-author-link">About →</Link>
+                        </div>
 
                     <div
                         className="journal-article-content"
@@ -163,15 +171,6 @@ export default async function JournalPostPage({ params }: PageProps) {
                         '📬 映像・写真・健康・AI・自然、暮らしのヒントを不定期に届ける。',
                         '🔧 使っているツール・ワークフロー・機材の話を共有。',
                     ]} />
-                    <div className="journal-author-box">
-                        <img src="/images/profile.jpg" alt="DAISUKE KOBAYASHI" className="journal-author-avatar" />
-                        <div className="journal-author-info">
-                            <p className="journal-author-name">DAISUKE KOBAYASHI</p>
-                            <p className="journal-author-bio">映像制作・写真・Web・AIを軸に徳島を拠点に活動するクリエイター。釣りと健康にも本気。</p>
-                            <Link href="/#about" className="journal-author-about-link">About →</Link>
-                        </div>
-                    </div>
-
                     {relatedPosts.length > 0 && (
                     <section className="journal-related journal-related--inline">
                         <h2 className="journal-related-title">Related Posts</h2>
