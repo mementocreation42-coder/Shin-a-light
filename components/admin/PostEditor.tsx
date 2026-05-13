@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './PostEditor.module.css';
 
@@ -45,6 +45,13 @@ async function compressImage(file: File): Promise<File> {
 function htmlToPlainText(html: string): string {
   return html
     .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '\n\n[h2]$1[/h2]\n\n')
+    .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '\n\n[h3]$1[/h3]\n\n')
+    .replace(/<ul[^>]*>([\s\S]*?)<\/ul>/gi, (_, inner) => {
+      const items = [...inner.matchAll(/<li[^>]*>([\s\S]*?)<\/li>/gi)].map(m => m[1].replace(/<[^>]+>/g, '').trim()).join('\n');
+      return `\n\n[ul]\n${items}\n[/ul]\n\n`;
+    })
+    .replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, inner) => `\n\n[quote]${inner.replace(/<[^>]+>/g, '').trim()}[/quote]\n\n`)
     .replace(/<\/p>\s*<p>/gi, '\n\n').replace(/<p[^>]*>/gi, '').replace(/<\/p>/gi, '\n\n')
     .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'")
@@ -202,6 +209,9 @@ export default function PostEditor({ categories, initialData }: Props) {
   );
   const [products, setProducts] = useState<ProductData[]>(parsed?.products ?? []);
   const [isDragging, setIsDragging] = useState(false);
+  const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
+  const [ogpCache, setOgpCache] = useState<Record<string, { title: string; description: string; image: string | null; siteName: string; favicon: string } | null>>({});
+  const fetchingUrls = useRef<Set<string>>(new Set());
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'fetching' | 'done' | 'error'>('idle');
@@ -245,6 +255,38 @@ export default function PostEditor({ categories, initialData }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [body]);
   const uidRef = useRef(parsed?.images.length ?? 0);
+
+  // 本文からスタンドアロンURLを抽出（YouTubeとアフィリエイトURLは除外）
+  const standaloneUrls = useMemo(() => {
+    const urls: string[] = [];
+    for (const para of body.split('\n\n')) {
+      const t = para.trim();
+      if (/^https?:\/\/\S+$/.test(t) &&
+          !/(?:youtube\.com|youtu\.be)/i.test(t) &&
+          !/(?:amazon\.co\.jp|amzn\.to|amzn\.asia|rakuten\.co\.jp)/i.test(t) &&
+          !/^\[(?:image|product|h2|h3)/.test(t)) {
+        if (!urls.includes(t)) urls.push(t);
+      }
+    }
+    return urls;
+  }, [body]);
+
+  // OGP一括フェッチ（デバウンス付き）
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      for (const url of standaloneUrls) {
+        if (url in ogpCache || fetchingUrls.current.has(url)) continue;
+        fetchingUrls.current.add(url);
+        fetch(`/api/ogp?url=${encodeURIComponent(url)}`)
+          .then((r) => r.json())
+          .then((data) => setOgpCache((prev) => ({ ...prev, [url]: data?.title ? data : null })))
+          .catch(() => setOgpCache((prev) => ({ ...prev, [url]: null })))
+          .finally(() => fetchingUrls.current.delete(url));
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [standaloneUrls]);
 
   function toggleCategory(id: number) {
     setSelectedCats((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
@@ -323,6 +365,62 @@ export default function PostEditor({ categories, initialData }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleBodyDragOver = useCallback((e: React.DragEvent) => {
+    if (e.dataTransfer.types.includes('Files')) { e.preventDefault(); setIsDraggingOnBody(true); }
+  }, []);
+  const handleBodyDragLeave = useCallback(() => setIsDraggingOnBody(false), []);
+  const handleBodyDrop = useCallback(async (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingOnBody(false);
+    const files = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith('image/') || isHeic(f));
+    if (!files.length) return;
+
+    // ドロップ時点のカーソル位置を保存
+    const ta = textareaRef.current;
+    const insertPos = ta ? ta.selectionStart : null;
+
+    const compressed = await Promise.all(files.map(compressImage));
+    const newItems: UploadedImage[] = compressed.map((file) => ({
+      uid: ++uidRef.current, localUrl: URL.createObjectURL(file), uploading: true,
+    }));
+
+    // 現在の images 長 = これから追加される画像の開始インデックス
+    let startIdx = 0;
+    setImages((prev) => { startIdx = prev.length; return [...prev, ...newItems]; });
+
+    // プレースホルダーを本文に即時挿入
+    const placeholders = newItems.map((_, i) => `[image:${startIdx + i}]`).join('\n\n');
+    if (insertPos !== null && ta) {
+      const before = body.slice(0, insertPos);
+      const after = body.slice(insertPos);
+      const prefix = before.length > 0 && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
+      const suffix = after.length > 0 && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
+      setBody(before + prefix + placeholders + suffix + after);
+    } else {
+      setBody((prev) => prev + (prev.endsWith('\n\n') ? '' : '\n\n') + placeholders);
+    }
+
+    // バックグラウンドでアップロード
+    newItems.forEach(async (item, relIdx) => {
+      const file = compressed[relIdx];
+      try {
+        const fd = new FormData();
+        fd.append('image', file, file.name);
+        const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        setImages((prev) => prev.map((img) =>
+          img.uid === item.uid ? { ...img, url: data.url, id: data.id, uploading: false } : img
+        ));
+      } catch {
+        setImages((prev) => prev.map((img) =>
+          img.uid === item.uid ? { ...img, uploading: false, error: 'アップロード失敗' } : img
+        ));
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [body]);
+
   async function handleSubmit(e: React.FormEvent, postStatus: 'publish' | 'draft' = 'publish') {
     e.preventDefault();
     setErrorMsg('');
@@ -365,7 +463,81 @@ export default function PostEditor({ categories, initialData }: Props) {
 
   const isSubmitting = status === 'saving';
 
+  const previewContentNodes = body.split('\n\n').map((para, i) => {
+    const t = para.trim();
+    if (!t) return null;
+    const h2m = t.match(/^\[h2\]([\s\S]*?)\[\/h2\]$/);
+    const h3m = t.match(/^\[h3\]([\s\S]*?)\[\/h3\]$/);
+    const ulm = t.match(/^\[ul\]\n?([\s\S]*?)\n?\[\/ul\]$/);
+    const qtm = t.match(/^\[quote\]([\s\S]*?)\[\/quote\]$/);
+    if (h2m) return <h2 key={i}>{h2m[1]}</h2>;
+    if (h3m) return <h3 key={i}>{h3m[1]}</h3>;
+    if (ulm) return <ul key={i}>{ulm[1].split('\n').filter(Boolean).map((item, j) => <li key={j}>{item.trim()}</li>)}</ul>;
+    if (qtm) return <blockquote key={i}><p>{qtm[1]}</p></blockquote>;
+    const imgM = t.match(/^\[image:(\d+)\]$/);
+    if (imgM) {
+      const img = images[parseInt(imgM[1], 10)];
+      if (!img) return null;
+      return (
+        <figure key={i} className="wp-block-image" style={{ position: 'relative' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={img.localUrl} alt="" style={{ opacity: img.uploading ? 0.5 : 1 }} />
+          {img.uploading && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#ff764d', background: 'rgba(0,0,0,0.4)' }}>アップロード中...</div>}
+        </figure>
+      );
+    }
+    if (/^https?:\/\/\S+$/.test(t) && !/(?:youtube\.com|youtu\.be)/i.test(t) && !/(?:amazon\.co\.jp|amzn\.to|rakuten\.co\.jp)/i.test(t)) {
+      const ogp = ogpCache[t];
+      if (ogp === undefined) return <p key={i} style={{ opacity: 0.4, wordBreak: 'break-all' }}>{t} — 取得中...</p>;
+      if (ogp === null) return <p key={i} style={{ wordBreak: 'break-all' }}><a href={t}>{t}</a></p>;
+      return (
+        <a key={i} href={t} target="_blank" rel="noopener noreferrer" className="link-card">
+          {ogp.image && <div className="link-card-image">{/* eslint-disable-next-line @next/next/no-img-element */}<img src={ogp.image} alt="" loading="lazy" /></div>}
+          <div className="link-card-body">
+            <div className="link-card-title">{ogp.title}</div>
+            {ogp.description && <div className="link-card-description">{ogp.description}</div>}
+            <div className="link-card-meta">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="link-card-favicon" src={ogp.favicon} alt="" width={16} height={16} loading="lazy" />
+              <span className="link-card-domain">{ogp.siteName}</span>
+            </div>
+          </div>
+        </a>
+      );
+    }
+    return <p key={i} style={{ whiteSpace: 'pre-wrap' }}>{t}</p>;
+  });
+
+  const eyecatchUrl = images[0]?.localUrl ?? initialData?.featuredImageUrl;
+
+  const previewPanel = (
+    <div className="journal-article-page" style={{ background: 'transparent' }}>
+      <article className="journal-article">
+        <div className="journal-article-body">
+          {eyecatchUrl && (
+            <div className="journal-article-hero">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={eyecatchUrl} alt="" />
+            </div>
+          )}
+          <div className="journal-article-header">
+            <time className="journal-article-date">{date}</time>
+            <h1 className="journal-article-title">{title || <span style={{ opacity: 0.3 }}>タイトル未入力</span>}</h1>
+          </div>
+          {body.trim() ? (
+            <div className="journal-article-content">
+              {previewContentNodes}
+            </div>
+          ) : (
+            <p style={{ fontSize: '12px', color: '#555', padding: '24px 0' }}>本文を入力するとプレビューが表示されます</p>
+          )}
+        </div>
+      </article>
+    </div>
+  );
+
   return (
+    <div className={styles.editorLayout}>
     <form onSubmit={handleSubmit} className={styles.form}>
       {/* タイトル */}
       <div className={styles.field}>
@@ -395,19 +567,6 @@ export default function PostEditor({ categories, initialData }: Props) {
             </label>
           ))}
         </div>
-      </div>
-
-      {/* 本文 */}
-      <div className={styles.field}>
-        <label className={styles.label}>本文</label>
-        <textarea
-          ref={textareaRef}
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          rows={14}
-          className={styles.textarea}
-          placeholder={'本文を入力してください。段落は空行で区切ります。\n\n画像・商品カードを挿入したい位置にカーソルを置いて「本文に挿入」ボタンを押してください。'}
-        />
       </div>
 
       {/* 画像 */}
@@ -489,6 +648,63 @@ export default function PostEditor({ categories, initialData }: Props) {
         )}
       </div>
 
+      {/* 本文 */}
+      <div className={styles.field}>
+        <div className={styles.sectionHeader}>
+          <label className={styles.label}>本文</label>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+              onClick={() => {
+                const ta = textareaRef.current;
+                if (!ta) return;
+                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
+                insertAtCursor(`[h2]${sel}[/h2]`);
+              }}>H2</button>
+            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+              onClick={() => {
+                const ta = textareaRef.current;
+                if (!ta) return;
+                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
+                insertAtCursor(`[h3]${sel}[/h3]`);
+              }}>H3</button>
+            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+              onClick={() => {
+                const ta = textareaRef.current;
+                if (!ta) return;
+                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim();
+                const items = sel ? sel.split('\n').map(l => l.trim()).filter(Boolean).join('\n') : '項目1\n項目2\n項目3';
+                insertAtCursor(`[ul]\n${items}\n[/ul]`);
+              }}>UL</button>
+            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+              onClick={() => {
+                const ta = textareaRef.current;
+                if (!ta) return;
+                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '引用テキスト';
+                insertAtCursor(`[quote]${sel}[/quote]`);
+              }}>引用</button>
+          </div>
+        </div>
+        <div style={{ position: 'relative' }}>
+          <textarea
+            ref={textareaRef}
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            rows={20}
+            className={styles.textarea}
+            style={{ ...(isDraggingOnBody ? { outline: '2px dashed #ff764d', outlineOffset: '-2px' } : {}), minHeight: '400px' }}
+            placeholder={'本文を入力してください。段落は空行で区切ります。\n\n画像をここにドラッグ&ドロップして挿入できます。'}
+            onDragOver={handleBodyDragOver}
+            onDragLeave={handleBodyDragLeave}
+            onDrop={handleBodyDrop}
+          />
+          {isDraggingOnBody && (
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', color: '#ff764d', fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>
+              ここにドロップして挿入
+            </div>
+          )}
+        </div>
+      </div>
+
       {errorMsg && <p className={styles.error}>{errorMsg}</p>}
       {status === 'done' && <p className={styles.success}>保存しました！ダッシュボードに戻ります...</p>}
       {status === 'saving' && <p className={styles.info}>保存中...</p>}
@@ -505,5 +721,7 @@ export default function PostEditor({ categories, initialData }: Props) {
         </button>
       </div>
     </form>
+    <div className={styles.previewCol}>{previewPanel}</div>
+    </div>
   );
 }

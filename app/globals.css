@@ -1521,6 +1521,7 @@ textarea:disabled {
 .journal-article-date {
   display: block;
   font-size: 14px;
+  font-weight: 700;
   color: #666;
   margin-bottom: 16px;
 }
@@ -1544,7 +1545,7 @@ textarea:disabled {
 .journal-article-author-strip {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   position: sticky;
   top: 12px;
   z-index: 40;
@@ -1555,6 +1556,15 @@ textarea:disabled {
   margin: 0 0 32px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.10);
+  transition: padding 0.3s ease, border-radius 0.3s ease, max-width 0.3s ease, margin 0.3s ease;
+  max-width: 100%;
+}
+
+.journal-article-author-strip--stuck {
+  padding: 6px 12px;
+  border-radius: 999px;
+  max-width: fit-content;
+  margin: 0 auto 32px;
 }
 
 .journal-article-author-avatar {
@@ -4080,7 +4090,7 @@ textarea:disabled {
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  padding: 13px 28px;
+  padding: 6px 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 1px 0 rgba(255,255,255,0.05) inset;
   opacity: 0;
   pointer-events: none;

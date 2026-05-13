@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function FloatingNav() {
+  const pathname = usePathname();
+  const isJournalArticle = /^\/journal\/\d+/.test(pathname);
   const [visible, setVisible] = useState(false);
   const footerRef = useRef<IntersectionObserver | null>(null);
   const footerVisible = useRef(false);
@@ -37,6 +40,8 @@ export default function FloatingNav() {
       footerRef.current?.disconnect();
     };
   }, []);
+
+  if (isJournalArticle) return null;
 
   return (
     <div className={`floating-nav ${visible ? 'floating-nav--visible' : ''}`} aria-hidden={!visible}>

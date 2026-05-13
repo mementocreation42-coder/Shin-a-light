@@ -23,6 +23,28 @@ function buildContent(fields: {
     const trimmed = para.trim();
     if (!trimmed) continue;
 
+    const h2M = trimmed.match(/^\[h2\]([\s\S]*?)\[\/h2\]$/);
+    const h3M = trimmed.match(/^\[h3\]([\s\S]*?)\[\/h3\]$/);
+    const ulM = trimmed.match(/^\[ul\]\n?([\s\S]*?)\n?\[\/ul\]$/);
+    const qtM = trimmed.match(/^\[quote\]([\s\S]*?)\[\/quote\]$/);
+    if (h2M) {
+      blocks.push(`<!-- wp:heading {"level":2} -->\n<h2 class="wp-block-heading">${h2M[1].trim()}</h2>\n<!-- /wp:heading -->`);
+      continue;
+    }
+    if (h3M) {
+      blocks.push(`<!-- wp:heading {"level":3} -->\n<h3 class="wp-block-heading">${h3M[1].trim()}</h3>\n<!-- /wp:heading -->`);
+      continue;
+    }
+    if (ulM) {
+      const items = ulM[1].split('\n').filter(Boolean).map(l => `<li>${l.trim()}</li>`).join('');
+      blocks.push(`<!-- wp:list -->\n<ul class="wp-block-list">${items}</ul>\n<!-- /wp:list -->`);
+      continue;
+    }
+    if (qtM) {
+      blocks.push(`<!-- wp:quote -->\n<blockquote class="wp-block-quote"><p>${qtM[1].trim()}</p></blockquote>\n<!-- /wp:quote -->`);
+      continue;
+    }
+
     for (const part of trimmed.split(/(\[(?:image|product):\d+\])/)) {
       const imgM = part.match(/^\[image:(\d+)\]$/);
       const prodM = part.match(/^\[product:(\d+)\]$/);

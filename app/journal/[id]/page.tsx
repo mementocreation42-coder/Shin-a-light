@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import NewsletterForm from '@/components/NewsletterForm';
+import AuthorStrip from '@/components/AuthorStrip';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
 import { processLinkCards } from '@/lib/ogp';
@@ -148,14 +149,7 @@ export default async function JournalPostPage({ params }: PageProps) {
                             </div>
                         )}
                     </div>
-                        <div className="journal-article-author-strip">
-                            <img src="/images/profile.jpg" alt="DAISUKE KOBAYASHI" className="journal-article-author-avatar" />
-                            <div className="journal-article-author-text">
-                                <span className="journal-article-author-name">DAISUKE KOBAYASHI</span>
-                                <span className="journal-article-author-bio">映像・写真・Web・AI・健康 / 徳島</span>
-                            </div>
-                            <Link href="/#about" className="journal-article-author-link">About →</Link>
-                        </div>
+                        <AuthorStrip />
 
                     <div
                         className="journal-article-content"
