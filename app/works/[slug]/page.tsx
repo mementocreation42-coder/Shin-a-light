@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { works, getWorkBySlug, getAdjacentWorks } from '@/data/works';
 
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: PageProps) {
     const work = getWorkBySlug(slug);
     if (!work) return { title: 'Work Not Found' };
     return {
-        title: `${work.title} - Shine a Light`,
+        title: work.title,
         description: work.overview,
         alternates: {
             canonical: `/works/${slug}`,
@@ -79,6 +80,20 @@ export default async function WorkDetailPage({ params }: PageProps) {
                     })
                 }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
+                            { "@type": "ListItem", "position": 2, "name": "Works", "item": "https://www.shinealight.jp/#works" },
+                            { "@type": "ListItem", "position": 3, "name": work.title }
+                        ]
+                    })
+                }}
+            />
             {/* Hero */}
             <header className="work-hero">
                 <div className="work-hero-inner">
@@ -113,7 +128,15 @@ export default async function WorkDetailPage({ params }: PageProps) {
                     </div>
                 ) : (
                     <div className={`work-main-image ${work.color}`}>
-                        <img src={work.image} alt={work.title} />
+                        <Image
+                            src={work.image}
+                            alt={work.title}
+                            width={1600}
+                            height={900}
+                            priority
+                            sizes="(max-width: 768px) 100vw, 1200px"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
                     </div>
                 )}
             </section>
@@ -247,7 +270,14 @@ export default async function WorkDetailPage({ params }: PageProps) {
                     <div className="gallery-grid">
                         {work.gallery.map((image, index) => (
                             <div key={index} className="gallery-item">
-                                <img src={image} alt={`${work.title} gallery ${index + 1}`} />
+                                <Image
+                                    src={image}
+                                    alt={`${work.title} gallery ${index + 1}`}
+                                    width={1200}
+                                    height={800}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    style={{ width: '100%', height: 'auto' }}
+                                />
                             </div>
                         ))}
                     </div>

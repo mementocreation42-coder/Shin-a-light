@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'プライバシーポリシー | Shine a Light',
+    title: 'プライバシーポリシー',
     description: 'Shine a Lightのプライバシーポリシーです。',
     alternates: {
         canonical: '/privacy',
     },
+    robots: { index: false, follow: true },
 };
 
 export default function PrivacyPage() {

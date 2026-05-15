@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
     const project = labProjects.find((p) => p.slug === slug);
     if (!project) return { title: 'Not Found' };
     return {
-        title: `${project.title} - Lab | Shine a Light`,
+        title: `${project.title} — Lab`,
         description: project.description,
         alternates: {
             canonical: `/lab/${slug}`,
@@ -50,6 +50,20 @@ export default async function LabDetailPage({ params }: Props) {
 
     return (
         <div className="lab-section">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
+                            { "@type": "ListItem", "position": 2, "name": "Lab", "item": "https://www.shinealight.jp/lab" },
+                            { "@type": "ListItem", "position": 3, "name": project.title }
+                        ]
+                    })
+                }}
+            />
             <div className="lab-header">
                 <Link href="/lab" className="back-link">
                     ← Back to Lab

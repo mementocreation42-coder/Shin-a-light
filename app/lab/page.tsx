@@ -3,10 +3,18 @@ import type { Metadata } from 'next';
 import { labProjects } from './data';
 
 export const metadata: Metadata = {
-    title: 'Lab - Shine a Light',
-    description: 'Experimental system development projects.',
+    title: 'Lab — 実験的システム開発',
+    description: '小林大介が手がける実験的なシステム・プロトタイプ・インタラクティブ作品の研究室。',
     alternates: {
         canonical: '/lab',
+    },
+    openGraph: {
+        title: 'Lab — 実験的システム開発 | Shine a Light',
+        description: '実験的なシステム・プロトタイプ・インタラクティブ作品。',
+        url: '/lab',
+        siteName: 'Shine a Light',
+        locale: 'ja_JP',
+        type: 'website',
     },
 };
 

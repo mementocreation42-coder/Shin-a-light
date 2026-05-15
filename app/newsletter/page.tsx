@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import NewsletterForm from '@/components/NewsletterForm';
 
 export const metadata: Metadata = {
-    title: 'Newsletter | Shine a Light',
+    title: 'Newsletter',
     description: 'AI、映像、写真、Web、健康——各分野の知見や発見を不定期でお届けします。',
     alternates: {
         canonical: '/newsletter',

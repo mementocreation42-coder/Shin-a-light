@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: '特定商取引法に基づく表記 | Shine a Light',
+    title: '特定商取引法に基づく表記',
     description: '特定商取引法に基づく表記です。',
     alternates: {
         canonical: '/legal',
     },
+    robots: { index: false, follow: true },
 };
 
 export default function LegalPage() {

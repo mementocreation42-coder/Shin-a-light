@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous, Sacramento, Great_Vibes, Allura, Caveat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
@@ -69,6 +69,15 @@ const notoSansJP = Noto_Sans_JP({
 
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -83,20 +92,11 @@ export const metadata: Metadata = {
     siteName: "Shine a Light",
     locale: "ja_JP",
     type: "website",
-    images: [
-      {
-        url: "/images/profile.jpg",
-        width: 587,
-        height: 587,
-        alt: "Shine a Light - DAISUKE KOBAYASHI",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Shine a Light - DAISUKE KOBAYASHI",
     description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
-    images: ["/images/profile.jpg"],
   },
 };
 
@@ -120,6 +120,24 @@ export default async function RootLayout({
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}
         {!isAdmin && !isChromeless && <FloatingNav />}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "Shine a Light",
+              "alternateName": "SAL",
+              "url": "https://www.shinealight.jp",
+              "inLanguage": "ja-JP",
+              "publisher": {
+                "@type": "Person",
+                "name": "DAISUKE KOBAYASHI",
+                "url": "https://www.shinealight.jp"
+              }
+            }),
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

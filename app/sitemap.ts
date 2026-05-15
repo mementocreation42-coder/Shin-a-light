@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { getPosts } from '@/lib/wordpress';
 import { works } from '@/data/works';
 import { products } from '@/data/products';
+import { labProjects } from '@/app/lab/data';
 
 // Sitemap is regenerated at most once per day.
 // Without this, every crawler request (Google, Bing, etc.) triggers a fresh
@@ -17,6 +18,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/chronicle',
         '/journal',
         '/store',
+        '/universe',
+        '/lab',
+        '/newsletter',
     ];
 
     const routes = staticRoutes.map((route) => ({
@@ -57,5 +61,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }));
 
-    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes];
+    // 5. Lab Projects (Dynamic from local data)
+    const labRoutes = labProjects.map((project) => ({
+        url: `${BASE_URL}/lab/${project.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.5,
+    }));
+
+    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes];
 }

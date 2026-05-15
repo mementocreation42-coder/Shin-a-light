@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { products } from '@/data/products';
 
 export const metadata: Metadata = {
-    title: 'SAL STORE | Shine a Light',
+    title: 'SAL STORE',
     description: 'Creative Assets & Tools - For those who make their own.',
     alternates: {
         canonical: '/store',

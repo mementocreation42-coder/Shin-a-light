@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import NewsletterForm from '@/components/NewsletterForm';
 import AuthorStrip from '@/components/AuthorStrip';
 import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
@@ -38,12 +39,22 @@ export async function generateMetadata({ params }: PageProps) {
         return { title: 'Post Not Found' };
     }
 
-    const title = post.title.rendered.replace(/<[^>]*>/g, '');
-    const description = post.excerpt.rendered.replace(/<[^>]*>/g, '').slice(0, 160);
+    const decode = (s: string) => s
+        .replace(/<[^>]*>/g, '')
+        .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+        .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+    const title = decode(post.title.rendered);
+    const description = decode(post.excerpt.rendered).slice(0, 160);
     const imageUrl = getFeaturedImageUrl(post);
 
     return {
-        title: `${title} | Shine a Light`,
+        title: title,
         description: description,
         alternates: {
             canonical: `/journal/${id}`,
@@ -87,6 +98,18 @@ export default async function JournalPostPage({ params }: PageProps) {
     }
 
     const imageUrl = getFeaturedImageUrl(post);
+    const decodeText = (s: string) => s
+        .replace(/<[^>]*>/g, '')
+        .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+        .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+        .replace(/&nbsp;/g, ' ')
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&amp;/g, '&');
+    const plainTitle = decodeText(post.title.rendered);
+    const plainDesc = decodeText(post.excerpt.rendered).slice(0, 160);
     const postCategories = post.categories
         .map(catId => allCategories.find(c => c.id === catId))
         .filter(Boolean);
@@ -106,11 +129,20 @@ export default async function JournalPostPage({ params }: PageProps) {
                     __html: JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "BlogPosting",
-                        "headline": post.title.rendered.replace(/<[^>]*>/g, ''),
+                        "headline": plainTitle,
                         "datePublished": post.date,
                         "dateModified": post.modified,
-                        "description": post.excerpt.rendered.replace(/<[^>]*>/g, '').slice(0, 160),
+                        "description": plainDesc,
                         "image": imageUrl ? [imageUrl] : [],
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": `https://www.shinealight.jp/journal/${id}`
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Shine a Light",
+                            "url": "https://www.shinealight.jp"
+                        },
                         "author": [{
                             "@type": "Person",
                             "name": "DAISUKE KOBAYASHI",
@@ -119,11 +151,33 @@ export default async function JournalPostPage({ params }: PageProps) {
                     })
                 }}
             />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
+                            { "@type": "ListItem", "position": 2, "name": "Journal", "item": "https://www.shinealight.jp/journal" },
+                            { "@type": "ListItem", "position": 3, "name": plainTitle }
+                        ]
+                    })
+                }}
+            />
             <article className="journal-article">
                 <div className="journal-article-body">
                     {imageUrl && (
                         <div className="journal-article-hero">
-                            <img src={imageUrl} alt={post.title.rendered.replace(/<[^>]*>/g, '') || 'Journal cover image'} />
+                            <Image
+                                src={imageUrl}
+                                alt={plainTitle || 'Journal cover image'}
+                                width={1200}
+                                height={630}
+                                priority
+                                sizes="(max-width: 768px) 100vw, 800px"
+                                style={{ width: '100%', height: 'auto' }}
+                            />
                         </div>
                     )}
 

@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: PageProps) {
     const product = getProductById(id);
     if (!product) return { title: 'Product Not Found' };
     return {
-        title: `${product.name} - Shine a Light Store`,
+        title: `${product.name} — SAL STORE`,
         description: product.description,
         alternates: {
             canonical: `/store/${id}`,
@@ -82,6 +82,20 @@ export default async function ProductDetailPage({ params }: PageProps) {
                             "availability": "https://schema.org/InStock",
                             "itemCondition": "https://schema.org/NewCondition"
                         }
+                    })
+                }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
+                            { "@type": "ListItem", "position": 2, "name": "Store", "item": "https://www.shinealight.jp/store" },
+                            { "@type": "ListItem", "position": 3, "name": product.name }
+                        ]
                     })
                 }}
             />

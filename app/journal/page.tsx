@@ -4,10 +4,23 @@ import { getPosts, getCategories } from '@/lib/wordpress';
 import JournalContent from '@/components/JournalContent';
 
 export const metadata: Metadata = {
-    title: 'Journal | Shine a Light',
-    description: 'Hyperpast Journal',
+    title: 'Journal — Hyperpast / 小林大介のブログ',
+    description: '映像・写真・Web・AI・健康・自然——領域を横断するクリエイティブのB面を記録するジャーナル。徳島・牟岐町から発信。',
     alternates: {
         canonical: '/journal',
+    },
+    openGraph: {
+        title: 'Journal — Hyperpast / 小林大介のブログ',
+        description: '映像・写真・Web・AI・健康・自然——領域を横断するクリエイティブのB面を記録するジャーナル。',
+        url: '/journal',
+        siteName: 'Shine a Light',
+        locale: 'ja_JP',
+        type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Journal | Hyperpast',
+        description: '映像・写真・Web・AI・健康・自然のジャーナル。',
     },
 };
 

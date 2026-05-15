@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: '利用規約 | Shine a Light',
+    title: '利用規約',
     description: 'Shine a Lightの利用規約です。',
     alternates: {
         canonical: '/terms',
     },
+    robots: { index: false, follow: true },
 };
 
 export default function TermsPage() {
