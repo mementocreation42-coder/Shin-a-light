@@ -300,9 +300,9 @@ export async function updateWPPost(id: number, data: {
 }
 
 export async function deleteWPPost(id: number): Promise<void> {
-  const res = await fetch(`${WP_REST_BASE}/posts/${id}&force=true`, {
-    method: 'DELETE',
-    headers: { Authorization: authHeader() },
+  const res = await fetch(`${WP_REST_BASE}/posts/${id}&force=true&_method=DELETE`, {
+    method: 'POST',
+    headers: { Authorization: authHeader(), 'X-HTTP-Method-Override': 'DELETE' },
   });
   if (!res.ok) throw new Error(`Delete post failed: ${await res.text()}`);
 }
