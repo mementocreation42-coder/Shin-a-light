@@ -19,7 +19,13 @@ function buildContent(fields: {
 }): string {
   const blocks: string[] = [];
 
-  for (const para of fields.body.split('\n\n')) {
+  const normalized = fields.body
+    .replace(/\r\n/g, '\n')
+    .replace(/\[(h2|h3)\]([\s\S]*?)\[\/\1\]/g, '\n\n[$1]$2[/$1]\n\n')
+    .replace(/\[ul\]\s*([\s\S]*?)\s*\[\/ul\]/g, '\n\n[ul]\n$1\n[/ul]\n\n')
+    .replace(/\[quote\]([\s\S]*?)\[\/quote\]/g, '\n\n[quote]$1[/quote]\n\n');
+
+  for (const para of normalized.split(/\n\s*\n/)) {
     const trimmed = para.trim();
     if (!trimmed) continue;
 
