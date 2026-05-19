@@ -101,7 +101,12 @@ export async function PUT(
       categories: categoryIds,
       status: postStatus,
     };
-    if (uploaded[0]) updateData.featured_media = uploaded[0].id;
+    const eyecatchIdRaw = formData.get('eyecatchId');
+    if (eyecatchIdRaw !== null) {
+      updateData.featured_media = parseInt(eyecatchIdRaw as string, 10);
+    } else if (uploaded[0]) {
+      updateData.featured_media = uploaded[0].id;
+    }
 
     const post = await updateWPPost(parseInt(id, 10), updateData);
     revalidatePath('/', 'layout');

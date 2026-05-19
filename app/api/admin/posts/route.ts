@@ -84,6 +84,8 @@ export async function POST(request: NextRequest) {
     const imageUrls = formData.getAll('imageUrls') as string[];
     const imageIds = formData.getAll('imageIds').map((v) => parseInt(v as string, 10));
     const uploaded = imageUrls.map((url, i) => ({ url, id: imageIds[i] || 0 }));
+    const eyecatchIdRaw = formData.get('eyecatchId');
+    const eyecatchId = eyecatchIdRaw !== null ? parseInt(eyecatchIdRaw as string, 10) : (uploaded[0]?.id || 0);
 
     const content = buildContent({ body, imageUrls: uploaded, products });
 
@@ -93,7 +95,7 @@ export async function POST(request: NextRequest) {
       date,
       status: postStatus,
       categories: categoryIds,
-      featured_media: uploaded[0]?.id || 0,
+      featured_media: eyecatchId,
     });
 
     revalidatePath('/', 'layout');

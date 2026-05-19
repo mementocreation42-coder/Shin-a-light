@@ -208,6 +208,12 @@ export default function PostEditor({ categories, initialData }: Props) {
     parsed?.images.map((img, i) => ({ uid: i, localUrl: img.url, url: img.url, id: img.id, uploading: false })) ?? []
   );
   const [products, setProducts] = useState<ProductData[]>(parsed?.products ?? []);
+  const [eyecatch, setEyecatch] = useState<UploadedImage | null>(
+    initialData?.featuredImageUrl && initialData.featuredMediaId
+      ? { uid: -1, localUrl: initialData.featuredImageUrl, url: initialData.featuredImageUrl, id: initialData.featuredMediaId, uploading: false }
+      : null
+  );
+  const [isEyecatchDragging, setIsEyecatchDragging] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
   const [ogpCache, setOgpCache] = useState<Record<string, { title: string; description: string; image: string | null; siteName: string; favicon: string } | null>>({});
@@ -217,6 +223,7 @@ export default function PostEditor({ categories, initialData }: Props) {
   const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'fetching' | 'done' | 'error'>('idle');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const eyecatchInputRef = useRef<HTMLInputElement>(null);
   const autoFetchedUrlRef = useRef<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -226,8 +233,7 @@ export default function PostEditor({ categories, initialData }: Props) {
     const noteUrl = match?.[0] ?? '';
 
     if (!noteUrl || noteUrl === autoFetchedUrlRef.current) return;
-    if (images.length > 0) return; // 手動アップロードがあれば何もしない
-    if (initialData?.featuredMediaId && initialData.featuredMediaId > 0) return; // 既存アイキャッチがあれば何もしない
+    if (eyecatch) return; // すでにアイキャッチがあれば何もしない
 
     autoFetchedUrlRef.current = noteUrl;
     setEyecatchStatus('fetching');
@@ -245,7 +251,7 @@ export default function PostEditor({ categories, initialData }: Props) {
         const ext = blob.type.includes('png') ? 'png' : 'jpg';
         const file = new File([blob], `note-eyecatch-${Date.now()}.${ext}`, { type: blob.type || 'image/jpeg' });
 
-        await addFiles([file]);
+        await setEyecatchFile(file);
         setEyecatchStatus('done');
       } catch {
         setEyecatchStatus('error');
@@ -290,6 +296,23 @@ export default function PostEditor({ categories, initialData }: Props) {
 
   function toggleCategory(id: number) {
     setSelectedCats((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
+  }
+
+  async function setEyecatchFile(input: File) {
+    const file = await compressImage(input);
+    const uid = ++uidRef.current;
+    const item: UploadedImage = { uid, localUrl: URL.createObjectURL(file), uploading: true };
+    setEyecatch(item);
+    try {
+      const fd = new FormData();
+      fd.append('image', file, file.name);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setEyecatch((prev) => prev && prev.uid === uid ? { ...prev, url: data.url, id: data.id, uploading: false } : prev);
+    } catch {
+      setEyecatch((prev) => prev && prev.uid === uid ? { ...prev, uploading: false, error: 'アップロード失敗' } : prev);
+    }
   }
 
   async function addFiles(files: FileList | File[]) {
@@ -425,8 +448,8 @@ export default function PostEditor({ categories, initialData }: Props) {
     e.preventDefault();
     setErrorMsg('');
     if (!title.trim()) { setErrorMsg('タイトルを入力してください'); return; }
-    if (images.some((img) => img.uploading)) { setErrorMsg('画像アップロード中です。しばらくお待ちください。'); return; }
-    if (images.some((img) => img.error)) { setErrorMsg('アップロードに失敗した画像があります。削除して再度追加してください。'); return; }
+    if (images.some((img) => img.uploading) || eyecatch?.uploading) { setErrorMsg('画像アップロード中です。しばらくお待ちください。'); return; }
+    if (images.some((img) => img.error) || eyecatch?.error) { setErrorMsg('アップロードに失敗した画像があります。削除して再度追加してください。'); return; }
 
     setStatus('saving');
     try {
@@ -443,6 +466,12 @@ export default function PostEditor({ categories, initialData }: Props) {
           formData.append('imageIds', String(img.id));
         }
       });
+      if (eyecatch?.url && eyecatch.id) {
+        formData.append('eyecatchUrl', eyecatch.url);
+        formData.append('eyecatchId', String(eyecatch.id));
+      } else if (eyecatch === null && initialData?.featuredMediaId) {
+        formData.append('eyecatchId', '0');
+      }
 
       const endpoint = initialData ? `/api/admin/posts/${initialData.id}` : '/api/admin/posts';
       const method = initialData ? 'PUT' : 'POST';
@@ -508,7 +537,7 @@ export default function PostEditor({ categories, initialData }: Props) {
     return <p key={i} style={{ whiteSpace: 'pre-wrap' }}>{t}</p>;
   });
 
-  const eyecatchUrl = images[0]?.localUrl ?? initialData?.featuredImageUrl;
+  const eyecatchUrl = eyecatch?.localUrl;
 
   const previewPanel = (
     <div className="journal-article-page" style={{ background: 'transparent' }}>
@@ -569,9 +598,49 @@ export default function PostEditor({ categories, initialData }: Props) {
         </div>
       </div>
 
-      {/* 画像 */}
+      {/* アイキャッチ */}
       <div className={styles.field}>
-        <label className={styles.label}>画像</label>
+        <label className={styles.label}>アイキャッチ画像</label>
+        <div
+          className={`${styles.dropzone} ${isEyecatchDragging ? styles.dropzoneActive : ''}`}
+          onDragOver={(e) => { e.preventDefault(); setIsEyecatchDragging(true); }}
+          onDragLeave={() => setIsEyecatchDragging(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setIsEyecatchDragging(false);
+            const f = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/') || isHeic(f));
+            if (f) void setEyecatchFile(f);
+          }}
+          onClick={() => eyecatchInputRef.current?.click()}
+        >
+          <input ref={eyecatchInputRef} type="file" accept="image/*" style={{ display: 'none' }}
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) void setEyecatchFile(f); e.target.value = ''; }} />
+          {eyecatch ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={eyecatch.localUrl} alt="アイキャッチ" style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '4px', opacity: eyecatch.uploading ? 0.5 : 1 }} />
+              <div style={{ textAlign: 'left' }}>
+                {eyecatch.uploading && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>アップロード中...</p>}
+                {eyecatch.error && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>{eyecatch.error}</p>}
+                {!eyecatch.uploading && !eyecatch.error && <p className={styles.dropzoneHint}>クリックで差し替え</p>}
+                <button type="button" onClick={(e) => { e.stopPropagation(); setEyecatch(null); }} className={styles.removeTextBtn} style={{ marginTop: '6px' }}>削除</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p className={styles.dropzoneText}>クリックまたはドラッグ&ドロップでアイキャッチを設定</p>
+              <p className={styles.dropzoneHint}>JPG・PNG・HEIC ／ 1枚のみ</p>
+            </>
+          )}
+          {eyecatchStatus === 'fetching' && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>noteのアイキャッチを取得中...</p>}
+          {eyecatchStatus === 'done' && <p className={styles.dropzoneHint} style={{ color: '#4caf50' }}>noteのアイキャッチを自動設定しました</p>}
+          {eyecatchStatus === 'error' && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>アイキャッチの自動取得に失敗しました</p>}
+        </div>
+      </div>
+
+      {/* 本文画像 */}
+      <div className={styles.field}>
+        <label className={styles.label}>本文画像</label>
         <div
           className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ''}`}
           onDragOver={handleDragOver}
@@ -582,19 +651,8 @@ export default function PostEditor({ categories, initialData }: Props) {
           <input ref={fileInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
             onChange={(e) => e.target.files && void addFiles(e.target.files)} />
           <p className={styles.dropzoneText}>クリックまたはドラッグ&ドロップで画像を追加</p>
-          <p className={styles.dropzoneHint}>JPG・PNG・HEIC 複数枚OK ／ 最初の1枚がアイキャッチになります</p>
-          {eyecatchStatus === 'fetching' && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>noteのアイキャッチを取得中...</p>}
-          {eyecatchStatus === 'done' && <p className={styles.dropzoneHint} style={{ color: '#4caf50' }}>noteのアイキャッチを自動設定しました</p>}
-          {eyecatchStatus === 'error' && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>アイキャッチの自動取得に失敗しました</p>}
+          <p className={styles.dropzoneHint}>JPG・PNG・HEIC 複数枚OK ／ 本文に[image:N]で挿入</p>
         </div>
-
-        {initialData?.featuredImageUrl && images.length === 0 && (
-          <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={initialData.featuredImageUrl} alt="現在のアイキャッチ" style={{ width: '80px', height: '54px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #3a3a3a' }} />
-            <span style={{ fontSize: '11px', color: '#666' }}>現在のアイキャッチ（新しい画像をアップロードすると差し替わります）</span>
-          </div>
-        )}
 
         {images.length > 0 && (
           <div className={styles.previewGrid}>

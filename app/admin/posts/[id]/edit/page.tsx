@@ -39,7 +39,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
         )}
       </header>
 
-      <main style={{ maxWidth: '800px', margin: '0 auto', padding: '40px 24px' }}>
+      <main style={{ maxWidth: '1600px', margin: '0 auto', padding: '40px 40px' }}>
         <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>投稿を編集</h1>
         <PostEditor categories={categories} initialData={initialData} />
       </main>
