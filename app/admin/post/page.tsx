@@ -15,6 +15,7 @@ export default async function NewPostPage() {
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#2a2a2a', borderBottom: '1px solid #3a3a3a', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
           <Link href="/admin" style={{ fontSize: '16px', fontWeight: 700, color: '#ff764d', letterSpacing: '2px', textDecoration: 'none' }}>SAL</Link>
+          <Link href="/admin" style={{ fontSize: '12px', color: '#666', textDecoration: 'none' }}>/ 投稿一覧</Link>
           <span style={{ fontSize: '12px', color: '#666' }}>/ 新規投稿</span>
         </div>
       </header>

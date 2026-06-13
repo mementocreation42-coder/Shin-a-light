@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './PostEditor.module.css';
+import MediaPicker from './MediaPicker';
 
 // ===== 画像圧縮 =====
 const TARGET_SIZE_BYTES = 800 * 1024;
@@ -54,7 +55,9 @@ function htmlToPlainText(html: string): string {
     .replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, inner) => `\n\n[quote]${inner.replace(/<[^>]+>/g, '').trim()}[/quote]\n\n`)
     .replace(/<\/p>\s*<p>/gi, '\n\n').replace(/<p[^>]*>/gi, '').replace(/<\/p>/gi, '\n\n')
     .replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, '')
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, n) => String.fromCharCode(parseInt(n, 16)))
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&nbsp;/g, ' ')
     .replace(/\n{3,}/g, '\n\n').trim();
 }
 
@@ -214,18 +217,97 @@ export default function PostEditor({ categories, initialData }: Props) {
       : null
   );
   const [isEyecatchDragging, setIsEyecatchDragging] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
+const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
   const [ogpCache, setOgpCache] = useState<Record<string, { title: string; description: string; image: string | null; siteName: string; favicon: string } | null>>({});
+  const [affiliateCache, setAffiliateCache] = useState<Record<string, { title: string; image: string; price: string; brand: string } | null>>({});
   const fetchingUrls = useRef<Set<string>>(new Set());
+  const fetchingAffiliateUrls = useRef<Set<string>>(new Set());
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'fetching' | 'done' | 'error'>('idle');
+  const [slashMenu, setSlashMenu] = useState<{ top: number; left: number; query: string } | null>(null);
+  const [slashIndex, setSlashIndex] = useState(0);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const eyecatchInputRef = useRef<HTMLInputElement>(null);
+const eyecatchInputRef = useRef<HTMLInputElement>(null);
   const autoFetchedUrlRef = useRef<string>('');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const slashStartRef = useRef<number>(-1);
+
+  const SLASH_COMMANDS = [
+    { label: 'H2 見出し',   icon: 'H2', insert: '[h2][/h2]',         cursor: 4,  action: 'insert' },
+    { label: 'H3 小見出し', icon: 'H3', insert: '[h3][/h3]',         cursor: 4,  action: 'insert' },
+    { label: 'リスト',      icon: 'UL', insert: '[ul]\n\n[/ul]',     cursor: 5,  action: 'insert' },
+    { label: '引用',        icon: '❝',  insert: '[quote][/quote]',   cursor: 7,  action: 'insert' },
+    { label: '画像を挿入',  icon: '🖼',  insert: '',                  cursor: 0,  action: 'media' },
+  ] as const;
+
+  function applySlashCommand(cmdIndex: number) {
+    const ta = textareaRef.current;
+    if (!ta || slashStartRef.current < 0) return;
+    const cmd = SLASH_COMMANDS[cmdIndex];
+    setSlashMenu(null);
+    if (cmd.action === 'media') {
+      // /を削除してからメディアピッカーを開く
+      const before = body.slice(0, slashStartRef.current);
+      const after = body.slice(ta.selectionStart);
+      setBody(before + after);
+      setShowMediaPicker(true);
+      slashStartRef.current = -1;
+      return;
+    }
+    const before = body.slice(0, slashStartRef.current);
+    const after = body.slice(ta.selectionStart);
+    const newBody = before + cmd.insert + after;
+    setBody(newBody);
+    const pos = slashStartRef.current + cmd.cursor;
+    requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = pos; ta.focus(); });
+    slashStartRef.current = -1;
+  }
+
+  function handleMediaSelect(item: { id: number; source_url: string; alt_text: string; title: { rendered: string } }) {
+    const uid = ++uidRef.current;
+    const newImg = { uid, localUrl: item.source_url, url: item.source_url, id: item.id, uploading: false };
+    setImages((prev) => {
+      const idx = prev.length;
+      insertAtCursor(`[image:${idx}]`);
+      return [...prev, newImg];
+    });
+    setShowMediaPicker(false);
+  }
+
+  function handleBodyChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const val = e.target.value;
+    setBody(val);
+    const pos = e.target.selectionStart;
+    // カーソル直前のテキストから現在行を取得
+    const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
+    const lineText = val.slice(lineStart, pos);
+    if (lineText.startsWith('/')) {
+      const query = lineText.slice(1).toLowerCase();
+      const ta = e.target;
+      // カーソル位置の座標を擬似的に取得（textarea上部からの行数で計算）
+      const lines = val.slice(0, pos).split('\n');
+      const lineHeight = 22;
+      const top = lines.length * lineHeight + 4;
+      slashStartRef.current = lineStart;
+      setSlashIndex(0);
+      setSlashMenu({ top, left: 0, query });
+    } else {
+      setSlashMenu(null);
+      slashStartRef.current = -1;
+    }
+  }
+
+  function handleBodyKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (!slashMenu) return;
+    const filtered = SLASH_COMMANDS.filter(c => c.label.toLowerCase().includes(slashMenu.query) || c.icon.toLowerCase().includes(slashMenu.query));
+    if (e.key === 'ArrowDown') { e.preventDefault(); setSlashIndex(i => (i + 1) % filtered.length); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setSlashIndex(i => (i - 1 + filtered.length) % filtered.length); }
+    else if (e.key === 'Enter' || e.key === 'Tab') {
+      if (filtered.length > 0) { e.preventDefault(); applySlashCommand(SLASH_COMMANDS.indexOf(filtered[slashIndex])); }
+    } else if (e.key === 'Escape') { setSlashMenu(null); slashStartRef.current = -1; }
+  }
 
   // note.com URLを本文から検出してアイキャッチを自動取得
   useEffect(() => {
@@ -261,6 +343,36 @@ export default function PostEditor({ categories, initialData }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [body]);
   const uidRef = useRef(parsed?.images.length ?? 0);
+  const dragIndexRef = useRef<number | null>(null);
+
+  function handleImageDragStart(i: number) {
+    dragIndexRef.current = i;
+  }
+
+  function handleImageDrop(dropIndex: number) {
+    const from = dragIndexRef.current;
+    if (from === null || from === dropIndex) return;
+    setImages((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(dropIndex, 0, moved);
+      return next;
+    });
+    // body内の [image:N] を新しいインデックスにリマップ
+    setBody((prev) => {
+      const total = images.length;
+      const order = Array.from({ length: total }, (_, i) => i);
+      const [movedIdx] = order.splice(from, 1);
+      order.splice(dropIndex, 0, movedIdx);
+      const inverse: number[] = new Array(total);
+      order.forEach((origIdx, newIdx) => { inverse[origIdx] = newIdx; });
+      return prev.replace(/\[image:(\d+)\]/g, (_, n) => {
+        const ni = parseInt(n, 10);
+        return `[image:${ni < total ? inverse[ni] : ni}]`;
+      });
+    });
+    dragIndexRef.current = null;
+  }
 
   // 本文からスタンドアロンURLを抽出（YouTubeとアフィリエイトURLは除外）
   const standaloneUrls = useMemo(() => {
@@ -271,6 +383,19 @@ export default function PostEditor({ categories, initialData }: Props) {
           !/(?:youtube\.com|youtu\.be)/i.test(t) &&
           !/(?:amazon\.co\.jp|amzn\.to|amzn\.asia|rakuten\.co\.jp)/i.test(t) &&
           !/^\[(?:image|product|h2|h3)/.test(t)) {
+        if (!urls.includes(t)) urls.push(t);
+      }
+    }
+    return urls;
+  }, [body]);
+
+  // 本文からAmazon/楽天URLを抽出
+  const standaloneAffiliateUrls = useMemo(() => {
+    const urls: string[] = [];
+    for (const para of body.split('\n\n')) {
+      const t = para.trim();
+      if (/^https?:\/\/\S+$/.test(t) &&
+          /(?:amazon\.co\.jp|amzn\.to|amzn\.asia|rakuten\.co\.jp)/i.test(t)) {
         if (!urls.includes(t)) urls.push(t);
       }
     }
@@ -294,6 +419,38 @@ export default function PostEditor({ categories, initialData }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [standaloneUrls]);
 
+  // アフィリエイトURL一括フェッチ（デバウンス付き）
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      for (const url of standaloneAffiliateUrls) {
+        if (url in affiliateCache || fetchingAffiliateUrls.current.has(url)) continue;
+        fetchingAffiliateUrls.current.add(url);
+        fetch(`/api/product-metadata?url=${encodeURIComponent(url)}`)
+          .then((r) => r.json())
+          .then(async (data) => {
+            if ((data?.title || data?.image) && data.image) {
+              setAffiliateCache((prev) => ({ ...prev, [url]: data }));
+            } else if (data?.title || data?.image) {
+              // imageが空の場合はogpでフォールバック
+              try {
+                const ogpRes = await fetch(`/api/ogp?url=${encodeURIComponent(url)}`);
+                const ogp = await ogpRes.json();
+                setAffiliateCache((prev) => ({ ...prev, [url]: { ...data, image: data.image || ogp.image || '' } }));
+              } catch {
+                setAffiliateCache((prev) => ({ ...prev, [url]: data }));
+              }
+            } else {
+              setAffiliateCache((prev) => ({ ...prev, [url]: null }));
+            }
+          })
+          .catch(() => setAffiliateCache((prev) => ({ ...prev, [url]: null })))
+          .finally(() => fetchingAffiliateUrls.current.delete(url));
+      }
+    }, 600);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [standaloneAffiliateUrls]);
+
   function toggleCategory(id: number) {
     setSelectedCats((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
   }
@@ -315,38 +472,7 @@ export default function PostEditor({ categories, initialData }: Props) {
     }
   }
 
-  async function addFiles(files: FileList | File[]) {
-    const arr = Array.from(files).filter((f) => f.type.startsWith('image/') || isHeic(f));
-    const compressed = await Promise.all(arr.map(compressImage));
-    const newItems: UploadedImage[] = compressed.map((file) => ({
-      uid: ++uidRef.current, localUrl: URL.createObjectURL(file), uploading: true,
-    }));
-    setImages((prev) => [...prev, ...newItems]);
-
-    newItems.forEach(async (item, relIdx) => {
-      const file = compressed[relIdx];
-      try {
-        const fd = new FormData();
-        fd.append('image', file, file.name);
-        const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
-        setImages((prev) => prev.map((img) =>
-          img.uid === item.uid ? { ...img, url: data.url, id: data.id, uploading: false } : img
-        ));
-      } catch {
-        setImages((prev) => prev.map((img) =>
-          img.uid === item.uid ? { ...img, uploading: false, error: 'アップロード失敗' } : img
-        ));
-      }
-    });
-  }
-
-  function removeImage(i: number) {
-    setImages((prev) => prev.filter((_, idx) => idx !== i));
-  }
-
-  function insertAtCursor(text: string) {
+function insertAtCursor(text: string) {
     const ta = textareaRef.current;
     if (!ta) return;
     const start = ta.selectionStart;
@@ -381,12 +507,6 @@ export default function PostEditor({ categories, initialData }: Props) {
     );
   }
 
-  const handleDragOver = useCallback((e: React.DragEvent) => { e.preventDefault(); setIsDragging(true); }, []);
-  const handleDragLeave = useCallback(() => setIsDragging(false), []);
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); setIsDragging(false); void addFiles(e.dataTransfer.files);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleBodyDragOver = useCallback((e: React.DragEvent) => {
     if (e.dataTransfer.types.includes('Files')) { e.preventDefault(); setIsDraggingOnBody(true); }
@@ -503,6 +623,28 @@ export default function PostEditor({ categories, initialData }: Props) {
     if (h3m) return <h3 key={i}>{h3m[1]}</h3>;
     if (ulm) return <ul key={i}>{ulm[1].split('\n').filter(Boolean).map((item, j) => <li key={j}>{item.trim()}</li>)}</ul>;
     if (qtm) return <blockquote key={i}><p>{qtm[1]}</p></blockquote>;
+    const prodM = t.match(/^\[product:(\d+)\]$/);
+    if (prodM) {
+      const p = products[parseInt(prodM[1], 10)];
+      if (!p) return null;
+      const isAmazon = /amazon\.co\.jp|amzn\.to|amzn\.asia/i.test(p.amazonUrl);
+      return (
+        <div key={i} className="sal-affiliate-card">
+          {p.image && <div className="sal-affiliate-image"><img src={p.image} alt={p.title} loading="lazy" /></div>}
+          <div className="sal-affiliate-body">
+            {p.brand && <div className="sal-affiliate-brand">{p.brand}</div>}
+            <h3 className="sal-affiliate-title">{p.title || <span style={{ opacity: 0.4 }}>タイトル未入力</span>}</h3>
+            <div className="sal-affiliate-footer">
+              {p.price && <div className="sal-affiliate-price">{p.price}<span className="sal-affiliate-tax">（税込）</span></div>}
+              <div className="sal-affiliate-buttons">
+                {p.amazonUrl && <a href={p.amazonUrl} className="sal-affiliate-btn sal-affiliate-btn--amazon" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" width={50} height={12} /><span>で探す</span></a>}
+                {p.rakutenUrl && <a href={p.rakutenUrl} className="sal-affiliate-btn sal-affiliate-btn--rakuten" target="_blank" rel="noopener noreferrer"><span className="sal-affiliate-rakuten-r">R</span><span>楽天で探す</span></a>}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     const imgM = t.match(/^\[image:(\d+)\]$/);
     if (imgM) {
       const img = images[parseInt(imgM[1], 10)];
@@ -513,6 +655,30 @@ export default function PostEditor({ categories, initialData }: Props) {
           <img src={img.localUrl} alt="" style={{ opacity: img.uploading ? 0.5 : 1 }} />
           {img.uploading && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#ff764d', background: 'rgba(0,0,0,0.4)' }}>アップロード中...</div>}
         </figure>
+      );
+    }
+    if (/^https?:\/\/\S+$/.test(t) && /(?:amazon\.co\.jp|amzn\.to|amzn\.asia|rakuten\.co\.jp)/i.test(t)) {
+      const meta = affiliateCache[t];
+      if (meta === undefined) return <p key={i} style={{ opacity: 0.4, wordBreak: 'break-all', fontSize: '12px' }}>{t} — 取得中...</p>;
+      if (meta === null) return <p key={i} style={{ wordBreak: 'break-all' }}><a href={t}>{t}</a></p>;
+      const isAmazon = /amazon\.co\.jp|amzn\.to|amzn\.asia/i.test(t);
+      return (
+        <div key={i} className="sal-affiliate-card">
+          {meta.image && <div className="sal-affiliate-image"><img src={meta.image} alt={meta.title} loading="lazy" /></div>}
+          <div className="sal-affiliate-body">
+            {meta.brand && <div className="sal-affiliate-brand">{meta.brand}</div>}
+            <h3 className="sal-affiliate-title">{meta.title}</h3>
+            <div className="sal-affiliate-footer">
+              {meta.price && <div className="sal-affiliate-price">{meta.price}<span className="sal-affiliate-tax">（税込）</span></div>}
+              <div className="sal-affiliate-buttons">
+                {isAmazon
+                  ? <a href={t} className="sal-affiliate-btn sal-affiliate-btn--amazon" target="_blank" rel="noopener noreferrer"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" width={50} height={12} /><span>で探す</span></a>
+                  : <a href={t} className="sal-affiliate-btn sal-affiliate-btn--rakuten" target="_blank" rel="noopener noreferrer"><span className="sal-affiliate-rakuten-r">R</span><span>楽天で探す</span></a>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
       );
     }
     if (/^https?:\/\/\S+$/.test(t) && !/(?:youtube\.com|youtu\.be)/i.test(t) && !/(?:amazon\.co\.jp|amzn\.to|rakuten\.co\.jp)/i.test(t)) {
@@ -566,6 +732,7 @@ export default function PostEditor({ categories, initialData }: Props) {
   );
 
   return (
+    <>
     <div className={styles.editorLayout}>
     <form onSubmit={handleSubmit} className={styles.form}>
       {/* タイトル */}
@@ -638,51 +805,6 @@ export default function PostEditor({ categories, initialData }: Props) {
         </div>
       </div>
 
-      {/* 本文画像 */}
-      <div className={styles.field}>
-        <label className={styles.label}>本文画像</label>
-        <div
-          className={`${styles.dropzone} ${isDragging ? styles.dropzoneActive : ''}`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <input ref={fileInputRef} type="file" accept="image/*" multiple style={{ display: 'none' }}
-            onChange={(e) => e.target.files && void addFiles(e.target.files)} />
-          <p className={styles.dropzoneText}>クリックまたはドラッグ&ドロップで画像を追加</p>
-          <p className={styles.dropzoneHint}>JPG・PNG・HEIC 複数枚OK ／ 本文に[image:N]で挿入</p>
-        </div>
-
-        {images.length > 0 && (
-          <div className={styles.previewGrid}>
-            {images.map((img, i) => (
-              <div key={img.uid} className={styles.previewItem}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.localUrl} alt={`preview-${i}`} className={styles.previewImg}
-                  style={{ opacity: img.uploading ? 0.4 : 1 }} />
-                {img.uploading && (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#ff764d', background: 'rgba(0,0,0,0.5)' }}>
-                    uploading...
-                  </div>
-                )}
-                {img.error && (
-                  <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', color: '#e74c3c', background: 'rgba(0,0,0,0.7)', padding: '4px', textAlign: 'center' }}>
-                    失敗
-                  </div>
-                )}
-                <div className={styles.previewActions}>
-                  {!img.uploading && !img.error && (
-                    <button type="button" onClick={() => insertAtCursor(`[image:${i}]`)} className={styles.insertBtn}>挿入</button>
-                  )}
-                  <button type="button" onClick={() => removeImage(i)} className={styles.removeBtn} aria-label="削除">×</button>
-                </div>
-                <span className={styles.imageIndex}>[image:{i}]</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
 
       {/* アフィリリンク */}
       <div className={styles.field}>
@@ -746,15 +868,46 @@ export default function PostEditor({ categories, initialData }: Props) {
           <textarea
             ref={textareaRef}
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onChange={handleBodyChange}
+            onKeyDown={handleBodyKeyDown}
             rows={20}
             className={styles.textarea}
             style={{ ...(isDraggingOnBody ? { outline: '2px dashed #ff764d', outlineOffset: '-2px' } : {}), minHeight: '400px' }}
-            placeholder={'本文を入力してください。段落は空行で区切ります。\n\n画像をここにドラッグ&ドロップして挿入できます。'}
+            placeholder={'本文を入力してください。段落は空行で区切ります。\n/ でブロック挿入メニューを表示。'}
             onDragOver={handleBodyDragOver}
             onDragLeave={handleBodyDragLeave}
             onDrop={handleBodyDrop}
           />
+          {slashMenu && (() => {
+            const filtered = SLASH_COMMANDS.filter(c =>
+              !slashMenu.query || c.label.toLowerCase().includes(slashMenu.query) || c.icon.toLowerCase().includes(slashMenu.query)
+            );
+            if (filtered.length === 0) return null;
+            return (
+              <div style={{
+                position: 'absolute', top: `${slashMenu.top}px`, left: '8px', zIndex: 100,
+                background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '8px',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.5)', minWidth: '180px', overflow: 'hidden',
+              }}>
+                {filtered.map((cmd, idx) => (
+                  <div
+                    key={cmd.icon}
+                    onMouseDown={(e) => { e.preventDefault(); applySlashCommand(SLASH_COMMANDS.indexOf(cmd)); }}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      padding: '8px 14px', cursor: 'pointer', fontSize: '13px',
+                      background: idx === slashIndex ? '#3a3a3a' : 'transparent',
+                      color: idx === slashIndex ? '#fff' : '#a0a0a0',
+                    }}
+                    onMouseEnter={() => setSlashIndex(idx)}
+                  >
+                    <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', color: '#ff764d', width: '20px' }}>{cmd.icon}</span>
+                    <span>{cmd.label}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
           {isDraggingOnBody && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', color: '#ff764d', fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>
               ここにドロップして挿入
@@ -781,5 +934,12 @@ export default function PostEditor({ categories, initialData }: Props) {
     </form>
     <div className={styles.previewCol}>{previewPanel}</div>
     </div>
+    {showMediaPicker && (
+      <MediaPicker
+        onSelect={handleMediaSelect}
+        onClose={() => setShowMediaPicker(false)}
+      />
+    )}
+    </>
   );
 }
