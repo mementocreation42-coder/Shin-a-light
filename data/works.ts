@@ -6,6 +6,8 @@ export interface VideoItem {
 export interface Work {
     slug: string;
     title: string;
+    /** 'project' = 自分で立ち上げ・運営するオウンドプロジェクト, 'work' = 受託案件 */
+    type: 'project' | 'work';
     category: string;
     color: string;
     image: string;
@@ -38,6 +40,7 @@ export const works: Work[] = [
 
         slug: 'mugi-promotion-video',
         title: '牟岐町プロモーション映像',
+        type: 'work',
         category: 'Promotion',
         color: 'color-4',
         image: 'https://img.youtube.com/vi/CuEUGaKqcEU/maxresdefault.jpg',
@@ -58,6 +61,7 @@ export const works: Work[] = [
     {
         slug: 'beyond-borders-prayer',
         title: '香川県豊島・国境を越えて・祈り',
+        type: 'work',
         category: 'Promotion / Documentary',
         color: 'color-6',
         image: 'https://img.youtube.com/vi/nBt3BryfMa0/maxresdefault.jpg',
@@ -88,6 +92,7 @@ export const works: Work[] = [
     {
         slug: 'mitoflow40-project',
         title: 'パーソナルヘルスケアサービス Mitoflow40',
+        type: 'project',
         category: 'Personal Healthcare Service',
         color: 'color-2',
         image: '/images/works/mitoflow40/main.jpg',
@@ -103,6 +108,7 @@ export const works: Work[] = [
     {
         slug: 'mugizine-media',
         title: '牟岐町メディア MUGIZINE',
+        type: 'work',
         category: 'Web Media',
         color: 'color-3',
         image: '/images/works/mugizine/main.jpg',
@@ -130,6 +136,7 @@ export const works: Work[] = [
     {
         slug: 'tsurihack-media',
         title: '釣りメディア TSURIHACK',
+        type: 'work',
         category: 'Outdoor / Fishing / Lifestyle',
         color: 'color-4',
         image: '/images/works/tsurihack/main.jpg',
@@ -155,6 +162,7 @@ export const works: Work[] = [
     {
         slug: 'steelband-pandle',
         title: 'スティールバンド パンドル｜Expo 2025 Live Performance',
+        type: 'work',
         category: 'Event Movie / Documentary',
         color: 'color-5',
         image: 'https://img.youtube.com/vi/EILMCYSX3tE/maxresdefault.jpg',
@@ -182,6 +190,7 @@ export const works: Work[] = [
     {
         slug: 'planetary-muffin',
         title: 'プラネタリーマフィン ビジュアル戦略',
+        type: 'work',
         category: 'Branding / Video production / Photography',
         color: 'color-2',
         image: 'https://img.youtube.com/vi/7dMyN_6mbVI/maxresdefault.jpg',
@@ -207,37 +216,9 @@ export const works: Work[] = [
         ]
     },
     {
-        slug: 'family-documentary-memento',
-        title: 'ムービー&フォトサービス MEMENTO',
-        category: 'Family Documentary / MEMENTO',
-        color: 'color-7',
-        image: 'https://img.youtube.com/vi/jWOBKzFobHk/maxresdefault.jpg',
-        year: '2023- ',
-        client: 'オウンドサービス',
-        role: 'プロデュース / 撮影 / 編集',
-        tools: 'ANYWHERE',
-        toolsLabel: 'Field',
-        overview: 'かつて、私は子どもという存在が苦手でした。自分の娘ですら、最初は恐る恐る抱っこするような父親だったのです。しかし、おむつを替え、共に過ごす日々の中で、カメラを手に娘を追う自分に気づきました。それはまるで、かつてのアニメで見た「たまちゃんの父さん」そのものでした。\n無我夢中でシャッターを切るうちに気づいたのは、成長の喜びは私だけのものではなく、すべての親が抱く普遍的な願いだということです。\nMEMENTO（メメント）は、単なる「記録データ」を残すためのプロジェクトではありません。 過去は、その時に帰るためにあるのではなく、未来を創るための糧であると私は信じています。20年、30年後、その映像を見返した時に流れる涙が、その人の未来を支える力になる。そんな「時を越えて愛される資産」を、ご家族と共に残していきます。',
-        process: '自然体の追求：日常の機微を掬い取るドキュメンタリー手法\n作り込まれたセットや不自然なポーズは必要ありません。その場所にある生活の音、刻々と移ろう光、反映と言葉にならない空気感。それらをありのままに掬い取るドキュメンタリー手法を採用しています。作為を排することで、数十年後、当時のありのままの光景を鮮明に呼び起こす記録を目指しています。\n\n視点の設計：親の愛情と、プロの構図の融合\n父親としての「主観的な愛情」と、クリエイターとしての「客観的な構図」。この二つの視点を融合させることで、撮影者としての温もりを保ちつつ、普遍的な美しさを持つ映像を追求しています。何十年後に見返したとき、当時の空気の「温度」が肌に蘇るような質感にこだわっています。\n\n非言語の物語：エディトリアルな編集\nライターとしての執筆経験を映像編集にも反映させています。テロップやナレーションといった言葉による説明に頼りすぎるのではなく、映像の繋ぎ、光のバランス、そして「間（ま）」によって感情を伝えます。余白を大切にしたエディトリアル（編集的）な表現によって、見る人がそれぞれの想いを重ねられる物語を構成します。',
-        result: 'MEMENTOを通じて制作した映像は、ご家族にとってかけがえのない宝物となることはもちろん、それを目にした親世代の皆様からも「自分たちもこういう形で残しておきたかった」という深い共感をいただき続けています。\nその声に触れるたび、私たちが残しているのは単なる映像データではなく、その時、その場所に確かに存在した「愛されているという事実」なのだと確信しています。',
-        youtubeId: 'jWOBKzFobHk',
-        gallery: [
-            '/images/works/memento/1.jpg',
-            '/images/works/memento/2.jpg',
-            '/images/works/memento/3.jpg',
-            '/images/works/memento/4.jpg',
-            '/images/works/memento/5.jpg',
-            '/images/works/memento/6.jpg',
-            '/images/works/memento/7.jpg',
-            '/images/works/memento/8.jpg',
-            '/images/works/memento/9.jpg',
-            '/images/works/memento/10.jpg',
-            '/images/works/memento/11.jpg'
-        ]
-    },
-    {
         slug: 'todoroki-shrine-video',
         title: '轟神社 コンセプトムービー',
+        type: 'work',
         category: 'Promotion / Archive',
         color: 'color-8',
         image: 'https://img.youtube.com/vi/wVZ6kqpEKL4/maxresdefault.jpg',
@@ -258,6 +239,7 @@ export const works: Work[] = [
     {
         slug: 'tokushima-seikyo-40th-anniversary',
         title: 'とくしま生協40周年記念映像',
+        type: 'work',
         category: 'Promotion / Anniversary',
         color: 'color-1',
         image: 'https://img.youtube.com/vi/tOaGVPfhhow/maxresdefault.jpg',
@@ -273,6 +255,7 @@ export const works: Work[] = [
     {
         slug: 'matsushigate-art-project',
         title: 'マツシゲート アートプロジェクト映像',
+        type: 'work',
         category: 'Archive / Promotion',
         color: 'color-3',
         image: 'https://img.youtube.com/vi/beRHCqfwqYk/maxresdefault.jpg',
@@ -296,6 +279,7 @@ export const works: Work[] = [
     {
         slug: 'hl-fishing',
         title: 'HL FISHING',
+        type: 'project',
         category: 'Lifestyle / Outdoor',
         color: 'color-5',
         image: '/images/works/hl-fishing/hero-bg.jpg',
@@ -313,6 +297,9 @@ export const works: Work[] = [
         result: '表現の深化： 装備を絞ることでフィールドでの観察眼が研ぎ澄まされ、映像表現における「本質の抽出」というプロセスがより明確化されました。\n価値観の提示： 消費社会へのカウンターとしての「HL」という考え方が、同じ志を持つアングラーやクリエイター、ミニマリストから共感を得るフックとなっています。\nライフワークの確立： 趣味としての釣りと、仕事としての映像制作を「HL」という共通言語で統合。個人のパッションを起点とした持続可能な表現活動のモデルケースとなっています。',
     },
 ];
+
+export const projects = works.filter((work) => work.type === 'project');
+export const clientWorks = works.filter((work) => work.type === 'work');
 
 export function getWorkBySlug(slug: string): Work | undefined {
     return works.find((work) => work.slug === slug);

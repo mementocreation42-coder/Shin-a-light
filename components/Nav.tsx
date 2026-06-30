@@ -18,10 +18,9 @@ export default function Nav() {
 
             {/* Desktop links */}
             <ul className="nav-links">
-                <li><Link href="/#about">About</Link></li>
+                <li><Link href="/#projects">Projects</Link></li>
                 <li><Link href="/#works">Works</Link></li>
                 <li><Link href="/journal">Journal</Link></li>
-                <li><Link href="/store">Store</Link></li>
                 <li><Link href="/#contact">Contact</Link></li>
                 <li><Link href="/newsletter" className="nav-letter-tag">Newsletter</Link></li>
             </ul>
@@ -40,10 +39,9 @@ export default function Nav() {
             {/* Mobile menu */}
             <div className={`nav-mobile ${isOpen ? 'is-open' : ''}`}>
                 <ul className="nav-mobile-links">
-                    <li><Link href="/#about" onClick={close}>About</Link></li>
+                    <li><Link href="/#projects" onClick={close}>Projects</Link></li>
                     <li><Link href="/#works" onClick={close}>Works</Link></li>
                     <li><Link href="/journal" onClick={close}>Journal</Link></li>
-                    <li><Link href="/store" onClick={close}>Store</Link></li>
                     <li><Link href="/#contact" onClick={close}>Contact</Link></li>
                     <li><Link href="/newsletter" className="nav-letter-tag" onClick={close}>Newsletter</Link></li>
                 </ul>
