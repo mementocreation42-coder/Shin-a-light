@@ -58,6 +58,14 @@ export default async function WorkDetailPage({ params }: PageProps) {
 
     const { prev, next } = getAdjacentWorks(slug);
 
+    const isProject = work.type === 'project';
+    const backHref = isProject ? '/#projects' : '/#works';
+    const backLabel = isProject ? '← Back to Projects' : '← Back to Works';
+    const sectionName = isProject ? 'Projects' : 'Works';
+    const sectionUrl = isProject
+        ? 'https://www.shinealight.jp/#projects'
+        : 'https://www.shinealight.jp/#works';
+
     return (
         <div className="work-detail">
             <script
@@ -88,7 +96,7 @@ export default async function WorkDetailPage({ params }: PageProps) {
                         "@type": "BreadcrumbList",
                         "itemListElement": [
                             { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
-                            { "@type": "ListItem", "position": 2, "name": "Works", "item": "https://www.shinealight.jp/#works" },
+                            { "@type": "ListItem", "position": 2, "name": sectionName, "item": sectionUrl },
                             { "@type": "ListItem", "position": 3, "name": work.title }
                         ]
                     })
@@ -97,8 +105,8 @@ export default async function WorkDetailPage({ params }: PageProps) {
             {/* Hero */}
             <header className="work-hero">
                 <div className="work-hero-inner">
-                    <Link href="/#works" className="back-link">
-                        ← Back to Works
+                    <Link href={backHref} className="back-link">
+                        {backLabel}
                     </Link>
                     <p className="work-category">{work.category}</p>
                     <h1 className="work-detail-title">{work.title}</h1>

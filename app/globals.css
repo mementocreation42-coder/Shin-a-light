@@ -627,6 +627,43 @@ a {
   margin-top: 24px;
 }
 
+.profile-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 28px;
+}
+
+.role-group {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.role-group-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding-top: 6px;
+  margin: 0;
+}
+
+.role-group-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .role-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
 .profile-other-sites {
   margin-top: 32px;
 }
