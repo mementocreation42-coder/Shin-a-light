@@ -13,26 +13,16 @@ export default function Contact() {
 
         const formData = new FormData(e.currentTarget);
 
-        // Mapping our names to Contact Form 7 default field names
-        const body = new FormData();
-        body.append('_wpcf7', '16255');
-        body.append('_wpcf7_version', '5.9');
-        body.append('_wpcf7_locale', 'ja');
-        body.append('_wpcf7_unit_tag', `wpcf7-f16255-o1`);
-        body.append('_wpcf7_container_post', '0');
-        body.append('your-name', formData.get('name') as string);
-        body.append('your-email', formData.get('email') as string);
-        body.append('your-subject', 'Message from Shine a Light Portfolio');
-        body.append('your-message', formData.get('message') as string);
-
         try {
-            const response = await fetch(
-                'https://journal.shinealight.jp/wp-json/contact-form-7/v1/contact-forms/16255/feedback',
-                {
-                    method: 'POST',
-                    body: body,
-                }
-            );
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: formData.get('name') as string,
+                    email: formData.get('email') as string,
+                    message: formData.get('message') as string,
+                }),
+            });
 
             const result = await response.json();
 
