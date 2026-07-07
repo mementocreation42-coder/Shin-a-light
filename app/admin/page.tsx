@@ -53,6 +53,7 @@ export default async function AdminPage({
           <span style={s.badge}>ADMIN</span>
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/admin/photos" style={s.logoutBtn}>フォト管理</Link>
           <Link href="/admin/post" style={s.newBtn}>+ 新規投稿</Link>
           <form action={logout}>
             <button type="submit" style={s.logoutBtn}>ログアウト</button>

@@ -21,6 +21,9 @@ export default function Hero() {
                     <span className="quote-line-1">There is strong shadow</span>
                     <span className="quote-line-2">where there is much light.</span>
                 </p>
+                <p className="hero-subtitle">
+                    徳島を拠点に活動するクリエイター／プロデューサー 小林大介
+                </p>
             </div>
         </section>
     );

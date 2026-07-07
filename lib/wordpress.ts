@@ -24,6 +24,10 @@ export interface WPMedia {
     id: number;
     source_url: string;
     alt_text: string;
+    media_details?: {
+        width: number;
+        height: number;
+    };
 }
 
 export interface WPCategory {
@@ -40,6 +44,10 @@ export async function getPosts(page = 1, perPage = 12, categoryId?: number): Pro
         let url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${listFields}`;
         if (categoryId) {
             url += `&categories=${categoryId}`;
+        } else {
+            // ギャラリー専用投稿はジャーナル一覧から除外
+            const galleryId = await getGalleryCategoryId();
+            if (galleryId) url += `&categories_exclude=${galleryId}`;
         }
 
         const res = await fetch(
@@ -67,15 +75,17 @@ export async function getPosts(page = 1, perPage = 12, categoryId?: number): Pro
 export async function getAllPosts(): Promise<WPPost[]> {
     try {
         const perPage = 100; // WP Max is 100
-        let page = 1;
+        const page = 1;
         let allPosts: WPPost[] = [];
         let totalPages = 1;
 
         const listFields = '_fields=id,title,excerpt,date,categories,featured_media,_links,_embedded&_embed=wp:featuredmedia';
+        const galleryId = await getGalleryCategoryId();
+        const exclude = galleryId ? `&categories_exclude=${galleryId}` : '';
 
         // Fetch first page to get totalPages
         const firstRes = await fetch(
-            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${listFields}`,
+            `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&${listFields}${exclude}`,
             { next: { revalidate: 3600 } }
         );
 
@@ -93,7 +103,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
             const promises = [];
             for (let i = 2; i <= totalPages; i++) {
                 promises.push(
-                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&${listFields}`, {
+                    fetch(`${WP_REST_BASE}/posts&page=${i}&per_page=${perPage}&${listFields}${exclude}`, {
                         next: { revalidate: 3600 },
                     }).then((res) => (res.ok ? res.json() : []))
                 );
@@ -240,7 +250,9 @@ export async function getAdminPosts(page = 1, perPage = 20): Promise<{
   totalPages: number;
   total: number;
 }> {
-  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=publish,draft`;
+  const galleryId = await getGalleryCategoryId();
+  const exclude = galleryId ? `&categories_exclude=${galleryId}` : '';
+  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=publish,draft${exclude}`;
   const res = await fetch(url, {
     headers: { Authorization: authHeader() },
     cache: 'no-store',
@@ -320,6 +332,107 @@ export async function uploadMedia(file: File, filename: string): Promise<WPMedia
   });
   if (!res.ok) throw new Error(`Upload failed: ${await res.text()}`);
   return res.json();
+}
+
+// ===================================
+// PHOTO GALLERY — dedicated "gallery" category
+// ===================================
+
+export const GALLERY_CATEGORY_SLUG = 'gallery';
+
+let _galleryCatId: number | null = null;
+
+// Resolve the gallery category id (read-only). Cached in-process + via fetch cache.
+export async function getGalleryCategoryId(): Promise<number | null> {
+    if (_galleryCatId) return _galleryCatId;
+    try {
+        // カテゴリ未作成→作成後の遷移を確実に反映するためキャッシュしない。
+        // 成功したidはモジュール変数に memo するので追加リクエストは最小限。
+        const res = await fetch(
+            `${WP_REST_BASE}/categories&slug=${GALLERY_CATEGORY_SLUG}&_fields=id`,
+            { cache: 'no-store' }
+        );
+        if (!res.ok) return null;
+        const cats = await res.json();
+        if (Array.isArray(cats) && cats[0]?.id) {
+            _galleryCatId = cats[0].id as number;
+            return _galleryCatId;
+        }
+        return null;
+    } catch (error) {
+        console.error('WordPress API error (getGalleryCategoryId):', error);
+        return null;
+    }
+}
+
+// Resolve or create the gallery category (authenticated, admin use only).
+export async function getOrCreateGalleryCategoryId(): Promise<number> {
+    const existing = await getGalleryCategoryId();
+    if (existing) return existing;
+    const res = await fetch(`${WP_REST_BASE}/categories`, {
+        method: 'POST',
+        headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'Gallery', slug: GALLERY_CATEGORY_SLUG }),
+    });
+    if (!res.ok) throw new Error(`Create gallery category failed: ${await res.text()}`);
+    const cat = await res.json();
+    _galleryCatId = cat.id as number;
+    return _galleryCatId;
+}
+
+export interface GalleryPhoto {
+    id: number;
+    caption: string;
+    url: string;
+    width: number;
+    height: number;
+    date: string;
+}
+
+function mapGalleryPost(post: WPPostAdmin): GalleryPhoto | null {
+    const media = post._embedded?.['wp:featuredmedia']?.[0];
+    if (!media?.source_url) return null;
+    return {
+        id: post.id,
+        caption: stripHtml(post.title.rendered),
+        url: encodeURI(media.source_url),
+        width: media.media_details?.width ?? 1600,
+        height: media.media_details?.height ?? 1067,
+        date: post.date,
+    };
+}
+
+// Public: fetch all gallery photos (newest first).
+export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
+    const catId = await getGalleryCategoryId();
+    if (!catId) return [];
+    try {
+        const fields = '_fields=id,title,date,featured_media,_links,_embedded&_embed=wp:featuredmedia';
+        const res = await fetch(
+            `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&${fields}`,
+            { next: { revalidate: 600 } }
+        );
+        if (!res.ok) return [];
+        const posts: WPPostAdmin[] = await res.json();
+        return posts.map(mapGalleryPost).filter((p): p is GalleryPhoto => p !== null);
+    } catch (error) {
+        console.error('WordPress API error (getGalleryPhotos):', error);
+        return [];
+    }
+}
+
+// Admin: fetch gallery photos (no cache).
+export async function getAdminGalleryPhotos(): Promise<GalleryPhoto[]> {
+    const catId = await getGalleryCategoryId();
+    if (!catId) return [];
+    const fields = '_fields=id,title,date,featured_media,_links,_embedded&_embed=wp:featuredmedia';
+    const res = await fetch(
+        `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&status=publish,draft&${fields}`,
+        { headers: { Authorization: authHeader() }, cache: 'no-store' }
+    );
+    if (!res.ok) return [];
+    const posts: WPPostAdmin[] = await res.json();
+    return posts.map(mapGalleryPost).filter((p): p is GalleryPhoto => p !== null);
 }
 
 // Helper to format date

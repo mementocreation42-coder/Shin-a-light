@@ -16,6 +16,7 @@ const LINKS: NavLink[] = [
     { label: 'Projects', href: '/#projects', anchor: 'projects' },
     { label: 'Works', href: '/#works', anchor: 'works' },
     { label: 'Journal', href: '/journal' },
+    { label: 'Photos', href: '/photos' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
 ];
