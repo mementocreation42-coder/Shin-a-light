@@ -2,11 +2,22 @@
 
 import { useRef, useState } from 'react';
 import type { GalleryPhoto } from '@/lib/wordpress';
+import { compressImage } from '@/lib/imageCompress';
 
 interface UploadingItem {
     tempId: string;
     name: string;
     localUrl: string;
+}
+
+// レスポンスがJSONでない場合（413のプレーンテキスト等）でも落ちないよう安全に解析する
+async function parseJsonSafe(res: Response): Promise<{ error?: string; id?: number; url?: string } | null> {
+    const text = await res.text();
+    try {
+        return JSON.parse(text);
+    } catch {
+        return null;
+    }
 }
 
 export default function PhotoManager({ initialPhotos }: { initialPhotos: GalleryPhoto[] }) {
@@ -16,17 +27,24 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
     const [error, setError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    async function uploadOne(file: File) {
+    async function uploadOne(original: File) {
         const tempId = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-        const localUrl = URL.createObjectURL(file);
-        setUploading((u) => [...u, { tempId, name: file.name, localUrl }]);
+        const localUrl = URL.createObjectURL(original);
+        setUploading((u) => [...u, { tempId, name: original.name, localUrl }]);
         try {
+            // 0. アップロード前に縮小（サイズ超過=413エラーを防ぐ）
+            const file = await compressImage(original);
+
             // 1. 画像をメディアにアップロード
             const fd = new FormData();
             fd.append('image', file);
             const upRes = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-            const upData = await upRes.json();
-            if (!upRes.ok) throw new Error(upData.error || 'アップロード失敗');
+            const upData = await parseJsonSafe(upRes);
+            if (!upRes.ok) {
+                throw new Error(upData?.error || (upRes.status === 413 ? '画像が大きすぎます。' : `アップロード失敗 (${upRes.status})`));
+            }
+            if (!upData?.id || !upData.url) throw new Error('アップロード応答が不正です。');
+            const mediaUrl = upData.url;
 
             // 2. ギャラリー写真として登録
             const pRes = await fetch('/api/admin/photos', {
@@ -34,15 +52,16 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ mediaId: upData.id, caption: '' }),
             });
-            const pData = await pRes.json();
-            if (!pRes.ok) throw new Error(pData.error || '登録失敗');
+            const pData = await parseJsonSafe(pRes);
+            if (!pRes.ok || !pData?.id) throw new Error(pData?.error || `登録失敗 (${pRes.status})`);
+            const newId = pData.id;
 
             setPhotos((prev) => [
-                { id: pData.id, caption: '', url: upData.url, width: 1600, height: 1067, date: new Date().toISOString() },
+                { id: newId, caption: '', url: mediaUrl, width: 1600, height: 1067, date: new Date().toISOString() },
                 ...prev,
             ]);
         } catch (err: unknown) {
-            setError(err instanceof Error ? err.message : `${file.name} のアップロードに失敗しました`);
+            setError(err instanceof Error ? err.message : `${original.name} のアップロードに失敗しました`);
         } finally {
             setUploading((u) => u.filter((it) => it.tempId !== tempId));
             URL.revokeObjectURL(localUrl);
