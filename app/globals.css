@@ -323,8 +323,7 @@ a {
 .hero {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
   padding-top: 60px;
   position: relative;
   overflow: hidden;
@@ -362,6 +361,11 @@ a {
 }
 
 .hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
   text-align: right;
   padding: 32px 64px;
   /* Added more padding on sides */
@@ -369,6 +373,7 @@ a {
   z-index: 1;
   width: 100%;
   max-width: 1400px;
+  margin-left: auto;
   /* Allow wide reach */
 }
 
@@ -404,6 +409,56 @@ a {
   text-align: right;
 }
 
+.hero-bottom {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  padding: 0 64px 48px;
+}
+
+.hero-skills {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 28px 40px;
+}
+
+.hero-skill-group {
+  text-align: right;
+  min-width: 120px;
+}
+
+.hero-skill-head {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.hero-skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hero-skill-item {
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
 .quote-line-1 {
   color: var(--accent-yellow);
 }
@@ -414,8 +469,9 @@ a {
 
 @media (max-width: 768px) {
   .hero {
-    justify-content: flex-end;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
   }
 
   .hero-content {
@@ -432,6 +488,20 @@ a {
 
   .hero-quote {
     align-items: flex-end;
+  }
+
+  /* モバイルでは絶対配置を解除して通常フローで下に積む */
+  .hero-bottom {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 24px;
+    margin-top: 32px;
+  }
+
+  .hero-skills {
+    margin-top: 24px;
+    gap: 24px 32px;
   }
 }
 
@@ -1137,6 +1207,54 @@ textarea:disabled {
   text-align: center;
   font-size: 12px;
   color: var(--text-muted);
+}
+
+.footer-skills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px 48px;
+  max-width: 900px;
+  margin: 0 auto 40px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.footer-skill-head {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  margin: 0 0 10px;
+}
+
+.footer-skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.footer-skill-item {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .footer-skills {
+    gap: 24px 32px;
+  }
+
+  .footer-skill-group {
+    min-width: 40%;
+    flex: 1 1 40%;
+  }
 }
 
 /* ===================================

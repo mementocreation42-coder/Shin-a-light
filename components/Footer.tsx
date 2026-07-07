@@ -1,8 +1,22 @@
 import Link from 'next/link';
+import { SKILL_GROUPS } from '@/data/skills';
 
 export default function Footer() {
     return (
         <footer className="footer">
+            <div className="footer-skills">
+                {SKILL_GROUPS.map((group) => (
+                    <div key={group.label} className="footer-skill-group">
+                        <h3 className="footer-skill-head">{group.label}</h3>
+                        <ul className="footer-skill-list">
+                            {group.items.map((item) => (
+                                <li key={item} className="footer-skill-item">{item}</li>
+                            ))}
+                        </ul>
+                    </div>
+                ))}
+            </div>
+
             <div className="footer-links" style={{ marginBottom: "1.5rem" }}>
                 <Link href="/terms">利用規約</Link>
                 <Link href="/privacy">プライバシーポリシー</Link>
