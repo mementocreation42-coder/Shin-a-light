@@ -8,6 +8,9 @@ import {
     deleteWPPost,
 } from '@/lib/wordpress';
 
+// キャプション無しの写真投稿でも本文を空にしないための非表示マーカー（表示には出ない）
+const GALLERY_CONTENT_MARKER = '<!-- gallery photo -->';
+
 async function requireAuth(): Promise<boolean> {
     const cookieStore = await cookies();
     return cookieStore.get('sal_admin_auth')?.value === 'true';
@@ -42,7 +45,9 @@ export async function POST(req: NextRequest) {
         const categoryId = await getOrCreateGalleryCategoryId();
         const post = await createWPPost({
             title: (caption as string)?.trim() || '',
-            content: '',
+            // キャプション無しだとタイトル・本文・抜粋が全て空になりWPが投稿を拒否するため、
+            // 表示に出ない非表示マーカーを本文に入れておく。
+            content: GALLERY_CONTENT_MARKER,
             status: 'publish',
             categories: [categoryId],
             featured_media: Number(mediaId),
