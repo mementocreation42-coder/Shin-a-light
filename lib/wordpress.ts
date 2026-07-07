@@ -327,6 +327,9 @@ export async function uploadMedia(file: File, filename: string): Promise<WPMedia
       Authorization: authHeader(),
       'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
       'Content-Type': file.type || 'image/jpeg',
+      // SiteGuard等のWAFがライブラリ経由(UAなし)のリクエストを弾く場合の緩和策
+      'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+      Accept: 'application/json',
     },
     body: buffer,
   });

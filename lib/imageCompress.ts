@@ -7,8 +7,10 @@ export function isHeic(file: File): boolean {
     return file.type === 'image/heic' || file.type === 'image/heif' || /\.(heic|heif)$/i.test(file.name);
 }
 
-export async function compressImage(file: File): Promise<File> {
-    if (file.size <= TARGET_SIZE_BYTES) return file;
+// force=true のときはサイズに関わらず必ず canvas で焼き直す
+// （バイト列が変わり、WAFの「中身が攻撃パターンに一致」型の誤検知を回避しやすい）
+export async function compressImage(file: File, force = false): Promise<File> {
+    if (!force && file.size <= TARGET_SIZE_BYTES) return file;
     return new Promise((resolve) => {
         const img = new Image();
         const url = URL.createObjectURL(file);

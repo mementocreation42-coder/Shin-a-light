@@ -486,7 +486,7 @@ function insertAtCursor(text: string) {
     const ta = textareaRef.current;
     const insertPos = ta ? ta.selectionStart : null;
 
-    const compressed = await Promise.all(files.map(compressImage));
+    const compressed = await Promise.all(files.map((f) => compressImage(f)));
     const newItems: UploadedImage[] = compressed.map((file) => ({
       uid: ++uidRef.current, localUrl: URL.createObjectURL(file), uploading: true,
     }));

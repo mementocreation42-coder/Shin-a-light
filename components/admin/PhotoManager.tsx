@@ -38,8 +38,8 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             // 0. 圧縮前に撮影日(EXIF)を読む（canvas圧縮するとEXIFが失われるため）
             const shotDate = await readExifDate(original);
 
-            // 0.5 アップロード前に縮小（サイズ超過=413エラーを防ぐ）
-            const file = await compressImage(original);
+            // 0.5 アップロード前に必ず焼き直し（サイズ超過=413を防ぎ、WAF誤検知も回避しやすくする）
+            const file = await compressImage(original, true);
 
             // 1. 画像をメディアにアップロード
             const fd = new FormData();
