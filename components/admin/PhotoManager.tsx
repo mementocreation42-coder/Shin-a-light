@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import type { GalleryPhoto } from '@/lib/wordpress';
 import { compressImage } from '@/lib/imageCompress';
+import { readExifDate } from '@/lib/exifDate';
 
 interface UploadingItem {
     tempId: string;
@@ -32,7 +33,10 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
         const localUrl = URL.createObjectURL(original);
         setUploading((u) => [...u, { tempId, name: original.name, localUrl }]);
         try {
-            // 0. アップロード前に縮小（サイズ超過=413エラーを防ぐ）
+            // 0. 圧縮前に撮影日(EXIF)を読む（canvas圧縮するとEXIFが失われるため）
+            const shotDate = await readExifDate(original);
+
+            // 0.5 アップロード前に縮小（サイズ超過=413エラーを防ぐ）
             const file = await compressImage(original);
 
             // 1. 画像をメディアにアップロード
@@ -50,14 +54,14 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const pRes = await fetch('/api/admin/photos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mediaId: upData.id, caption: '' }),
+                body: JSON.stringify({ mediaId: upData.id, caption: '', date: shotDate }),
             });
             const pData = await parseJsonSafe(pRes);
             if (!pRes.ok || !pData?.id) throw new Error(pData?.error || `登録失敗 (${pRes.status})`);
             const newId = pData.id;
 
             setPhotos((prev) => [
-                { id: newId, caption: '', url: mediaUrl, width: 1600, height: 1067, date: new Date().toISOString() },
+                { id: newId, caption: '', url: mediaUrl, width: 1600, height: 1067, date: shotDate ?? new Date().toISOString() },
                 ...prev,
             ]);
         } catch (err: unknown) {

@@ -38,11 +38,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     try {
-        const { mediaId, caption } = await req.json();
+        const { mediaId, caption, date } = await req.json();
         if (!mediaId) {
             return NextResponse.json({ error: 'mediaId is required' }, { status: 400 });
         }
         const categoryId = await getOrCreateGalleryCategoryId();
+        // EXIF撮影日('YYYY-MM-DDTHH:MM:SS')が渡された場合のみ投稿日に反映
+        const shotDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(date) ? date : undefined;
         const post = await createWPPost({
             title: (caption as string)?.trim() || '',
             // キャプション無しだとタイトル・本文・抜粋が全て空になりWPが投稿を拒否するため、
@@ -51,6 +53,7 @@ export async function POST(req: NextRequest) {
             status: 'publish',
             categories: [categoryId],
             featured_media: Number(mediaId),
+            ...(shotDate ? { date: shotDate } : {}),
         });
         return NextResponse.json({ id: post.id });
     } catch (err: unknown) {
