@@ -161,6 +161,14 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
                             onBlur={(e) => { if (e.target.value !== p.caption) void saveCaption(p.id, e.target.value); }}
                             style={{ width: '100%', boxSizing: 'border-box', background: 'transparent', border: 'none', borderTop: '1px solid #3a3a3a', color: '#e0e0e0', fontFamily: 'inherit', fontSize: '12px', padding: '8px 10px', outline: 'none' }}
                         />
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', padding: '8px 10px', borderTop: '1px solid #3a3a3a' }}>
+                            <span style={{ fontSize: '10px', color: '#666' }}>{new Date(p.date).getFullYear()}年</span>
+                            <button onClick={() => removePhoto(p.id)}
+                                style={{ fontSize: '12px', padding: '5px 14px', background: 'transparent', border: '1px solid #3a3a3a', color: '#a0a0a0', borderRadius: '5px', cursor: 'pointer', fontFamily: 'inherit', transition: 'all 0.15s' }}
+                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#e74c3c'; e.currentTarget.style.color = '#e74c3c'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#3a3a3a'; e.currentTarget.style.color = '#a0a0a0'; }}
+                                aria-label="この写真を削除">🗑 削除</button>
+                        </div>
                     </div>
                 ))}
             </div>
