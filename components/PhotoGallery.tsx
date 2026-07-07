@@ -5,8 +5,48 @@ import { AnimatePresence, motion } from 'framer-motion';
 import type { GalleryPhoto } from '@/lib/wordpress';
 import styles from './PhotoGallery.module.css';
 
+type PhotoItem = { photo: GalleryPhoto; index: number };
+
+// 画面幅からカラム数を決める（CSSのブレークポイントと一致）
+function columnsForWidth(w: number): number {
+    if (w <= 560) return 3;
+    if (w <= 900) return 4;
+    return 5;
+}
+
+function useColumnCount(): number {
+    // SSR・初期描画はデスクトップ想定（=5）でレンダリングし、マウント後に補正
+    const [cols, setCols] = useState(5);
+    useEffect(() => {
+        const update = () => setCols(columnsForWidth(window.innerWidth));
+        update();
+        window.addEventListener('resize', update);
+        return () => window.removeEventListener('resize', update);
+    }, []);
+    return cols;
+}
+
+// 各写真を「一番背の低い列」に順に積む（テトリス的に隙間なく詰める）
+function distribute(items: PhotoItem[], cols: number): PhotoItem[][] {
+    const columns: PhotoItem[][] = Array.from({ length: cols }, () => []);
+    const heights = new Array(cols).fill(0);
+    for (const item of items) {
+        const { width, height } = item.photo;
+        // 列幅は等しいので、相対的な高さ = height / width
+        const ratio = width > 0 ? height / width : 1;
+        let target = 0;
+        for (let c = 1; c < cols; c++) {
+            if (heights[c] < heights[target]) target = c;
+        }
+        columns[target].push(item);
+        heights[target] += ratio;
+    }
+    return columns;
+}
+
 export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
     const [index, setIndex] = useState<number | null>(null);
+    const cols = useColumnCount();
 
     const close = useCallback(() => setIndex(null), []);
     const prev = useCallback(
@@ -57,25 +97,29 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
                         <span className={styles.yearCount}>{group.items.length}</span>
                     </h2>
                     <div className={styles.masonry}>
-                        {group.items.map(({ photo, index: i }) => (
-                            <button
-                                key={photo.id}
-                                className={styles.item}
-                                onClick={() => setIndex(i)}
-                                aria-label={photo.caption || `写真 ${i + 1}`}
-                            >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                    src={photo.thumbUrl}
-                                    alt={photo.caption}
-                                    width={photo.width}
-                                    height={photo.height}
-                                    loading="lazy"
-                                    decoding="async"
-                                    style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
-                                />
-                                {photo.caption && <span className={styles.caption}>{photo.caption}</span>}
-                            </button>
+                        {distribute(group.items, cols).map((column, c) => (
+                            <div className={styles.col} key={c}>
+                                {column.map(({ photo, index: i }) => (
+                                    <button
+                                        key={photo.id}
+                                        className={styles.item}
+                                        onClick={() => setIndex(i)}
+                                        aria-label={photo.caption || `写真 ${i + 1}`}
+                                    >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src={photo.thumbUrl}
+                                            alt={photo.caption}
+                                            width={photo.width}
+                                            height={photo.height}
+                                            loading="lazy"
+                                            decoding="async"
+                                            style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
+                                        />
+                                        {photo.caption && <span className={styles.caption}>{photo.caption}</span>}
+                                    </button>
+                                ))}
+                            </div>
                         ))}
                     </div>
                 </section>
