@@ -81,13 +81,18 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Shine a Light | DAISUKE KOBAYASHIのポートフォリオサイト",
+    default: "徳島発 映像・写真・Web・AIのクリエイティブプロデュース｜小林大介 - Shine a Light",
     template: "%s | Shine a Light",
   },
-  description: "ビデオグラファー・Webエンジニア｜小林大介。映像、写真、Web、そしてAI。領域を横断するクリエイティブで、ビジネスや表現の可能性を広げます。徳島を拠点に全国のプロジェクトに対応。",
+  description: "徳島を拠点に、映像・写真・ウェブ制作からAI活用、メディア構築までを一貫してプロデュースするクリエイター・小林大介。釣りなどアウトドア領域や、精密栄養学に基づくヘルスケア事業も展開。企画から発信まで、全国のプロジェクトに対応します。",
+  keywords: [
+    "徳島", "映像制作", "写真撮影", "ウェブ制作", "Web制作", "クリエイター",
+    "クリエイティブプロデュース", "プロデュース", "メディア構築", "AI活用",
+    "釣り", "ヘルスケア事業", "精密栄養学", "小林大介", "Shine a Light",
+  ],
   openGraph: {
-    title: "Shine a Light | DAISUKE KOBAYASHIのポートフォリオサイト",
-    description: "ビデオグラファー・Webエンジニア｜小林大介。映像、写真、Web、そしてAI。領域を横断するクリエイティブで、ビジネスや表現の可能性を広げます。徳島を拠点に全国のプロジェクトに対応。",
+    title: "徳島発 映像・写真・Web・AIのクリエイティブプロデュース｜小林大介 - Shine a Light",
+    description: "徳島を拠点に、映像・写真・ウェブ制作からAI活用、メディア構築までを一貫してプロデュース。釣りなどアウトドア領域や、精密栄養学に基づくヘルスケア事業も展開する小林大介のクリエイティブ。",
     url: SITE_URL,
     siteName: "Shine a Light",
     locale: "ja_JP",
@@ -95,8 +100,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shine a Light - DAISUKE KOBAYASHI",
-    description: "Portfolio of DAISUKE KOBAYASHI - Video Creator / Videographer / Photographer / Writer",
+    title: "徳島発 映像・写真・Web・AIのクリエイティブプロデュース｜小林大介",
+    description: "映像・写真・ウェブ制作・AI・メディア構築を一貫してプロデュース。釣り・精密栄養学によるヘルスケア事業も。徳島を拠点に全国のプロジェクトへ。",
   },
 };
 
@@ -148,18 +153,25 @@ export default async function RootLayout({
               "alternateName": "小林大介",
               "url": "https://www.shinealight.jp",
               "sameAs": [
-                // "https://twitter.com/yourhandle",
-                // "https://www.instagram.com/yourhandle"
+                "https://note.com/elvin",
+                "https://www.youtube.com/@sal-flims",
+                "https://www.instagram.com/enigamid/",
+                "https://tsurihack.com/author/enigamid",
+                "https://open.spotify.com/show/3g1Jexgm6ZWa1XYTFLGIxo"
               ],
-              "jobTitle": "Video Creator / Photographer / Writer / Web Engineer",
+              "jobTitle": "クリエイティブプロデューサー / 映像作家 / フォトグラファー / Webエンジニア / ヘルスケア事業家",
               "knowsAbout": [
-                "精密栄養学",
-                "血液検査データ解析",
+                "クリエイティブプロデュース",
                 "映像制作",
-                "Web制作",
+                "写真撮影",
+                "ウェブ制作",
                 "フロントエンド実装",
                 "AIワークフロー構築",
-                "写真撮影",
+                "メディア構築",
+                "釣り",
+                "ヘルスケア事業",
+                "精密栄養学",
+                "血液検査データ解析",
                 "執筆"
               ],
               "address": {
@@ -183,6 +195,45 @@ export default async function RootLayout({
                   "streetAddress": "1465 Kochi",
                   "addressCountry": "JP"
                 }
+              }
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ProfessionalService",
+              "name": "Shine a Light",
+              "description": "徳島を拠点に、映像・写真・ウェブ制作からAI活用、メディア構築、精密栄養学に基づくヘルスケア事業までを手がけるクリエイティブスタジオ。",
+              "url": "https://www.shinealight.jp",
+              "image": "https://www.shinealight.jp/images/hero_poster.jpg",
+              "founder": {
+                "@type": "Person",
+                "name": "DAISUKE KOBAYASHI",
+                "alternateName": "小林大介"
+              },
+              "areaServed": [
+                { "@type": "AdministrativeArea", "name": "徳島県" },
+                { "@type": "Country", "name": "日本" }
+              ],
+              "knowsAbout": [
+                "映像制作", "写真撮影", "ウェブ制作", "クリエイティブプロデュース",
+                "メディア構築", "AIワークフロー構築", "精密栄養学", "ヘルスケア事業"
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "牟岐町",
+                "addressRegion": "徳島県",
+                "postalCode": "775-0001",
+                "streetAddress": "河内1465",
+                "addressCountry": "JP"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 33.6647,
+                "longitude": 134.4225
               }
             }),
           }}
