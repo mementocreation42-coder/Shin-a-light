@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import {
     getAdminGalleryPhotos,
     getOrCreateGalleryCategoryId,
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
             featured_media: Number(mediaId),
             ...(shotDate ? { date: shotDate } : {}),
         });
+        revalidatePath('/photos');
         return NextResponse.json({ id: post.id });
     } catch (err: unknown) {
         return NextResponse.json(
@@ -75,6 +77,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ error: 'id is required' }, { status: 400 });
         }
         await updateWPPost(Number(id), { title: (caption as string) ?? '' });
+        revalidatePath('/photos');
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         return NextResponse.json(
@@ -95,6 +98,7 @@ export async function DELETE(req: NextRequest) {
             return NextResponse.json({ error: 'id is required' }, { status: 400 });
         }
         await deleteWPPost(Number(id));
+        revalidatePath('/photos');
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         return NextResponse.json(
