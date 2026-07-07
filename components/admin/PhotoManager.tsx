@@ -21,6 +21,8 @@ async function parseJsonSafe(res: Response): Promise<{ error?: string; id?: numb
     }
 }
 
+const AUTH_EXPIRED_MSG = 'ログインの有効期限が切れました。ページを再読み込みするか、再ログインしてください。';
+
 export default function PhotoManager({ initialPhotos }: { initialPhotos: GalleryPhoto[] }) {
     const [photos, setPhotos] = useState<GalleryPhoto[]>(initialPhotos);
     const [uploading, setUploading] = useState<UploadingItem[]>([]);
@@ -44,6 +46,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             fd.append('image', file);
             const upRes = await fetch('/api/admin/upload', { method: 'POST', body: fd });
             const upData = await parseJsonSafe(upRes);
+            if (upRes.status === 401) throw new Error(AUTH_EXPIRED_MSG);
             if (!upRes.ok) {
                 throw new Error(upData?.error || (upRes.status === 413 ? '画像が大きすぎます。' : `アップロード失敗 (${upRes.status})`));
             }
@@ -57,6 +60,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
                 body: JSON.stringify({ mediaId: upData.id, caption: '', date: shotDate }),
             });
             const pData = await parseJsonSafe(pRes);
+            if (pRes.status === 401) throw new Error(AUTH_EXPIRED_MSG);
             if (!pRes.ok || !pData?.id) throw new Error(pData?.error || `登録失敗 (${pRes.status})`);
             const newId = pData.id;
 
@@ -83,11 +87,13 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
     async function saveCaption(id: number, caption: string) {
         setPhotos((prev) => prev.map((p) => (p.id === id ? { ...p, caption } : p)));
         try {
-            await fetch('/api/admin/photos', {
+            const res = await fetch('/api/admin/photos', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, caption }),
             });
+            if (res.status === 401) { setError(AUTH_EXPIRED_MSG); return; }
+            if (!res.ok) setError('キャプションの保存に失敗しました');
         } catch {
             setError('キャプションの保存に失敗しました');
         }
@@ -99,7 +105,10 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
         setPhotos((prev) => prev.filter((p) => p.id !== id));
         try {
             const res = await fetch(`/api/admin/photos?id=${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error();
+            if (!res.ok) {
+                setError(res.status === 401 ? AUTH_EXPIRED_MSG : '削除に失敗しました');
+                setPhotos(snapshot);
+            }
         } catch {
             setError('削除に失敗しました');
             setPhotos(snapshot);
