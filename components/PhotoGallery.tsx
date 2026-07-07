@@ -66,11 +66,12 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
                             >
                                 {/* eslint-disable-next-line @next/next/no-img-element */}
                                 <img
-                                    src={photo.url}
+                                    src={photo.thumbUrl}
                                     alt={photo.caption}
                                     width={photo.width}
                                     height={photo.height}
                                     loading="lazy"
+                                    decoding="async"
                                     style={{ aspectRatio: `${photo.width} / ${photo.height}` }}
                                 />
                                 {photo.caption && <span className={styles.caption}>{photo.caption}</span>}

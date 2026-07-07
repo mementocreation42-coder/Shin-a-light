@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous, Sacramento, Great_Vibes, Allura, Caveat } from "next/font/google";
+import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous, Caveat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -9,6 +9,7 @@ import FloatingNav from "@/components/FloatingNav";
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const orbitron = Orbitron({
@@ -16,6 +17,7 @@ const orbitron = Orbitron({
   subsets: ["latin"],
   weight: ["700", "900"],
   display: "swap",
+  preload: false,
 });
 
 const permanentMarker = Permanent_Marker({
@@ -23,6 +25,7 @@ const permanentMarker = Permanent_Marker({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
+  preload: false,
 });
 
 const righteous = Righteous({
@@ -30,27 +33,7 @@ const righteous = Righteous({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
-});
-
-const sacramento = Sacramento({
-  variable: "--font-script",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
-const greatVibes = Great_Vibes({
-  variable: "--font-vibes",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
-const allura = Allura({
-  variable: "--font-allura",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
+  preload: false,
 });
 
 const caveat = Caveat({
@@ -58,6 +41,7 @@ const caveat = Caveat({
   subsets: ["latin"],
   weight: "400",
   display: "swap",
+  preload: false,
 });
 
 const notoSansJP = Noto_Sans_JP({
@@ -118,9 +102,9 @@ export default async function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="preload" href="/images/hero_poster.png" as="image" />
+        <link rel="preload" href="/images/hero_poster.jpg" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${sacramento.variable} ${greatVibes.variable} ${allura.variable} ${caveat.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && <Footer />}

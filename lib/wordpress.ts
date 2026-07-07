@@ -20,6 +20,12 @@ export interface WPPost {
     link: string;
 }
 
+export interface WPMediaSize {
+    source_url: string;
+    width: number;
+    height: number;
+}
+
 export interface WPMedia {
     id: number;
     source_url: string;
@@ -27,6 +33,7 @@ export interface WPMedia {
     media_details?: {
         width: number;
         height: number;
+        sizes?: Record<string, WPMediaSize>;
     };
 }
 
@@ -386,10 +393,27 @@ export async function getOrCreateGalleryCategoryId(): Promise<number> {
 export interface GalleryPhoto {
     id: number;
     caption: string;
+    /** 原寸画像（ライトボックス表示用） */
     url: string;
+    /** グリッド表示用の軽量サムネイル（WordPress生成済みサイズ、無ければ原寸） */
+    thumbUrl: string;
     width: number;
     height: number;
     date: string;
+}
+
+// グリッドのサムネイルに使うWordPress生成サイズ（幅の小さい順に候補を探す）
+const THUMB_SIZE_PREFERENCE = ['medium_large', 'large', 'medium'];
+
+function pickThumb(media: WPMedia): string {
+    const sizes = media.media_details?.sizes;
+    if (sizes) {
+        for (const name of THUMB_SIZE_PREFERENCE) {
+            const s = sizes[name];
+            if (s?.source_url) return encodeURI(s.source_url);
+        }
+    }
+    return encodeURI(media.source_url);
 }
 
 function mapGalleryPost(post: WPPostAdmin): GalleryPhoto | null {
@@ -399,6 +423,7 @@ function mapGalleryPost(post: WPPostAdmin): GalleryPhoto | null {
         id: post.id,
         caption: stripHtml(post.title.rendered),
         url: encodeURI(media.source_url),
+        thumbUrl: pickThumb(media),
         width: media.media_details?.width ?? 1600,
         height: media.media_details?.height ?? 1067,
         date: post.date,

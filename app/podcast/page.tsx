@@ -31,6 +31,10 @@ export default async function PodcastPage() {
         <div className="podcast-page">
             <header className="podcast-header">
                 <p className="fl-eyebrow">Podcast</p>
+                <h1 className="podcast-title">
+                    SAL Radio<br />
+                    <span className="podcast-title-sub">釣りと身体とものづくりの雑談</span>
+                </h1>
                 <p className="podcast-lead">
                     映像・写真・Web・AI・釣り・ヘルスケア——その裏側にある思考と対話を、声で届ける。
                 </p>

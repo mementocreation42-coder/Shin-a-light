@@ -65,7 +65,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const newId = pData.id;
 
             setPhotos((prev) => [
-                { id: newId, caption: '', url: mediaUrl, width: 1600, height: 1067, date: shotDate ?? new Date().toISOString() },
+                { id: newId, caption: '', url: mediaUrl, thumbUrl: mediaUrl, width: 1600, height: 1067, date: shotDate ?? new Date().toISOString() },
                 ...prev,
             ]);
         } catch (err: unknown) {

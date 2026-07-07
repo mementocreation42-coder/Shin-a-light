@@ -32,6 +32,7 @@ export default async function PhotosPage() {
         <div className="photos-page">
             <header className="photos-header">
                 <p className="photos-eyebrow">Gallery</p>
+                <h1 className="photos-title">Archives</h1>
             </header>
             <PhotoGallery photos={photos} />
         </div>
