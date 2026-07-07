@@ -709,13 +709,60 @@ function insertAtCursor(text: string) {
     <div className="journal-article-page" style={{ background: 'transparent' }}>
       <article className="journal-article">
         <div className="journal-article-body">
-          {eyecatchUrl && (
-            <div className="journal-article-hero">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={eyecatchUrl} alt="" />
-            </div>
+          {/* アイキャッチ（プレビュー上で直接設定） */}
+          <div
+            className={`journal-article-hero ${styles.heroDrop} ${isEyecatchDragging ? styles.heroDropActive : ''} ${eyecatchUrl ? '' : styles.heroDropEmpty}`}
+            onDragOver={(e) => { e.preventDefault(); setIsEyecatchDragging(true); }}
+            onDragLeave={() => setIsEyecatchDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsEyecatchDragging(false);
+              const f = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/') || isHeic(f));
+              if (f) void setEyecatchFile(f);
+            }}
+            onClick={() => eyecatchInputRef.current?.click()}
+          >
+            <input ref={eyecatchInputRef} type="file" accept="image/*" style={{ display: 'none' }}
+              onChange={(e) => { const f = e.target.files?.[0]; if (f) void setEyecatchFile(f); e.target.value = ''; }} />
+            {eyecatchUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={eyecatchUrl} alt="" style={{ opacity: eyecatch?.uploading ? 0.5 : 1 }} />
+                <div className={styles.heroOverlay}>
+                  <span>{eyecatch?.uploading ? 'アップロード中...' : 'クリックで差し替え'}</span>
+                  <button type="button" className={styles.heroRemoveBtn}
+                    onClick={(e) => { e.stopPropagation(); setEyecatch(null); }}>削除</button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.heroPlaceholder}>
+                <span className={styles.heroPlaceholderIcon}>＋</span>
+                <span>アイキャッチを設定</span>
+                <span className={styles.heroPlaceholderHint}>クリック / ドラッグ&ドロップ ・ JPG・PNG・HEIC</span>
+              </div>
+            )}
+          </div>
+          {(eyecatchStatus === 'fetching' || eyecatchStatus === 'done' || eyecatchStatus === 'error' || eyecatch?.error) && (
+            <p className={styles.heroStatus} style={{ color: eyecatch?.error || eyecatchStatus === 'error' ? '#e74c3c' : eyecatchStatus === 'done' ? '#4caf50' : '#ff764d' }}>
+              {eyecatch?.error ? eyecatch.error
+                : eyecatchStatus === 'fetching' ? 'noteのアイキャッチを取得中...'
+                : eyecatchStatus === 'done' ? 'noteのアイキャッチを自動設定しました'
+                : 'アイキャッチの自動取得に失敗しました'}
+            </p>
           )}
           <div className="journal-article-header">
+            {/* カテゴリ（プレビュー上で直接選択） */}
+            <div className={styles.heroCats}>
+              {categories.map((cat) => (
+                <label key={cat.id} className={styles.catLabel}>
+                  <input type="checkbox" checked={selectedCats.includes(cat.id)}
+                    onChange={() => toggleCategory(cat.id)} className={styles.catCheckbox} />
+                  <span className={`${styles.catChip} ${selectedCats.includes(cat.id) ? styles.catChipActive : ''}`}>
+                    {cat.name}
+                  </span>
+                </label>
+              ))}
+            </div>
             <time className="journal-article-date">{date}</time>
             <h1 className="journal-article-title">{title || <span style={{ opacity: 0.3 }}>タイトル未入力</span>}</h1>
           </div>
@@ -748,63 +795,6 @@ function insertAtCursor(text: string) {
         <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
           className={`${styles.input} ${styles.dateInput}`} />
       </div>
-
-      {/* カテゴリ */}
-      <div className={styles.field}>
-        <label className={styles.label}>カテゴリ</label>
-        <div className={styles.categoryGrid}>
-          {categories.map((cat) => (
-            <label key={cat.id} className={styles.catLabel}>
-              <input type="checkbox" checked={selectedCats.includes(cat.id)}
-                onChange={() => toggleCategory(cat.id)} className={styles.catCheckbox} />
-              <span className={`${styles.catChip} ${selectedCats.includes(cat.id) ? styles.catChipActive : ''}`}>
-                {cat.name}
-              </span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* アイキャッチ */}
-      <div className={styles.field}>
-        <label className={styles.label}>アイキャッチ画像</label>
-        <div
-          className={`${styles.dropzone} ${isEyecatchDragging ? styles.dropzoneActive : ''}`}
-          onDragOver={(e) => { e.preventDefault(); setIsEyecatchDragging(true); }}
-          onDragLeave={() => setIsEyecatchDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsEyecatchDragging(false);
-            const f = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/') || isHeic(f));
-            if (f) void setEyecatchFile(f);
-          }}
-          onClick={() => eyecatchInputRef.current?.click()}
-        >
-          <input ref={eyecatchInputRef} type="file" accept="image/*" style={{ display: 'none' }}
-            onChange={(e) => { const f = e.target.files?.[0]; if (f) void setEyecatchFile(f); e.target.value = ''; }} />
-          {eyecatch ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={eyecatch.localUrl} alt="アイキャッチ" style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '4px', opacity: eyecatch.uploading ? 0.5 : 1 }} />
-              <div style={{ textAlign: 'left' }}>
-                {eyecatch.uploading && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>アップロード中...</p>}
-                {eyecatch.error && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>{eyecatch.error}</p>}
-                {!eyecatch.uploading && !eyecatch.error && <p className={styles.dropzoneHint}>クリックで差し替え</p>}
-                <button type="button" onClick={(e) => { e.stopPropagation(); setEyecatch(null); }} className={styles.removeTextBtn} style={{ marginTop: '6px' }}>削除</button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <p className={styles.dropzoneText}>クリックまたはドラッグ&ドロップでアイキャッチを設定</p>
-              <p className={styles.dropzoneHint}>JPG・PNG・HEIC ／ 1枚のみ</p>
-            </>
-          )}
-          {eyecatchStatus === 'fetching' && <p className={styles.dropzoneHint} style={{ color: '#ff764d' }}>noteのアイキャッチを取得中...</p>}
-          {eyecatchStatus === 'done' && <p className={styles.dropzoneHint} style={{ color: '#4caf50' }}>noteのアイキャッチを自動設定しました</p>}
-          {eyecatchStatus === 'error' && <p className={styles.dropzoneHint} style={{ color: '#e74c3c' }}>アイキャッチの自動取得に失敗しました</p>}
-        </div>
-      </div>
-
 
       {/* アフィリリンク */}
       <div className={styles.field}>

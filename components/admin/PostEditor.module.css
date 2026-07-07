@@ -428,6 +428,101 @@
   padding: 24px;
 }
 
+/* プレビュー内でアイキャッチを直接設定できるヒーロー */
+.heroDrop {
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+
+.heroDrop:hover {
+  box-shadow: 0 0 0 2px rgba(255, 118, 77, 0.5);
+}
+
+.heroDropActive {
+  box-shadow: 0 0 0 2px #ff764d;
+}
+
+.heroDropEmpty {
+  border: 2px dashed #3a3a3a;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.heroDropEmpty:hover,
+.heroDropEmpty.heroDropActive {
+  border-color: #ff764d;
+  background: rgba(255, 118, 77, 0.04);
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.heroDrop:hover .heroOverlay {
+  opacity: 1;
+}
+
+.heroRemoveBtn {
+  padding: 4px 12px;
+  background: rgba(231, 76, 60, 0.9);
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.heroPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 160px;
+  padding: 24px;
+  color: #a0a0a0;
+  font-size: 13px;
+  text-align: center;
+}
+
+.heroPlaceholderIcon {
+  font-size: 28px;
+  color: #ff764d;
+  line-height: 1;
+}
+
+.heroPlaceholderHint {
+  font-size: 11px;
+  color: #555;
+}
+
+.heroStatus {
+  font-size: 11px;
+  margin: 8px 0 0;
+}
+
+.heroCats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 @media (max-width: 768px) {
   .bodyGrid {
     grid-template-columns: 1fr;
