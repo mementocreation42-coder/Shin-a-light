@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getPodcast, SPOTIFY_SHOW_ID, SPOTIFY_SHOW_URL } from '@/lib/podcast';
+import PodcastPlayer from '@/components/PodcastPlayer';
 
 const SPOTIFY_EMBED_URL = `https://open.spotify.com/embed/show/${SPOTIFY_SHOW_ID}?utm_source=generator`;
 
@@ -78,14 +79,7 @@ export default async function PodcastPage() {
                                 </div>
                             </div>
 
-                            <audio
-                                className="podcast-episode-audio"
-                                controls
-                                preload="none"
-                                src={ep.audioUrl}
-                            >
-                                お使いのブラウザは音声再生に対応していません。
-                            </audio>
+                            <PodcastPlayer src={ep.audioUrl} title={ep.title} />
 
                             <a
                                 href={ep.link}
