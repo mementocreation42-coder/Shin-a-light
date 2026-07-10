@@ -26,6 +26,7 @@ export const metadata: Metadata = {
 export const revalidate = 600;
 
 export default async function PhotosPage() {
+    // WordPress 側がタグで category('Archive'|'MEMENTO')を付けて返す。
     const photos = await getGalleryPhotos();
 
     return (

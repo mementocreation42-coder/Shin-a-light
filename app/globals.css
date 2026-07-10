@@ -1090,6 +1090,11 @@ a {
   line-height: 1.8;
 }
 
+/* 説明文の2段落目は間隔を詰めて一続きに見せる */
+.contact-description + .contact-note {
+  margin-top: -20px;
+}
+
 .contact-break {
   display: none;
 }
@@ -1124,7 +1129,8 @@ a {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   background-color: var(--bg-secondary);
   border: var(--border);
@@ -1136,8 +1142,20 @@ textarea {
   transition: border-color 0.2s;
 }
 
+/* セレクトは矢印を自前で描画して見た目を統一 */
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23888' stroke-width='1.5' d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+}
+
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--accent-orange);
 }
@@ -1174,7 +1192,8 @@ textarea {
 }
 
 input:disabled,
-textarea:disabled {
+textarea:disabled,
+select:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }

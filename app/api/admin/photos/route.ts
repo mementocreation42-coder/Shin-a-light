@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import {
     getAdminGalleryPhotos,
     getOrCreateGalleryCategoryId,
+    getOrCreateMementoTagId,
     createWPPost,
     updateWPPost,
     deleteWPPost,
@@ -39,11 +40,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     try {
-        const { mediaId, caption, date } = await req.json();
+        const { mediaId, caption, date, category } = await req.json();
         if (!mediaId) {
             return NextResponse.json({ error: 'mediaId is required' }, { status: 400 });
         }
         const categoryId = await getOrCreateGalleryCategoryId();
+        // MEMENTO 指定時のみ memento タグを付与
+        const tags = category === 'MEMENTO' ? [await getOrCreateMementoTagId()] : undefined;
         // EXIF撮影日('YYYY-MM-DDTHH:MM:SS')が渡された場合のみ投稿日に反映
         const shotDate = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(date) ? date : undefined;
         const post = await createWPPost({
@@ -54,6 +57,7 @@ export async function POST(req: NextRequest) {
             status: 'publish',
             categories: [categoryId],
             featured_media: Number(mediaId),
+            ...(tags ? { tags } : {}),
             ...(shotDate ? { date: shotDate } : {}),
         });
         revalidatePath('/photos');
@@ -72,11 +76,19 @@ export async function PATCH(req: NextRequest) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     try {
-        const { id, caption } = await req.json();
+        const { id, caption, category } = await req.json();
         if (!id) {
             return NextResponse.json({ error: 'id is required' }, { status: 400 });
         }
-        await updateWPPost(Number(id), { title: (caption as string) ?? '' });
+        const payload: { title?: string; tags?: number[] } = {};
+        if (typeof caption === 'string') payload.title = caption;
+        // カテゴリ指定時：MEMENTO→タグ付与 / Archive→タグを外す（空配列で置換）
+        if (category === 'MEMENTO') payload.tags = [await getOrCreateMementoTagId()];
+        else if (category === 'Archive') payload.tags = [];
+        if (Object.keys(payload).length === 0) {
+            return NextResponse.json({ error: 'nothing to update' }, { status: 400 });
+        }
+        await updateWPPost(Number(id), payload);
         revalidatePath('/photos');
         return NextResponse.json({ success: true });
     } catch (err: unknown) {

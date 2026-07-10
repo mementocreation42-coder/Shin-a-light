@@ -1,3 +1,5 @@
+import { MEMENTO_TAG_SLUG } from './galleryCategories';
+
 const WP_BASE = 'https://journal.shinealight.jp';
 const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
 
@@ -17,6 +19,7 @@ export interface WPPost {
     };
     featured_media: number;
     categories: number[];
+    tags?: number[];
     link: string;
 }
 
@@ -289,6 +292,7 @@ export async function createWPPost(data: {
   date?: string;
   status: 'publish' | 'draft';
   categories?: number[];
+  tags?: number[];
   featured_media?: number;
 }): Promise<WPPost> {
   const res = await fetch(`${WP_REST_BASE}/posts`, {
@@ -307,6 +311,7 @@ export async function updateWPPost(id: number, data: {
   date?: string;
   status?: 'publish' | 'draft';
   categories?: number[];
+  tags?: number[];
   featured_media?: number;
 }): Promise<WPPost> {
   const res = await fetch(`${WP_REST_BASE}/posts/${id}`, {
@@ -390,6 +395,46 @@ export async function getOrCreateGalleryCategoryId(): Promise<number> {
     return _galleryCatId;
 }
 
+// --- MEMENTO タグ（ギャラリー内のカテゴリ分け用） ---
+
+let _mementoTagId: number | null = null;
+
+// Resolve the memento tag id (read-only). Returns null if not created yet.
+export async function getMementoTagId(): Promise<number | null> {
+    if (_mementoTagId) return _mementoTagId;
+    try {
+        const res = await fetch(
+            `${WP_REST_BASE}/tags&slug=${MEMENTO_TAG_SLUG}&_fields=id`,
+            { cache: 'no-store' }
+        );
+        if (!res.ok) return null;
+        const tags = await res.json();
+        if (Array.isArray(tags) && tags[0]?.id) {
+            _mementoTagId = tags[0].id as number;
+            return _mementoTagId;
+        }
+        return null;
+    } catch (error) {
+        console.error('WordPress API error (getMementoTagId):', error);
+        return null;
+    }
+}
+
+// Resolve or create the memento tag (authenticated, admin use only).
+export async function getOrCreateMementoTagId(): Promise<number> {
+    const existing = await getMementoTagId();
+    if (existing) return existing;
+    const res = await fetch(`${WP_REST_BASE}/tags`, {
+        method: 'POST',
+        headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: 'MEMENTO', slug: MEMENTO_TAG_SLUG }),
+    });
+    if (!res.ok) throw new Error(`Create memento tag failed: ${await res.text()}`);
+    const tag = await res.json();
+    _mementoTagId = tag.id as number;
+    return _mementoTagId;
+}
+
 export interface GalleryPhoto {
     id: number;
     caption: string;
@@ -400,6 +445,8 @@ export interface GalleryPhoto {
     width: number;
     height: number;
     date: string;
+    /** ギャラリー内のカテゴリ（フィルタ用）。未指定は 'Archive' 扱い */
+    category?: string;
 }
 
 // グリッドのサムネイルに使うWordPress生成サイズ（幅の小さい順に候補を探す）
@@ -416,9 +463,10 @@ function pickThumb(media: WPMedia): string {
     return encodeURI(media.source_url);
 }
 
-function mapGalleryPost(post: WPPostAdmin): GalleryPhoto | null {
+function mapGalleryPost(post: WPPostAdmin, mementoTagId: number | null): GalleryPhoto | null {
     const media = post._embedded?.['wp:featuredmedia']?.[0];
     if (!media?.source_url) return null;
+    const isMemento = !!mementoTagId && (post.tags?.includes(mementoTagId) ?? false);
     return {
         id: post.id,
         caption: stripHtml(post.title.rendered),
@@ -427,7 +475,36 @@ function mapGalleryPost(post: WPPostAdmin): GalleryPhoto | null {
         width: media.media_details?.width ?? 1600,
         height: media.media_details?.height ?? 1067,
         date: post.date,
+        category: isMemento ? 'MEMENTO' : 'Archive',
     };
+}
+
+const GALLERY_FIELDS =
+    '_fields=id,title,date,tags,featured_media,_links,_embedded&_embed=wp:featuredmedia';
+
+// gallery カテゴリの投稿を全ページ取得する（WP の per_page 上限は100なので
+// X-WP-TotalPages をたどって全件そろえる）。init は cache/認証などの fetch 設定。
+async function fetchAllGalleryPosts(
+    catId: number,
+    query: string,
+    init: RequestInit & { next?: { revalidate?: number } }
+): Promise<WPPostAdmin[]> {
+    const first = await fetch(
+        `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&page=1&${query}${GALLERY_FIELDS}`,
+        init
+    );
+    if (!first.ok) return [];
+    const posts: WPPostAdmin[] = await first.json();
+    const totalPages = parseInt(first.headers.get('X-WP-TotalPages') || '1', 10);
+    for (let page = 2; page <= totalPages; page++) {
+        const res = await fetch(
+            `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&page=${page}&${query}${GALLERY_FIELDS}`,
+            init
+        );
+        if (!res.ok) break;
+        posts.push(...((await res.json()) as WPPostAdmin[]));
+    }
+    return posts;
 }
 
 // Public: fetch all gallery photos (newest first).
@@ -435,14 +512,11 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
     const catId = await getGalleryCategoryId();
     if (!catId) return [];
     try {
-        const fields = '_fields=id,title,date,featured_media,_links,_embedded&_embed=wp:featuredmedia';
-        const res = await fetch(
-            `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&${fields}`,
-            { next: { revalidate: 600 } }
-        );
-        if (!res.ok) return [];
-        const posts: WPPostAdmin[] = await res.json();
-        return posts.map(mapGalleryPost).filter((p): p is GalleryPhoto => p !== null);
+        const mementoTagId = await getMementoTagId();
+        const posts = await fetchAllGalleryPosts(catId, '', { next: { revalidate: 600 } });
+        return posts
+            .map((p) => mapGalleryPost(p, mementoTagId))
+            .filter((p): p is GalleryPhoto => p !== null);
     } catch (error) {
         console.error('WordPress API error (getGalleryPhotos):', error);
         return [];
@@ -453,14 +527,14 @@ export async function getGalleryPhotos(): Promise<GalleryPhoto[]> {
 export async function getAdminGalleryPhotos(): Promise<GalleryPhoto[]> {
     const catId = await getGalleryCategoryId();
     if (!catId) return [];
-    const fields = '_fields=id,title,date,featured_media,_links,_embedded&_embed=wp:featuredmedia';
-    const res = await fetch(
-        `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&status=publish,draft&${fields}`,
-        { headers: { Authorization: authHeader() }, cache: 'no-store' }
-    );
-    if (!res.ok) return [];
-    const posts: WPPostAdmin[] = await res.json();
-    return posts.map(mapGalleryPost).filter((p): p is GalleryPhoto => p !== null);
+    const mementoTagId = await getMementoTagId();
+    const posts = await fetchAllGalleryPosts(catId, 'status=publish,draft&', {
+        headers: { Authorization: authHeader() },
+        cache: 'no-store',
+    });
+    return posts
+        .map((p) => mapGalleryPost(p, mementoTagId))
+        .filter((p): p is GalleryPhoto => p !== null);
 }
 
 // Helper to format date

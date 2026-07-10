@@ -7,7 +7,7 @@ const CF7_ENDPOINT =
 
 export async function POST(req: NextRequest) {
     try {
-        const { name, email, message } = await req.json();
+        const { name, email, subject, message } = await req.json();
 
         if (!name || !email || !message) {
             return NextResponse.json(
@@ -32,7 +32,12 @@ export async function POST(req: NextRequest) {
         body.append('_wpcf7_container_post', '0');
         body.append('your-name', name);
         body.append('your-email', email);
-        body.append('your-subject', 'Message from Shine a Light Portfolio');
+        body.append(
+            'your-subject',
+            typeof subject === 'string' && subject.trim()
+                ? `[お問い合わせ] ${subject.trim()}`
+                : 'Message from Shine a Light Portfolio'
+        );
         body.append('your-message', message);
 
         const cf7Res = await fetch(CF7_ENDPOINT, {

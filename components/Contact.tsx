@@ -20,6 +20,7 @@ export default function Contact() {
                 body: JSON.stringify({
                     name: formData.get('name') as string,
                     email: formData.get('email') as string,
+                    subject: formData.get('subject') as string,
                     message: formData.get('message') as string,
                 }),
             });
@@ -48,9 +49,14 @@ export default function Contact() {
                     <h2>Contact</h2>
                 </div>
                 <p className="contact-description">
-                    映像制作、Web関連のほか、形式にとらわれないコラボレーションのご相談もお待ちしております。
-                    <br className="contact-break" />
-                    どうぞお気軽にお問い合わせください。
+                    企画・プロデュース／ディレクションを軸に、映像制作・写真撮影（出張撮影〈MEMENTO〉を含む）・
+                    Web制作・執筆／取材まで、構想から発信までを一貫して設計・伴走します。
+                    「まだ形にはなっていないけれど、こんなことはできる？」——そんな段階のご相談や、
+                    形式にとらわれないコラボレーションも歓迎です。
+                </p>
+                <p className="contact-description contact-note">
+                    徳島・牟岐町を拠点に、オンラインでのやり取りで全国どこでも対応します。
+                    いただいた内容を確認のうえ、数日以内にご返信します。まずはお気軽にどうぞ。
                 </p>
                 <form className="contact-form" onSubmit={handleSubmit}>
                     <div className="form-row">
@@ -62,6 +68,19 @@ export default function Contact() {
                             <label htmlFor="email">Email</label>
                             <input type="email" id="email" name="email" required disabled={status === 'submitting'} />
                         </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="subject">Category</label>
+                        <select id="subject" name="subject" defaultValue="" required disabled={status === 'submitting'}>
+                            <option value="" disabled>お問い合わせ内容を選択</option>
+                            <option value="企画・プロデュース／ディレクション">企画・プロデュース／ディレクション</option>
+                            <option value="映像制作">映像制作</option>
+                            <option value="写真撮影">写真撮影</option>
+                            <option value="思い出撮影（MEMENTO）">思い出撮影（MEMENTO）</option>
+                            <option value="Web制作">Web制作</option>
+                            <option value="執筆・取材">執筆・取材</option>
+                            <option value="コラボレーション・その他">コラボレーション・その他</option>
+                        </select>
                     </div>
                     <div className="form-group">
                         <label htmlFor="message">Message</label>

@@ -1,3 +1,138 @@
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 40px;
+}
+
+.tab {
+    padding: 8px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-secondary, #aaa);
+    font-family: var(--font-mono), monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.tab:hover {
+    border-color: var(--accent-orange, #ff764d);
+    color: var(--text-primary, #fff);
+}
+
+.tabActive {
+    background-color: var(--accent-orange, #ff764d);
+    border-color: var(--accent-orange, #ff764d);
+    color: #fff;
+}
+
+.mementoIntro {
+    max-width: 680px;
+    margin: 4px 0 44px;
+}
+
+.mementoTagline {
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    line-height: 1.6;
+    letter-spacing: 1px;
+    margin: 0 0 20px;
+    color: var(--text-primary, #fff);
+}
+
+.mementoBody {
+    font-size: 14px;
+    line-height: 2;
+    letter-spacing: 0.5px;
+    margin: 0 0 24px;
+    color: var(--text-secondary, #aaa);
+}
+
+.inquiry {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0;
+    font-family: var(--font-mono), monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--text-secondary, #888);
+}
+
+.inquiry a {
+    color: var(--text-primary, #fff);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    padding-bottom: 2px;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.inquiry a:hover {
+    color: var(--accent-orange, #ff764d);
+    border-color: var(--accent-orange, #ff764d);
+}
+
+.yearNav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.yearChip {
+    padding: 6px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-secondary, #999);
+    font-family: var(--font-mono), monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.yearChip:hover {
+    border-color: var(--accent-orange, #ff764d);
+    color: var(--text-primary, #fff);
+}
+
+.yearChipActive {
+    background-color: var(--accent-orange, #ff764d);
+    border-color: var(--accent-orange, #ff764d);
+    color: #fff;
+}
+
+.moreWrap {
+    display: flex;
+    justify-content: center;
+    margin: 8px 0 48px;
+}
+
+.moreBtn {
+    padding: 12px 32px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    background: none;
+    color: var(--text-primary, #fff);
+    font-family: var(--font-mono), monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.moreBtn:hover {
+    border-color: var(--accent-orange, #ff764d);
+    color: var(--accent-orange, #ff764d);
+}
+
 .yearGroup {
     margin-bottom: 56px;
 }
