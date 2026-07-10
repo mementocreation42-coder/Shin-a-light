@@ -5871,6 +5871,43 @@ select:disabled {
 }
 
 /* --- Grid --- */
+/* --- 動画 / ショート タブ --- */
+.videos-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 0 0 32px;
+}
+
+.videos-tab {
+  padding: 8px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.videos-tab:hover {
+  border-color: var(--youtube-red, #ff0000);
+  color: var(--text-primary);
+}
+
+.videos-tab.is-active {
+  background-color: var(--youtube-red, #ff0000);
+  border-color: var(--youtube-red, #ff0000);
+  color: #fff;
+}
+
+.videos-tab-count {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-left: 4px;
+}
+
 .videos-grid {
   list-style: none;
   margin: 0;
@@ -5878,6 +5915,15 @@ select:disabled {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 32px 24px;
+}
+
+/* ショート一覧は縦長サムネで一段細かく並べる */
+.videos-grid.is-shorts {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.videos-grid.is-shorts .video-thumb {
+  aspect-ratio: 9 / 16;
 }
 
 .video-card {
@@ -6088,6 +6134,10 @@ select:disabled {
   .videos-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .videos-grid.is-shorts {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 560px) {
@@ -6098,5 +6148,9 @@ select:disabled {
   .videos-grid {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+
+  .videos-grid.is-shorts {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

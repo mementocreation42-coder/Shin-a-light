@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getYouTubeVideos, YOUTUBE_HANDLE_URL } from '@/lib/youtube';
-import VideoCard from '@/components/VideoCard';
+import VideoTabs from '@/components/VideoTabs';
 
 // 動画は YouTube の RSS から取得し、1時間ごとに再検証（新着を自動反映）
 export const revalidate = 3600;
@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 
 export default async function VideosPage() {
     const channel = await getYouTubeVideos();
+    const videos = channel?.videos ?? [];
 
     return (
         <div className="videos-page">
@@ -44,12 +45,8 @@ export default async function VideosPage() {
                 </a>
             </header>
 
-            {channel && channel.videos.length > 0 ? (
-                <ul className="videos-grid">
-                    {channel.videos.map((video) => (
-                        <VideoCard key={video.id} video={video} />
-                    ))}
-                </ul>
+            {videos.length > 0 ? (
+                <VideoTabs videos={videos} />
             ) : (
                 <p className="videos-empty">
                     動画を読み込めませんでした。
