@@ -15,11 +15,13 @@ export const metadata: Metadata = {
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
+        images: ['/opengraph-image'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Photos — Shine a Light',
         description: '小林大介による写真ギャラリー。',
+        images: ['/opengraph-image'],
     },
 };
 

@@ -8,6 +8,21 @@ export const metadata: Metadata = {
     alternates: {
         canonical: '/universe',
     },
+    openGraph: {
+        title: 'SAL - すべての活動をここから',
+        description: 'SAL ecosystem — all activities and projects in one place.',
+        url: '/universe',
+        siteName: 'Shine a Light',
+        locale: 'ja_JP',
+        type: 'website',
+        images: ['/opengraph-image'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'SAL - すべての活動をここから',
+        description: 'SAL ecosystem — all activities and projects in one place.',
+        images: ['/opengraph-image'],
+    },
 };
 
 export default function UniversePage() {

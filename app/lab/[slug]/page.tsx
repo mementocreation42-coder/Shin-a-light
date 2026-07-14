@@ -31,11 +31,13 @@ export async function generateMetadata({ params }: Props) {
             siteName: 'Shine a Light',
             locale: 'ja_JP',
             type: 'website',
+            images: ['/opengraph-image'],
         },
         twitter: {
             card: 'summary_large_image',
             title: `${project.title} - Lab | Shine a Light`,
             description: project.description,
+            images: ['/opengraph-image'],
         },
     };
 }

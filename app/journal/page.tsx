@@ -16,11 +16,13 @@ export const metadata: Metadata = {
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
+        images: ['/opengraph-image'],
     },
     twitter: {
         card: 'summary_large_image',
         title: 'Journal | Hyperpast',
         description: '映像・写真・Web・AI・健康・自然のジャーナル。',
+        images: ['/opengraph-image'],
     },
 };
 

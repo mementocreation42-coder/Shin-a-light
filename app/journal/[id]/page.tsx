@@ -75,13 +75,13 @@ export async function generateMetadata({ params }: PageProps) {
                     height: 630,
                     alt: title,
                 }
-            ] : undefined,
+            ] : ['/opengraph-image'],
         },
         twitter: {
             card: 'summary_large_image',
             title: `${title} | Shine a Light`,
             description: description,
-            images: imageUrl ? [imageUrl] : undefined,
+            images: [imageUrl || '/opengraph-image'],
         },
     };
 }

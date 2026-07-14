@@ -15,6 +15,13 @@ export const metadata: Metadata = {
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
+        images: ['/opengraph-image'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Lab — 実験的システム開発 | Shine a Light',
+        description: '実験的なシステム・プロトタイプ・インタラクティブ作品。',
+        images: ['/opengraph-image'],
     },
 };
 

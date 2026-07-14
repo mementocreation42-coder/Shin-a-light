@@ -17,6 +17,13 @@ export const metadata: Metadata = {
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
+        images: ['/opengraph-image'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Folklore - Shine a Light',
+        description: '土地に根ざした自然・人・営みの伝承を、一つひとつ深く掘り下げる特集。',
+        images: ['/opengraph-image'],
     },
 };
 

@@ -20,6 +20,14 @@ export const metadata: Metadata = {
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
+        images: ['/opengraph-image'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Videos - Shine a Light',
+        description:
+            '映像クリエイター SAL Films のYouTube動画一覧。釣り・地域の暮らし・ドキュメンタリー映像。',
+        images: ['/opengraph-image'],
     },
 };
 
@@ -31,10 +39,7 @@ export default async function VideosPage() {
         <div className="videos-page">
             <header className="videos-header">
                 <p className="fl-eyebrow">Videos</p>
-                <h1 className="videos-title">
-                    SAL Films<br />
-                    <span className="videos-title-sub">映像でしか届かないものを</span>
-                </h1>
+                <h1 className="videos-title">SAL Films</h1>
                 <a
                     href={YOUTUBE_HANDLE_URL}
                     target="_blank"

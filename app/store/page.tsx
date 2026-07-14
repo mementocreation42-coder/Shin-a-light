@@ -8,6 +8,21 @@ export const metadata: Metadata = {
     alternates: {
         canonical: '/store',
     },
+    openGraph: {
+        title: 'SAL STORE - Shine a Light',
+        description: 'Creative Assets & Tools - For those who make their own.',
+        url: '/store',
+        siteName: 'Shine a Light',
+        locale: 'ja_JP',
+        type: 'website',
+        images: ['/opengraph-image'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'SAL STORE - Shine a Light',
+        description: 'Creative Assets & Tools - For those who make their own.',
+        images: ['/opengraph-image'],
+    },
 };
 
 const storeCapsules: { label: string; slug: string }[] = [

@@ -14,11 +14,13 @@ export const metadata: Metadata = {
         siteName: "Shine a Light",
         locale: "ja_JP",
         type: "profile",
+        images: ["/opengraph-image"],
     },
     twitter: {
         card: "summary_large_image",
         title: "Chronicle — 小林大介の年譜",
         description: "ビデオグラファー・Webエンジニア小林大介の歩み。",
+        images: ["/opengraph-image"],
     },
 };
 
