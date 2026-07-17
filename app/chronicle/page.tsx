@@ -1,5 +1,14 @@
 import ChronicleTimeline from "@/components/ChronicleTimeline";
 import type { Metadata } from "next";
+import { Noto_Serif_JP } from "next/font/google";
+
+const notoSerifJP = Noto_Serif_JP({
+    variable: "--font-serif-jp",
+    weight: "400",
+    subsets: ["latin"],
+    display: "swap",
+    preload: false,
+});
 
 export const metadata: Metadata = {
     title: "Chronicle — 小林大介の年譜",
@@ -26,7 +35,7 @@ export const metadata: Metadata = {
 
 export default function ChroniclePage() {
     return (
-        <main>
+        <main className={notoSerifJP.variable}>
             <ChronicleTimeline />
         </main>
     );

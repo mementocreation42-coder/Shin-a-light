@@ -29,7 +29,7 @@ export const milestones: Milestone[] = [
         year: 1980,
         title: "誕生",
         content: "愛知県一宮市にて次男として誕生。",
-        image: "/images/chronicle/milestone_1980.jpg",
+        image: "/images/chronicle/milestone_1980.webp",
         dashboard: {
             age: 0,
             location: "愛知県",
@@ -50,7 +50,7 @@ export const milestones: Milestone[] = [
         year: 1984,
         title: "絵画との出会い",
         content: "絵画教室に通い始め、表現の楽しさを知る。鳥山明氏の影響を受け、漫画家に憧れる。",
-        image: "/images/chronicle/milestone_1980.jpg", // Reusing 1980 image as relevant fallback
+        image: "/images/chronicle/milestone_1980.webp", // Reusing 1980 image as relevant fallback
         dashboard: {
             age: 4,
             location: "愛知県",
@@ -71,7 +71,7 @@ export const milestones: Milestone[] = [
         year: 1988,
         title: "パンクの目覚め",
         content: "THE BLUE HEARTSのライブに行く。パンクの追求が始まる。",
-        image: "/images/chronicle/milestone_1988.jpg",
+        image: "/images/chronicle/milestone_1988.webp",
         dashboard: {
             age: 8,
             location: "愛知県",
@@ -92,7 +92,7 @@ export const milestones: Milestone[] = [
         year: 1992,
         title: "物語への没入",
         content: "ファイナルファンタジーⅣに没頭。RPGを通じて物語の世界に浸る。",
-        image: "/images/chronicle/milestone_1988.jpg", // Fallback to 80s vibe
+        image: "/images/chronicle/milestone_1988.webp", // Fallback to 80s vibe
         dashboard: {
             age: 12,
             location: "愛知県",
@@ -113,7 +113,7 @@ export const milestones: Milestone[] = [
         year: 1995,
         title: "カウンターカルチャー",
         content: "Nirvanaなどのオルタナティブ・ミュージック、DIY精神、カウンターカルチャーに深く傾倒。",
-        image: "/images/chronicle/milestone_1996.jpg", // Using punk era image
+        image: "/images/chronicle/milestone_1996.webp", // Using punk era image
         dashboard: {
             age: 15,
             location: "愛知県",
@@ -134,7 +134,7 @@ export const milestones: Milestone[] = [
         year: 1996,
         title: "モヒカンの夏",
         content: "名古屋の高校へ進学。イギリス・ヨーロッパのパンク／ハードコアシーンに浸かり、夏休みには緑のモヒカンで過ごすパンクキッズとなった。",
-        image: "/images/chronicle/milestone_1996.jpg",
+        image: "/images/chronicle/milestone_1996.webp",
         dashboard: {
             age: 16,
             location: "名古屋",
@@ -155,7 +155,7 @@ export const milestones: Milestone[] = [
         year: 2001,
         title: "ドラムと音楽探究",
         content: "ドラムを本格的に開始。ジャズ、ブルース、ロック、ファンク、ソウルなどの歴史的な音楽を掘り下げ、音楽への理解を深める。",
-        image: "/images/chronicle/milestone_2001.jpg",
+        image: "/images/chronicle/milestone_2001.webp",
         dashboard: {
             age: 21,
             location: "名古屋",
@@ -176,7 +176,7 @@ export const milestones: Milestone[] = [
         year: 2007,
         title: "聖地とWebスキル",
         content: "音楽の聖地ニュー・オリンズへ。本場のファンクやセカンドラインを体験。同年、独学でウェブサイト制作のスキルを習得。",
-        image: "/images/chronicle/milestone_2007.jpg",
+        image: "/images/chronicle/milestone_2007.webp",
         dashboard: {
             age: 27,
             location: "ニューオーリンズ",
@@ -197,7 +197,7 @@ export const milestones: Milestone[] = [
         year: 2011,
         title: "解放と世界",
         content: "渡豪。バイロンベイでの生活を通じ、ストレスからの解放と世界を知る。",
-        image: "/images/chronicle/milestone_2011.jpg",
+        image: "/images/chronicle/milestone_2011.webp",
         dashboard: {
             age: 31,
             location: "バイロンベイ",
@@ -218,7 +218,7 @@ export const milestones: Milestone[] = [
         year: 2013,
         title: "決意",
         content: "ALSで闘病した父を看取り、「自分らしく生きる」ことを決意。",
-        image: "/images/chronicle/milestone_2013.jpg",
+        image: "/images/chronicle/milestone_2013.webp",
         dashboard: {
             age: 33,
             location: "愛知県",
@@ -239,7 +239,7 @@ export const milestones: Milestone[] = [
         year: 2014,
         title: "徳島移住",
         content: "徳島県に移住。釣りとカメラに没頭する日々を送る。ミラーレスカメラとドローンの登場により、僕の感性とクロスした。",
-        image: "/images/chronicle/milestone_2013.jpg", // Reusing 2013 tokushima related image
+        image: "/images/chronicle/milestone_2013.webp", // Reusing 2013 tokushima related image
         dashboard: {
             age: 34,
             location: "徳島県",
@@ -260,7 +260,7 @@ export const milestones: Milestone[] = [
         year: 2018,
         title: "クロスオーヴァー",
         content: "『DAISUKE KOBAYASHI』開業。感性とテクノロジーが融合した「クロスオーヴァー期」を迎え、働くことと人生が一致する。",
-        image: "/images/chronicle/milestone_2018.jpg",
+        image: "/images/chronicle/milestone_2018.webp",
         dashboard: {
             age: 38,
             location: "徳島県",
@@ -281,7 +281,7 @@ export const milestones: Milestone[] = [
         year: 2021,
         title: "執筆活動",
         content: "Kindle書籍『現代を生き抜くサバイバルアイテム40』を出版。",
-        image: "/images/chronicle/milestone_2020.jpg", // Using remote life era image
+        image: "/images/chronicle/milestone_2020.webp", // Using remote life era image
         dashboard: {
             age: 41,
             location: "徳島県",
@@ -302,7 +302,7 @@ export const milestones: Milestone[] = [
         year: 2022,
         title: "生命の神秘",
         content: "長女・永茉（エマ）誕生。生命の神秘と記録の大切さを再認識する。",
-        image: "/images/chronicle/milestone_2023.jpg", // Using memento image (close enough context)
+        image: "/images/chronicle/milestone_2023.webp", // Using memento image (close enough context)
         dashboard: {
             age: 42,
             location: "徳島県",
@@ -323,7 +323,7 @@ export const milestones: Milestone[] = [
         year: 2024,
         title: "再構築",
         content: "全プロジェクトのコンセプトを再構築。映像制作・執筆を通じた「ビジュアルコミュニケーション戦略」を展開。",
-        image: "/images/chronicle/milestone_2025.jpg", // Placeholder/Forward looking
+        image: "/images/chronicle/milestone_2025.webp", // Placeholder/Forward looking
         dashboard: {
             age: 44,
             location: "徳島県",
@@ -344,7 +344,7 @@ export const milestones: Milestone[] = [
         year: 2025,
         title: "MitoFlow40",
         content: "精密栄養学を学び、ヘルスケアサービス『ミトフロー40』をスタート。",
-        image: "/images/chronicle/milestone_2026.jpg", // Using final vision image
+        image: "/images/chronicle/milestone_2026.webp", // Using final vision image
         dashboard: {
             age: 45,
             location: "徳島県",
@@ -358,6 +358,27 @@ export const milestones: Milestone[] = [
                 realityDistortion: 80
             },
             focus: ["栄養学", "ヘルスケア", "創業"]
+        }
+    },
+    {
+        id: "hl-fishing-launch",
+        year: 2026,
+        title: "HL Fishingを立ち上げ",
+        content: "「ハイパーライト」な装備と思考で釣りの行動範囲と精神性を拡張するフィッシングメディア『HL Fishing』を立ち上げ。Less is Moreを実践する。",
+        image: "/images/chronicle/milestone_2026.webp",
+        dashboard: {
+            age: 46,
+            location: "徳島県",
+            energy: 95,
+            title: "アングラー",
+            stats: {
+                creativity: 95,
+                technology: 90,
+                lifestyle: 100,
+                syncRate: 100,
+                realityDistortion: 70
+            },
+            focus: ["釣り", "ハイパーライト", "Less is More"]
         }
     }
 ];

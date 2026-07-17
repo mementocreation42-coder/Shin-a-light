@@ -98,6 +98,9 @@ export default async function RootLayout({
   const pathname = headersList.get('x-pathname') || '';
   const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
   const isChromeless = false;
+  // Chronicle is a fullscreen immersive page with a fixed dashboard panel;
+  // the global footer and floating nav would be covered by / overlap the panel.
+  const isChronicle = pathname.startsWith('/chronicle');
 
   return (
     <html lang="ja">
@@ -107,8 +110,8 @@ export default async function RootLayout({
       <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
-        {!isAdmin && !isChromeless && <Footer />}
-        {!isAdmin && !isChromeless && <FloatingNav />}
+        {!isAdmin && !isChromeless && !isChronicle && <Footer />}
+        {!isAdmin && !isChromeless && !isChronicle && <FloatingNav />}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
