@@ -61,42 +61,40 @@ export default async function PodcastPage() {
                 <ol className="podcast-list">
                     {show.episodes.map((ep) => (
                         <li key={ep.guid} className="podcast-episode">
-                            <div className="podcast-episode-top">
-                                {ep.image && (
-                                    <a
-                                        href={ep.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="podcast-episode-thumb"
-                                    >
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={ep.image} alt={ep.title} loading="lazy" />
-                                    </a>
-                                )}
-                                <div className="podcast-episode-head">
-                                    <div className="podcast-episode-meta">
-                                        <span>{ep.pubDate}</span>
-                                        {ep.duration && (
-                                            <>
-                                                <span className="podcast-episode-dot">・</span>
-                                                <span>{ep.duration}</span>
-                                            </>
-                                        )}
-                                    </div>
-                                    <h2 className="podcast-episode-title">{ep.title}</h2>
+                            {ep.image && (
+                                <a
+                                    href={ep.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="podcast-episode-thumb"
+                                >
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={ep.image} alt={ep.title} loading="lazy" />
+                                </a>
+                            )}
+                            <div className="podcast-episode-body">
+                                <div className="podcast-episode-meta">
+                                    <span>{ep.pubDate}</span>
+                                    {ep.duration && (
+                                        <>
+                                            <span className="podcast-episode-dot">・</span>
+                                            <span>{ep.duration}</span>
+                                        </>
+                                    )}
                                 </div>
+                                <h2 className="podcast-episode-title">{ep.title}</h2>
+
+                                <PodcastPlayer src={ep.audioUrl} title={ep.title} />
+
+                                <a
+                                    href={ep.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="podcast-episode-link"
+                                >
+                                    Spotifyでこの回を開く →
+                                </a>
                             </div>
-
-                            <PodcastPlayer src={ep.audioUrl} title={ep.title} />
-
-                            <a
-                                href={ep.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="podcast-episode-link"
-                            >
-                                Spotifyでこの回を開く →
-                            </a>
                         </li>
                     ))}
                 </ol>
