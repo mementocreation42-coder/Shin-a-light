@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getCategories } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
+import styles from '../admin.module.css';
 
 export const metadata = {
   title: { absolute: 'New Post | Shine a Light' },
@@ -11,17 +12,16 @@ export default async function NewPostPage() {
   const categories = await getCategories();
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1e1e1e', fontFamily: 'var(--font-mono), monospace', color: '#fff' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#2a2a2a', borderBottom: '1px solid #3a3a3a', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-          <Link href="/admin" style={{ fontSize: '16px', fontWeight: 700, color: '#ff764d', letterSpacing: '2px', textDecoration: 'none' }}>SAL</Link>
-          <Link href="/admin" style={{ fontSize: '12px', color: '#666', textDecoration: 'none' }}>/ 投稿一覧</Link>
-          <span style={{ fontSize: '12px', color: '#666' }}>/ 新規投稿</span>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerLeft}>
+          <Link href="/admin" className={styles.logo}>SAL</Link>
+          <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
+          <span className={styles.breadcrumb}>/ 新規投稿</span>
         </div>
       </header>
 
-      <main style={{ maxWidth: '1600px', margin: '0 auto', padding: '40px 40px' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>新規投稿</h1>
+      <main className={styles.editorMain}>
         <PostEditor categories={categories} />
       </main>
     </div>

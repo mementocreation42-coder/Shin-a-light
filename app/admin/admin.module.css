@@ -1,0 +1,479 @@
+/* ===== 管理画面共通スタイル ===== */
+
+.page {
+  min-height: 100vh;
+  background: #1a1a1a;
+  font-family: var(--font-mono), monospace;
+  color: #fff;
+}
+
+/* ===== ヘッダー ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 32px;
+  background: rgba(34, 34, 34, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ff764d;
+  letter-spacing: 2px;
+  text-decoration: none;
+}
+
+.logoBadge {
+  font-size: 10px;
+  color: #666;
+  letter-spacing: 2px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: #777;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a.breadcrumb:hover {
+  color: #ccc;
+}
+
+/* ===== ナビタブ ===== */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 10px;
+  padding-left: 14px;
+  border-left: 1px solid #383838;
+}
+
+.navTab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s, background 0.15s;
+}
+
+.navTab:hover {
+  color: #eee;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.navTabActive {
+  color: #fff;
+  background: rgba(255, 118, 77, 0.14);
+}
+
+.navTabActive:hover {
+  color: #fff;
+  background: rgba(255, 118, 77, 0.18);
+}
+
+.headerRight {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ===== ボタン ===== */
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  padding: 9px 18px;
+  background: #ff764d;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.primaryBtn:hover {
+  background: #ff8a66;
+}
+
+.primaryBtn:active {
+  transform: scale(0.98);
+}
+
+.ghostBtn {
+  display: inline-block;
+  padding: 9px 16px;
+  background: transparent;
+  border: 1px solid #3a3a3a;
+  color: #999;
+  border-radius: 8px;
+  font-size: 12.5px;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.ghostBtn:hover:not(:disabled) {
+  border-color: #555;
+  color: #eee;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.ghostBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== メイン ===== */
+.main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.editorMain {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 8px 12px 48px;
+}
+
+.pageTitleRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pageTitle {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.count {
+  font-size: 12px;
+  color: #666;
+  margin-left: 12px;
+}
+
+/* ===== 投稿リスト ===== */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #232323;
+  border: 1px solid #2e2e2e;
+  border-radius: 12px;
+  padding: 12px 16px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.item:hover {
+  background: #282828;
+  border-color: #3d3d3d;
+}
+
+.itemDraft {
+  background: #1f1f1f;
+}
+
+.itemDraft:hover {
+  background: #242424;
+}
+
+.thumb {
+  width: 88px;
+  height: 58px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #303030;
+  border: 1px solid #383838;
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.item:hover .thumbImg {
+  transform: scale(1.04);
+}
+
+.thumbEmpty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #4a4a4a;
+  font-size: 16px;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.date {
+  font-size: 11px;
+  color: #6e6e6e;
+  letter-spacing: 0.5px;
+}
+
+.catTag {
+  font-size: 10px;
+  padding: 2px 9px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  color: #9a9a9a;
+  letter-spacing: 0.5px;
+}
+
+.draftBadge {
+  font-size: 10px;
+  padding: 2px 9px;
+  background: rgba(255, 118, 77, 0.12);
+  border: 1px solid rgba(255, 118, 77, 0.5);
+  border-radius: 10px;
+  color: #ff764d;
+  letter-spacing: 0.5px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ececec;
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+a.title:hover {
+  color: #ff764d;
+}
+
+.titleDraft {
+  color: #b5b5b5;
+}
+
+/* ===== 行内アクション ===== */
+.actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  padding: 7px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #383838;
+  color: #aaa;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+}
+
+.actionBtn:hover:not(:disabled) {
+  border-color: #555;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.actionBtnDanger {
+  background: transparent;
+  border-color: transparent;
+  color: #666;
+}
+
+.actionBtnDanger:hover:not(:disabled) {
+  border-color: rgba(231, 76, 60, 0.5);
+  color: #e74c3c;
+  background: rgba(231, 76, 60, 0.07);
+}
+
+.actionBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ===== ページネーション ===== */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.pageBtn {
+  padding: 8px 18px;
+  background: #232323;
+  border: 1px solid #2e2e2e;
+  color: #aaa;
+  border-radius: 8px;
+  font-size: 13px;
+  text-decoration: none;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.pageBtn:hover {
+  border-color: #555;
+  color: #fff;
+}
+
+.pageInfo {
+  font-size: 13px;
+  color: #666;
+}
+
+/* ===== モバイル ===== */
+@media (max-width: 640px) {
+  .header {
+    padding: 10px 6px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .logoBadge {
+    display: none;
+  }
+
+  /* 新規投稿ボタンはアイコンのみに（ラベルは省略）して1段に収める */
+  .btnText {
+    display: none;
+  }
+
+  .primaryBtn {
+    padding: 8px 12px;
+    font-size: 14px;
+    gap: 0;
+  }
+
+  .headerRight {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .headerLeft {
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .logo {
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+
+  .nav {
+    margin-left: 3px;
+    padding-left: 7px;
+    gap: 0;
+  }
+
+  .navTab {
+    padding: 6px 7px;
+    font-size: 11.5px;
+  }
+
+  .ghostBtn {
+    padding: 8px 8px;
+    font-size: 10.5px;
+    flex-shrink: 0;
+  }
+
+  .main {
+    padding: 16px 4px 56px;
+  }
+
+  .editorMain {
+    padding: 6px 4px 40px;
+  }
+
+  .item {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px;
+  }
+
+  .thumb {
+    width: 72px;
+    height: 48px;
+  }
+
+  .info {
+    flex-basis: 0;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+    border-top: 1px solid #2e2e2e;
+    padding-top: 10px;
+  }
+}

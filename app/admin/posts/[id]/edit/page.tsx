@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAdminPostById, getCategories, getFeaturedImageUrl } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
+import styles from '../../../admin.module.css';
 
 export const metadata = {
   title: { absolute: 'Edit Post | Shine a Light' },
@@ -26,21 +27,21 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#1e1e1e', fontFamily: 'var(--font-mono), monospace', color: '#fff' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 32px', background: '#2a2a2a', borderBottom: '1px solid #3a3a3a', position: 'sticky', top: 0, zIndex: 10 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-          <Link href="/admin" style={{ fontSize: '16px', fontWeight: 700, color: '#ff764d', letterSpacing: '2px', textDecoration: 'none' }}>SAL</Link>
-          <span style={{ fontSize: '12px', color: '#666' }}>/ 投稿を編集</span>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.headerLeft}>
+          <Link href="/admin" className={styles.logo}>SAL</Link>
+          <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
+          <span className={styles.breadcrumb}>/ 投稿を編集</span>
         </div>
         {post.status === 'publish' && (
-          <Link href={`/journal/${id}`} target="_blank" style={{ fontSize: '12px', color: '#a0a0a0', textDecoration: 'none' }}>
-            公開ページを見る →
+          <Link href={`/journal/${id}`} target="_blank" className={styles.ghostBtn}>
+            公開ページを見る ↗
           </Link>
         )}
       </header>
 
-      <main style={{ maxWidth: '1600px', margin: '0 auto', padding: '40px 40px' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>投稿を編集</h1>
+      <main className={styles.editorMain}>
         <PostEditor categories={categories} initialData={initialData} />
       </main>
     </div>

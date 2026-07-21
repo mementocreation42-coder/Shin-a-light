@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import styles from '@/app/admin/admin.module.css';
 
 interface EyecatchResult {
   total: number;
@@ -8,20 +9,6 @@ interface EyecatchResult {
   skip: number;
   error: number;
 }
-
-const btn: React.CSSProperties = {
-  padding: '8px 16px',
-  background: 'transparent',
-  border: '1px solid #3a3a3a',
-  color: '#a0a0a0',
-  borderRadius: '6px',
-  fontSize: '12px',
-  cursor: 'pointer',
-  fontFamily: 'inherit',
-  whiteSpace: 'nowrap',
-};
-
-const btnDisabled: React.CSSProperties = { ...btn, color: '#666', cursor: 'not-allowed' };
 
 export default function AdminToolbar() {
   const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'running' | 'done' | 'error'>('idle');
@@ -63,7 +50,7 @@ export default function AdminToolbar() {
         type="button"
         onClick={handleFixEyecatch}
         disabled={eyecatchStatus === 'running'}
-        style={eyecatchStatus === 'running' ? btnDisabled : btn}
+        className={styles.ghostBtn}
       >
         {eyecatchStatus === 'running' ? '取得中...' : 'アイキャッチ一括修正'}
       </button>
@@ -72,7 +59,7 @@ export default function AdminToolbar() {
         type="button"
         onClick={handleClearCache}
         disabled={cacheStatus === 'running'}
-        style={cacheStatus === 'running' ? btnDisabled : btn}
+        className={styles.ghostBtn}
       >
         {cacheStatus === 'running' ? 'クリア中...' : cacheStatus === 'done' ? '✓ クリア完了' : 'キャッシュクリア'}
       </button>

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import styles from '@/app/admin/admin.module.css';
 
 export default function PostActions({ postId }: { postId: number }) {
   const router = useRouter();
@@ -24,30 +25,15 @@ export default function PostActions({ postId }: { postId: number }) {
     }
   }
 
-  const btnBase: React.CSSProperties = {
-    fontSize: '12px',
-    padding: '5px 12px',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontFamily: 'inherit',
-    fontWeight: 600,
-    letterSpacing: '0.5px',
-    border: '1px solid',
-    transition: 'opacity 0.15s',
-  };
-
   return (
-    <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-      <Link
-        href={`/admin/posts/${postId}/edit`}
-        style={{ ...btnBase, background: '#2a2a2a', borderColor: '#3a3a3a', color: '#a0a0a0', textDecoration: 'none' }}
-      >
+    <div className={styles.actions}>
+      <Link href={`/admin/posts/${postId}/edit`} className={styles.actionBtn}>
         編集
       </Link>
       <button
         onClick={handleDelete}
         disabled={deleting}
-        style={{ ...btnBase, background: 'transparent', borderColor: '#555', color: '#888', opacity: deleting ? 0.5 : 1 }}
+        className={`${styles.actionBtn} ${styles.actionBtnDanger}`}
       >
         {deleting ? '削除中...' : '削除'}
       </button>

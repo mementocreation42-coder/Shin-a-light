@@ -70,7 +70,7 @@ function parsePostContent(html: string): {
 
 // ===== Types =====
 interface UploadedImage {
-  uid: number; localUrl: string; url?: string; id?: number; uploading: boolean; error?: string;
+  uid: number; localUrl: string; url?: string; id?: number; uploading: boolean; error?: string; file?: File;
 }
 interface Category { id: number; name: string; slug: string; }
 interface InitialData {
@@ -471,6 +471,37 @@ function insertAtCursor(text: string) {
     );
   }
 
+  // 失敗した画像を本文から取り除き、配列インデックスを詰める
+  function removeImage(index: number) {
+    setImages((prev) => prev.filter((_, idx) => idx !== index));
+    setBody((prev) =>
+      prev.replace(/\[image:(\d+)\]/g, (m, n) => {
+        const idx = parseInt(n, 10);
+        if (idx === index) return '';
+        if (idx > index) return `[image:${idx - 1}]`;
+        return m;
+      })
+    );
+  }
+
+  // 失敗した画像を同じファイルで再アップロード
+  async function retryImageUpload(uid: number) {
+    const target = images.find((img) => img.uid === uid);
+    if (!target?.file) return;
+    const file = target.file;
+    setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploading: true, error: undefined } : img));
+    try {
+      const fd = new FormData();
+      fd.append('image', file, file.name);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, url: data.url, id: data.id, uploading: false } : img));
+    } catch {
+      setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploading: false, error: 'アップロード失敗' } : img));
+    }
+  }
+
 
   const handleBodyDragOver = useCallback((e: React.DragEvent) => {
     if (e.dataTransfer.types.includes('Files')) { e.preventDefault(); setIsDraggingOnBody(true); }
@@ -488,7 +519,7 @@ function insertAtCursor(text: string) {
 
     const compressed = await Promise.all(files.map((f) => compressImage(f)));
     const newItems: UploadedImage[] = compressed.map((file) => ({
-      uid: ++uidRef.current, localUrl: URL.createObjectURL(file), uploading: true,
+      uid: ++uidRef.current, localUrl: URL.createObjectURL(file), uploading: true, file,
     }));
 
     // 現在の images 長 = これから追加される画像の開始インデックス
@@ -611,13 +642,31 @@ function insertAtCursor(text: string) {
     }
     const imgM = t.match(/^\[image:(\d+)\]$/);
     if (imgM) {
-      const img = images[parseInt(imgM[1], 10)];
+      const imgIdx = parseInt(imgM[1], 10);
+      const img = images[imgIdx];
       if (!img) return null;
       return (
         <figure key={i} className="wp-block-image" style={{ position: 'relative' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={img.localUrl} alt="" style={{ opacity: img.uploading ? 0.5 : 1 }} />
+          <img src={img.localUrl} alt="" style={{ opacity: img.uploading || img.error ? 0.4 : 1 }} />
           {img.uploading && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#ff764d', background: 'rgba(0,0,0,0.4)' }}>アップロード中...</div>}
+          {img.error && (
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', background: 'rgba(20,20,20,0.72)' }}>
+              <span style={{ fontSize: '12px', fontWeight: 700, color: '#ff6b5c', letterSpacing: '0.5px' }}>⚠ アップロード失敗</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {img.file && (
+                  <button type="button" onClick={() => retryImageUpload(img.uid)}
+                    style={{ padding: '6px 14px', fontSize: '12px', fontWeight: 700, background: '#ff764d', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                    再アップロード
+                  </button>
+                )}
+                <button type="button" onClick={() => removeImage(imgIdx)}
+                  style={{ padding: '6px 14px', fontSize: '12px', fontWeight: 700, background: 'transparent', color: '#ddd', border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                  削除
+                </button>
+              </div>
+            </div>
+          )}
         </figure>
       );
     }
@@ -670,7 +719,7 @@ function insertAtCursor(text: string) {
   const eyecatchUrl = eyecatch?.localUrl;
 
   const previewPanel = (
-    <div className="journal-article-page" style={{ background: 'transparent' }}>
+    <div className="journal-article-page" style={{ background: 'transparent', padding: 0, maxWidth: 'none' }}>
       <article className="journal-article">
         <div className="journal-article-body">
           {/* アイキャッチ（プレビュー上で直接設定） */}
@@ -750,7 +799,7 @@ function insertAtCursor(text: string) {
       <div className={styles.field}>
         <label className={styles.label}>タイトル *</label>
         <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-          placeholder="記事タイトル" className={styles.input} required />
+          placeholder="記事タイトル" className={styles.titleInput} required />
       </div>
 
       {/* 投稿日 */}
@@ -787,21 +836,21 @@ function insertAtCursor(text: string) {
         <div className={styles.sectionHeader}>
           <label className={styles.label}>本文</label>
           <div style={{ display: 'flex', gap: '6px' }}>
-            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+            <button type="button" className={styles.toolBtn}
               onClick={() => {
                 const ta = textareaRef.current;
                 if (!ta) return;
                 const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
                 insertAtCursor(`[h2]${sel}[/h2]`);
               }}>H2</button>
-            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+            <button type="button" className={styles.toolBtn}
               onClick={() => {
                 const ta = textareaRef.current;
                 if (!ta) return;
                 const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
                 insertAtCursor(`[h3]${sel}[/h3]`);
               }}>H3</button>
-            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+            <button type="button" className={styles.toolBtn}
               onClick={() => {
                 const ta = textareaRef.current;
                 if (!ta) return;
@@ -809,7 +858,7 @@ function insertAtCursor(text: string) {
                 const items = sel ? sel.split('\n').map(l => l.trim()).filter(Boolean).join('\n') : '項目1\n項目2\n項目3';
                 insertAtCursor(`[ul]\n${items}\n[/ul]`);
               }}>UL</button>
-            <button type="button" className={styles.cancelBtn} style={{ padding: '4px 10px', fontSize: '12px', fontWeight: 700 }}
+            <button type="button" className={styles.toolBtn}
               onClick={() => {
                 const ta = textareaRef.current;
                 if (!ta) return;
@@ -886,7 +935,10 @@ function insertAtCursor(text: string) {
         </button>
       </div>
     </form>
-    <div className={styles.previewCol}>{previewPanel}</div>
+    <div className={styles.previewCol}>
+      <p className={styles.previewLabel}>Preview</p>
+      {previewPanel}
+    </div>
     </div>
     {showMediaPicker && (
       <MediaPicker
