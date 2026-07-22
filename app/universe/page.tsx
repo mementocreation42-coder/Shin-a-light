@@ -29,6 +29,7 @@ export default function UniversePage() {
     return (
         <div className="universe-page">
                 <header className="universe-hero">
+                    <span className="universe-hero-eyebrow">SAL — Shine a Light ecosystem</span>
                     <h1 className="universe-hero-title">SAL</h1>
                     <p className="universe-hero-sub">疲れた身体を整え、ともに創り、自然に触れ、自身の時間を取り戻す知恵と技術を。</p>
                 </header>

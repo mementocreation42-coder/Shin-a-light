@@ -1,4 +1,4 @@
-export type UniverseTag = 'ai' | 'video' | 'photo' | 'web' | 'tools' | 'health';
+export type UniverseTag = 'ai' | 'video' | 'photo' | 'web' | 'tools' | 'health' | 'fishing';
 
 export interface UniverseLink {
     title: string;
@@ -12,6 +12,7 @@ export interface UniverseLink {
     glyph: string;
     sameTab?: boolean;
     section?: 'main' | 'sns';
+    wide?: boolean;
 }
 
 export const tagMeta: Record<UniverseTag, { label: string; color: string }> = {
@@ -21,6 +22,7 @@ export const tagMeta: Record<UniverseTag, { label: string; color: string }> = {
     web:    { label: 'WEB',    color: '#30c8c0' },
     tools:  { label: 'TOOLS',  color: '#e040b0' },
     health: { label: 'HEALTH', color: '#50c870' },
+    fishing:{ label: 'FISHING', color: '#3f8fd0' },
 };
 
 export const universeLinks: UniverseLink[] = [
@@ -40,7 +42,7 @@ export const universeLinks: UniverseLink[] = [
         title: 'HL Fishing',
         url: 'https://www.hlfishing.net/',
         description: '徳島を舞台にしたフィッシングメディア。Less is Moreで釣りを追求する',
-        tags: ['web', 'video'],
+        tags: ['fishing'],
         domain: 'hlfishing.net',
         image: '/universe/hlfishing.jpg',
         gradient: 'linear-gradient(135deg, #2f3d2a 0%, #4a5d3a 50%, #6b7a4a 100%)',
@@ -51,12 +53,13 @@ export const universeLinks: UniverseLink[] = [
         title: 'Mitoflow40',
         url: 'https://mitoflow40.com/',
         description: '精密栄養学をベースに、40代の身体のステータス異常を見つけて解除するヘルスケアサービス',
-        tags: ['web', 'health'],
+        tags: ['health'],
         domain: 'mitoflow40.com',
         image: '/universe/mitoflow40.png',
         gradient: 'linear-gradient(135deg, #6cb6e8 0%, #f5a76b 60%, #f47a3d 100%)',
         accent: '#6cb6e8',
         glyph: 'M40',
+        wide: true,
     },
     {
         title: 'SAL Films',
@@ -80,6 +83,17 @@ export const universeLinks: UniverseLink[] = [
         gradient: 'linear-gradient(135deg, #41c9b4 0%, #1a9e8a 100%)',
         accent: '#41c9b4',
         glyph: 'n',
+        section: 'sns',
+    },
+    {
+        title: 'SAL Radio',
+        url: 'https://open.spotify.com/show/3g1Jexgm6ZWa1XYTFLGIxo',
+        description: 'SALの思考・活動・近況を声で綴るポッドキャスト番組',
+        tags: ['web'],
+        domain: 'spotify.com',
+        gradient: 'linear-gradient(135deg, #1ed760 0%, #159c43 100%)',
+        accent: '#1ed760',
+        glyph: '🎙',
         section: 'sns',
     },
 ];
