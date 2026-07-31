@@ -1,10 +1,17 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import styles from './PostEditor.module.css';
 import MediaPicker from './MediaPicker';
 import { compressImage, isHeic } from '@/lib/imageCompress';
+import {
+  autoGrow, parseBodySegments, spliceSeg, findLiveSeg, insertBlockAt, removeSegFromBody,
+  getTextBlockFormat, projectTextForEditor, editorTextToRaw, formattedTextToPlain,
+  bracketToEditor, editorToBracket,
+  type BodySeg,
+} from './bodyBlocks';
 
 // ===== HTML → プレーンテキスト =====
 function htmlToPlainText(html: string): string {
@@ -68,6 +75,8 @@ function parsePostContent(html: string): {
   return { body, products, images };
 }
 
+// 本文のブロック分解・記法の投影は bodyBlocks.ts（hl-fishing から移植）に集約
+
 // ===== Types =====
 interface UploadedImage {
   uid: number; localUrl: string; url?: string; id?: number; uploading: boolean; error?: string; file?: File;
@@ -79,6 +88,53 @@ interface InitialData {
   featuredMediaId?: number; featuredImageUrl?: string;
 }
 interface Props { categories: Category[]; initialData?: InitialData; }
+
+// 改行後のキャレット位置を測り、固定ヘッダーや画面下端に隠れないよう追従する。
+function scrollCaretIntoView(fallback: HTMLTextAreaElement) {
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const active = document.activeElement;
+      const ta = active instanceof HTMLTextAreaElement ? active : fallback;
+      if (!ta.isConnected) return;
+
+      const style = window.getComputedStyle(ta);
+      const mirror = document.createElement('div');
+      Object.assign(mirror.style, {
+        position: 'fixed',
+        left: '-9999px',
+        top: '0',
+        visibility: 'hidden',
+        whiteSpace: 'pre-wrap',
+        overflowWrap: style.overflowWrap,
+        wordBreak: style.wordBreak,
+        boxSizing: style.boxSizing,
+        width: `${ta.getBoundingClientRect().width}px`,
+        padding: style.padding,
+        border: style.border,
+        font: style.font,
+        lineHeight: style.lineHeight,
+        letterSpacing: style.letterSpacing,
+      });
+      mirror.textContent = ta.value.slice(0, ta.selectionStart);
+      const marker = document.createElement('span');
+      marker.textContent = '\u200b';
+      mirror.appendChild(marker);
+      document.body.appendChild(mirror);
+
+      const lineHeight = parseFloat(style.lineHeight) || 32;
+      const caretY = ta.getBoundingClientRect().top + marker.offsetTop + lineHeight - ta.scrollTop;
+      const safeTop = 88;
+      const safeBottom = window.innerHeight - 96;
+      mirror.remove();
+
+      if (caretY > safeBottom) {
+        window.scrollBy({ top: caretY - safeBottom + lineHeight });
+      } else if (caretY < safeTop) {
+        window.scrollBy({ top: caretY - safeTop - lineHeight });
+      }
+    });
+  });
+}
 
 // ===== 商品カードエディター =====
 function ProductCardEditor({ index, data, onInsert, onRemove, onUpdate }: {
@@ -110,7 +166,7 @@ function ProductCardEditor({ index, data, onInsert, onRemove, onUpdate }: {
   const hasMeta = data.title || data.image;
 
   return (
-    <div className={styles.productCard}>
+    <div className={styles.productCard} data-product-index={index}>
       <div className={styles.productIndex}>[product:{index}]</div>
 
       <div className={styles.productInputRow}>
@@ -170,7 +226,8 @@ export default function PostEditor({ categories, initialData }: Props) {
   const [title, setTitle] = useState(initialData?.title ?? '');
   const [date, setDate] = useState(initialData?.date ?? todayStr);
   const [selectedCats, setSelectedCats] = useState<number[]>(initialData?.categoryIds ?? []);
-  const [body, setBody] = useState(parsed?.body ?? '');
+  // 編集中は Markdown 風の記法で保持し、保存時に [h2]…[/h2] 形式へ戻す
+  const [body, setBody] = useState(bracketToEditor(parsed?.body ?? ''));
   const [images, setImages] = useState<UploadedImage[]>(
     parsed?.images.map((img, i) => ({ uid: i, localUrl: img.url, url: img.url, id: img.id, uploading: false })) ?? []
   );
@@ -189,88 +246,375 @@ const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
   const [status, setStatus] = useState<'idle' | 'saving' | 'done' | 'error'>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [eyecatchStatus, setEyecatchStatus] = useState<'idle' | 'fetching' | 'done' | 'error'>('idle');
-  const [slashMenu, setSlashMenu] = useState<{ top: number; left: number; query: string } | null>(null);
+  const [headerActionsTarget, setHeaderActionsTarget] = useState<HTMLElement | null>(null);
+  const [slashMenu, setSlashMenu] = useState<{ segIndex: number; query: string; openUpward: boolean } | null>(null);
   const [slashIndex, setSlashIndex] = useState(0);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
 
 const eyecatchInputRef = useRef<HTMLInputElement>(null);
   const autoFetchedUrlRef = useRef<string>('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const slashStartRef = useRef<number>(-1);
+  const insertPosRef = useRef<number | null>(null);
+  const productSectionRef = useRef<HTMLDivElement>(null);
+  const pendingAffiliateFocusRef = useRef<number | null>(null);
+
+  // 本文はブロックごとにtextareaを持つので、キャレットは本文全体での位置で扱う
+  const bodySegs = useMemo(() => parseBodySegments(body), [body]);
+  const taRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
+  const caretRef = useRef(0);
+  const caretEndRef = useRef(0);
+  const focusFrameRef = useRef<number | null>(null);
+  // 日本語入力（IME）の変換中はキャレット移動を持ち越し、確定後にまとめて適用する
+  const composingRef = useRef(false);
+  const pendingFocusRef = useRef<{ body: string; caret: number } | null>(null);
+  // 変換中は1文字ごとに連続でイベントが飛ぶため、クロージャのbodyでは古い値を掴む。
+  // 常に最新の本文をrefで持ち、更新もrefと同時に行う
+  const bodyRef = useRef(body);
+  useEffect(() => { bodyRef.current = body; }, [body]);
+  function updateBody(next: string) { bodyRef.current = next; setBody(next); }
+
+  // 本文全体でのキャレット位置を指定して、その位置のブロックへフォーカスする
+  const focusGlobal = useCallback((nextBody: string, globalPos: number) => {
+    if (focusFrameRef.current !== null) cancelAnimationFrame(focusFrameRef.current);
+    focusFrameRef.current = requestAnimationFrame(() => {
+      focusFrameRef.current = null;
+      // フォーカス待ちの間に続きを入力していたら、古い位置へ戻さない
+      if (bodyRef.current !== nextBody) return;
+      const segs = parseBodySegments(nextBody);
+      // ブロック境界では前後のオフセットが重なるので、先頭一致を優先する
+      let target = segs.findIndex((sg) => sg.kind === 'text' && !sg.virtual && globalPos === sg.start);
+      if (target < 0) target = segs.findIndex((sg) => sg.kind === 'text' && !sg.virtual && globalPos >= sg.start && globalPos <= sg.end);
+      if (target < 0) target = segs.findIndex((sg) => sg.kind === 'text' && !!sg.virtual && globalPos === sg.start);
+      if (target < 0) for (let i = segs.length - 1; i >= 0; i--) { if (segs[i].kind === 'text') { target = i; break; } }
+      const ta = taRefs.current[target];
+      const seg = segs[target];
+      if (!ta || !seg || seg.kind !== 'text') return;
+      const rawValue = seg.virtual ? '' : nextBody.slice(seg.start, seg.end);
+      const rawLocal = seg.virtual ? 0 : Math.max(0, Math.min(globalPos - seg.start, rawValue.length));
+      const local = projectTextForEditor(rawValue).toDisplay(rawLocal);
+      ta.focus();
+      ta.selectionStart = ta.selectionEnd = local;
+      caretRef.current = caretEndRef.current = globalPos;
+    });
+  }, []);
+
+  // 幅が変わると折り返し行数が変わるので、入力欄の高さを測り直す
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const regrow = () => {
+      surfaceRef.current?.querySelectorAll('textarea').forEach((el) => autoGrow(el));
+    };
+    regrow();
+    window.addEventListener('resize', regrow);
+    return () => window.removeEventListener('resize', regrow);
+  }, []);
+
+  useEffect(() => {
+    setHeaderActionsTarget(document.getElementById('post-editor-actions'));
+  }, []);
+
+  useEffect(() => {
+    const index = pendingAffiliateFocusRef.current;
+    if (index === null) return;
+    pendingAffiliateFocusRef.current = null;
+
+    requestAnimationFrame(() => {
+      const card = productSectionRef.current?.querySelector<HTMLElement>(`[data-product-index="${index}"]`);
+      const urlInput = card?.querySelector<HTMLInputElement>('input[type="url"]');
+      card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      urlInput?.focus({ preventScroll: true });
+    });
+  }, [products.length]);
+
+  // ブロック内の選択位置を body 全体のオフセットへ反映
+  function syncCaret(seg: BodySeg, ta: HTMLTextAreaElement) {
+    const currentBody = bodyRef.current;
+    const { seg: liveSeg } = findLiveSeg(seg, currentBody);
+    if (liveSeg.kind !== 'text') return;
+    const base = liveSeg.virtual ? spliceSeg(currentBody, liveSeg, '').caret : liveSeg.start;
+    const rawValue = liveSeg.virtual ? '' : currentBody.slice(liveSeg.start, liveSeg.end);
+    const projection = projectTextForEditor(rawValue);
+    caretRef.current = base + projection.toRaw(ta.selectionStart);
+    caretEndRef.current = base + projection.toRaw(ta.selectionEnd);
+  }
 
   const SLASH_COMMANDS = [
-    { label: 'H2 見出し',   icon: 'H2', insert: '[h2][/h2]',         cursor: 4,  action: 'insert' },
-    { label: 'H3 小見出し', icon: 'H3', insert: '[h3][/h3]',         cursor: 4,  action: 'insert' },
-    { label: 'リスト',      icon: 'UL', insert: '[ul]\n\n[/ul]',     cursor: 5,  action: 'insert' },
-    { label: '引用',        icon: '❝',  insert: '[quote][/quote]',   cursor: 7,  action: 'insert' },
-    { label: '画像を挿入',  icon: '🖼',  insert: '',                  cursor: 0,  action: 'media' },
+    { label: '見出し',      icon: 'H2', insert: '## ',  action: 'insert' },
+    { label: '小見出し',    icon: 'H3', insert: '### ', action: 'insert' },
+    { label: 'リスト',      icon: 'UL', insert: '- ',   action: 'insert' },
+    { label: '引用',        icon: '❝',  insert: '> ',   action: 'insert' },
+    { label: 'メディアから挿入', icon: '🖼', insert: '',  action: 'media' },
+    { label: 'アフィリを追加', icon: 'AFF', insert: '',  action: 'product' },
   ] as const;
 
   function applySlashCommand(cmdIndex: number) {
-    const ta = textareaRef.current;
-    if (!ta || slashStartRef.current < 0) return;
+    if (slashStartRef.current < 0) return;
     const cmd = SLASH_COMMANDS[cmdIndex];
+    const cur = bodyRef.current;
+    // 入力した「/xxx」を取り除く
+    const cleaned = cur.slice(0, slashStartRef.current) + cur.slice(caretRef.current);
+    const pos = slashStartRef.current;
     setSlashMenu(null);
+    slashStartRef.current = -1;
+
     if (cmd.action === 'media') {
-      // /を削除してからメディアピッカーを開く
-      const before = body.slice(0, slashStartRef.current);
-      const after = body.slice(ta.selectionStart);
-      setBody(before + after);
+      updateBody(cleaned);
+      insertPosRef.current = pos;
       setShowMediaPicker(true);
-      slashStartRef.current = -1;
       return;
     }
-    const before = body.slice(0, slashStartRef.current);
-    const after = body.slice(ta.selectionStart);
-    const newBody = before + cmd.insert + after;
-    setBody(newBody);
-    const pos = slashStartRef.current + cmd.cursor;
-    requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = pos; ta.focus(); });
-    slashStartRef.current = -1;
+
+    if (cmd.action === 'product') {
+      updateBody(cleaned);
+      insertPosRef.current = pos;
+      pendingAffiliateFocusRef.current = products.length;
+      addProduct();
+      return;
+    }
+
+    // いま居るブロックが空なら、そのブロック自体を見出し等に変える
+    const emptyBlock = parseBodySegments(cleaned).find((candidate) => {
+      if (candidate.kind !== 'text' || candidate.virtual || pos < candidate.start || pos > candidate.end) return false;
+      const raw = cleaned.slice(candidate.start, candidate.end);
+      return formattedTextToPlain(raw, getTextBlockFormat(raw)).trim() === '';
+    });
+    if (emptyBlock && emptyBlock.kind === 'text') {
+      const next = cleaned.slice(0, emptyBlock.start) + cmd.insert + cleaned.slice(emptyBlock.end);
+      const caret = emptyBlock.start + cmd.insert.length;
+      updateBody(next);
+      focusGlobal(next, caret);
+      return;
+    }
+
+    // それ以外は独立したブロックとして差し込む
+    const inserted = insertBlockAt(cleaned, pos, cmd.insert);
+    updateBody(inserted.body);
+    focusGlobal(inserted.body, inserted.end);
   }
 
   function handleMediaSelect(item: { id: number; source_url: string; alt_text: string; title: { rendered: string } }) {
     const uid = ++uidRef.current;
     const newImg = { uid, localUrl: item.source_url, url: item.source_url, id: item.id, uploading: false };
-    setImages((prev) => {
-      const idx = prev.length;
-      insertAtCursor(`[image:${idx}]`);
-      return [...prev, newImg];
-    });
+    // setStateの更新関数は2回呼ばれることがあるので、本文への差し込みは外で1回だけ行う
+    const idx = images.length;
+    setImages((prev) => [...prev, newImg]);
+    insertAtCursor(`[image:${idx}]`);
     setShowMediaPicker(false);
   }
 
-  function handleBodyChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const val = e.target.value;
-    setBody(val);
-    const pos = e.target.selectionStart;
-    // カーソル直前のテキストから現在行を取得
-    const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
-    const lineText = val.slice(lineStart, pos);
-    if (lineText.startsWith('/')) {
-      const query = lineText.slice(1).toLowerCase();
-      const ta = e.target;
-      // カーソル位置の座標を擬似的に取得（textarea上部からの行数で計算）
-      const lines = val.slice(0, pos).split('\n');
-      const lineHeight = 22;
-      const top = lines.length * lineHeight + 4;
-      slashStartRef.current = lineStart;
+  // テキストブロックの入力。body の該当範囲だけを差し替えるので、保存に渡る文字列は同じ形のまま。
+  function handleRunChange(seg: BodySeg, e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const ta = e.target;
+    const displayValue = ta.value;
+    const displayCaret = ta.selectionStart;
+
+    const currentBody = bodyRef.current;
+    const { seg: liveSeg, all: parsedNow } = findLiveSeg(seg, currentBody);
+    const currentRaw = liveSeg.kind === 'text' && !liveSeg.virtual
+      ? currentBody.slice(liveSeg.start, liveSeg.end)
+      : '';
+    const currentProjection = projectTextForEditor(currentRaw);
+    const val = editorTextToRaw(displayValue, currentProjection.format);
+    const nextProjection = projectTextForEditor(val);
+    const localRawCaret = nextProjection.toRaw(displayCaret);
+
+    const spliced = spliceSeg(currentBody, liveSeg, val);
+    updateBody(spliced.body);
+    autoGrow(ta);
+
+    // 空行を打つと段落が分かれ、入力欄そのものが別要素になる。その場合だけフォーカスを引き継ぐ
+    const splitOccurred = parseBodySegments(spliced.body).length !== parsedNow.length;
+    const runStart = spliced.caret - val.length;
+    caretRef.current = caretEndRef.current = runStart + localRawCaret;
+    if (splitOccurred || (liveSeg.kind === 'text' && !!liveSeg.virtual)) {
+      if (composingRef.current) {
+        pendingFocusRef.current = { body: spliced.body, caret: caretRef.current };
+      } else {
+        focusGlobal(spliced.body, caretRef.current);
+      }
+    }
+
+    if (composingRef.current) return;
+
+    // 「/」メニュー（行頭または空白の直後に打った「/」で開く）
+    let slashPos = -1;
+    for (let j = displayCaret - 1; j >= 0; j--) {
+      const c = displayValue[j];
+      if (c === '/') { if (j === 0 || /\s/.test(displayValue[j - 1])) slashPos = j; break; }
+      if (/\s/.test(c)) break;
+    }
+    if (slashPos >= 0) {
+      slashStartRef.current = runStart + nextProjection.toRaw(slashPos);
       setSlashIndex(0);
-      setSlashMenu({ top, left: 0, query });
-    } else {
+      // メニューは更新後の本文でのブロック位置に紐づける（描画されるのは新しい方）
+      const newSegs = parseBodySegments(spliced.body);
+      const caret = caretRef.current;
+      const segIndex = newSegs.findIndex((sg) => sg.kind === 'text' && !sg.virtual && caret >= sg.start && caret <= sg.end);
+      const rect = ta.getBoundingClientRect();
+      const articleRect = ta.closest('.journal-article-body')?.getBoundingClientRect();
+      const estimatedMenuHeight = Math.min(SLASH_COMMANDS.length, 6) * 42 + 12;
+      const lowerBoundary = Math.min(window.innerHeight, articleRect?.bottom ?? window.innerHeight);
+      const upperBoundary = Math.max(0, articleRect?.top ?? 0);
+      const spaceBelow = lowerBoundary - rect.bottom;
+      const spaceAbove = rect.top - upperBoundary;
+      const openUpward = spaceBelow < estimatedMenuHeight && spaceAbove > spaceBelow;
+      setSlashMenu({
+        segIndex,
+        query: displayValue.slice(slashPos + 1, displayCaret).toLowerCase(),
+        openUpward,
+      });
+    } else if (slashMenu) {
       setSlashMenu(null);
       slashStartRef.current = -1;
     }
   }
 
-  function handleBodyKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (!slashMenu) return;
-    const filtered = SLASH_COMMANDS.filter(c => c.label.toLowerCase().includes(slashMenu.query) || c.icon.toLowerCase().includes(slashMenu.query));
-    if (e.key === 'ArrowDown') { e.preventDefault(); setSlashIndex(i => (i + 1) % filtered.length); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); setSlashIndex(i => (i - 1 + filtered.length) % filtered.length); }
-    else if (e.key === 'Enter' || e.key === 'Tab') {
-      if (filtered.length > 0) { e.preventDefault(); applySlashCommand(SLASH_COMMANDS.indexOf(filtered[slashIndex])); }
-    } else if (e.key === 'Escape') { setSlashMenu(null); slashStartRef.current = -1; }
+  function handleBodyKeyDown(seg: BodySeg, segIndex: number, e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
+      scrollCaretIntoView(e.currentTarget);
+    }
+
+    if (slashMenu) {
+      const filtered = SLASH_COMMANDS.filter(c => c.label.toLowerCase().includes(slashMenu.query) || c.icon.toLowerCase().includes(slashMenu.query));
+      if (e.key === 'ArrowDown') { e.preventDefault(); setSlashIndex(i => (i + 1) % filtered.length); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setSlashIndex(i => (i - 1 + filtered.length) % filtered.length); return; }
+      if ((e.key === 'Enter' || e.key === 'Tab') && filtered.length > 0 && !e.nativeEvent.isComposing) {
+        e.preventDefault();
+        applySlashCommand(SLASH_COMMANDS.indexOf(filtered[slashIndex]));
+        return;
+      }
+      if (e.key === 'Escape') { setSlashMenu(null); slashStartRef.current = -1; return; }
+    }
+
+    // ブロックの端では隣の入力欄へ移動する（矢印キー・先頭Backspace）
+    const ta = e.currentTarget;
+    const atStart = ta.selectionStart === 0 && ta.selectionEnd === 0;
+    const atEnd = ta.selectionStart === ta.value.length && ta.selectionEnd === ta.value.length;
+    const currentFormat = seg.kind === 'text' && !seg.virtual
+      ? getTextBlockFormat(bodyRef.current.slice(seg.start, seg.end))
+      : 'plain';
+
+    // 空のリスト項目・引用行を Backspace で取り除き、直前の行末へ戻る。
+    if (e.key === 'Backspace' && atEnd && (currentFormat === 'list' || currentFormat === 'quote')) {
+      const currentBody = bodyRef.current;
+      const { seg: liveSeg } = findLiveSeg(seg, currentBody);
+      if (liveSeg.kind === 'text') {
+        const raw = currentBody.slice(liveSeg.start, liveSeg.end);
+        const marker = currentFormat === 'list' ? '- ' : '> ';
+        const lastBreak = raw.lastIndexOf('\n');
+        const lastLine = raw.slice(lastBreak + 1);
+        if (lastLine === marker) {
+          e.preventDefault();
+          const cleanedRaw = lastBreak >= 0 ? raw.slice(0, lastBreak) : '';
+          const next = currentBody.slice(0, liveSeg.start) + cleanedRaw + currentBody.slice(liveSeg.end);
+          const nextCaret = liveSeg.start + cleanedRaw.length;
+          updateBody(next);
+          focusGlobal(next, nextCaret);
+          return;
+        }
+      }
+    }
+
+    // 装飾ブロックの先頭で Backspace を押すと、文字は残したまま
+    // 見出し・リスト・引用の装飾だけを解除する。
+    if (e.key === 'Backspace' && atStart && currentFormat !== 'plain' && seg.kind === 'text' && !seg.virtual) {
+      e.preventDefault();
+      const currentBody = bodyRef.current;
+      const { seg: liveSeg } = findLiveSeg(seg, currentBody);
+      if (liveSeg.kind !== 'text') return;
+      const raw = currentBody.slice(liveSeg.start, liveSeg.end);
+      const plain = formattedTextToPlain(raw, currentFormat);
+      const next = currentBody.slice(0, liveSeg.start) + plain + currentBody.slice(liveSeg.end);
+      updateBody(next);
+      focusGlobal(next, liveSeg.start);
+      return;
+    }
+
+    // 見出し末尾の Enter は、見出し内に空行を増やさず次の本文欄へ移る。
+    // 見出しは1行のブロックなので、通常の文章作成ソフトと同じ操作感にする。
+    if (e.key === 'Enter' && atEnd && (currentFormat === 'h2' || currentFormat === 'h3')) {
+      if (focusAdjacentText(segIndex, 1)) e.preventDefault();
+      return;
+    }
+
+    // リスト・引用では、後続ブロックとの区切り改行に Enter が吸収されないよう
+    // 次の行の記号まで明示的に挿入する。空の項目で Enter を押した場合だけ
+    // 装飾を終了して通常本文へ移る。
+    if (e.key === 'Enter' && atEnd && (currentFormat === 'list' || currentFormat === 'quote')) {
+      e.preventDefault();
+      const currentBody = bodyRef.current;
+      const { seg: liveSeg } = findLiveSeg(seg, currentBody);
+      if (liveSeg.kind !== 'text') return;
+
+      const raw = currentBody.slice(liveSeg.start, liveSeg.end);
+      const marker = currentFormat === 'list' ? '- ' : '> ';
+      const lastLine = raw.slice(raw.lastIndexOf('\n') + 1);
+
+      if (lastLine !== marker) {
+        const inserted = `${marker === '- ' ? '\n- ' : '\n> '}`;
+        const next = currentBody.slice(0, liveSeg.end) + inserted + currentBody.slice(liveSeg.end);
+        const nextCaret = liveSeg.end + inserted.length;
+        updateBody(next);
+        focusGlobal(next, nextCaret);
+        return;
+      }
+
+      // 空の最終項目を取り除き、次の通常本文ブロックへカーソルを移す。
+      const cleanedRaw = raw.slice(0, raw.lastIndexOf('\n'));
+      const before = currentBody.slice(0, liveSeg.start);
+      const after = currentBody.slice(liveSeg.end).replace(/^\n+/, '');
+      const next = `${before}${cleanedRaw}\n\n${after}`;
+      const nextCaret = before.length + cleanedRaw.length + 2;
+      updateBody(next);
+      focusGlobal(next, nextCaret);
+      return;
+    }
+
+    if ((e.key === 'ArrowUp' || e.key === 'ArrowLeft') && atStart) {
+      if (focusAdjacentText(segIndex, -1)) e.preventDefault();
+      return;
+    }
+    if ((e.key === 'ArrowDown' || e.key === 'ArrowRight') && atEnd) {
+      if (focusAdjacentText(segIndex, 1)) e.preventDefault();
+      return;
+    }
+    if (e.key === 'Backspace' && atStart && ta.value.trim() === '' && seg.kind === 'text' && !seg.virtual) {
+      // 空のブロックは削除して前の入力欄へ
+      e.preventDefault();
+      const cur = bodyRef.current;
+      const next = removeSegFromBody(cur, seg);
+      updateBody(next);
+      focusGlobal(next, Math.max(0, Math.min(seg.start - 2, next.length)));
+      return;
+    }
+    if (e.key === 'Backspace' && atStart && ta.value === '' && seg.kind === 'text' && !!seg.virtual) {
+      // 実体を持たない挿入欄では、前のブロックへ戻る。
+      if (focusAdjacentText(segIndex, -1)) e.preventDefault();
+    }
+  }
+
+  // 隣のテキストブロックへフォーカスを移す
+  function focusAdjacentText(index: number, direction: -1 | 1): boolean {
+    for (let i = index + direction; i >= 0 && i < bodySegs.length; i += direction) {
+      const targetSeg = bodySegs[i];
+      const target = taRefs.current[i];
+      if (!target || targetSeg.kind !== 'text') continue;
+      const pos = direction < 0 ? target.value.length : 0;
+      target.focus();
+      target.selectionStart = target.selectionEnd = pos;
+      syncCaret(targetSeg, target);
+      return true;
+    }
+    return false;
+  }
+
+  // 本文からメディアブロック（画像 / 商品カード）を取り除く
+  function removeSeg(seg: BodySeg) {
+    if (seg.kind !== 'media') return;
+    if (seg.mtype === 'image') { removeImage(seg.idx); return; }
+    const next = removeSegFromBody(bodyRef.current, seg);
+    updateBody(next);
+    focusGlobal(next, Math.max(0, Math.min(seg.start, next.length)));
   }
 
   // note.com URLを本文から検出してアイキャッチを自動取得
@@ -436,23 +780,23 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     }
   }
 
-function insertAtCursor(text: string) {
-    const ta = textareaRef.current;
-    if (!ta) return;
-    const start = ta.selectionStart;
-    const before = body.slice(0, start);
-    const after = body.slice(ta.selectionEnd);
-    const prefix = before.length > 0 && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
-    const suffix = after.length > 0 && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
-    const inserted = prefix + text + suffix;
-    const newBody = before + inserted + after;
-    setBody(newBody);
-    const newCursor = start + inserted.length;
-    requestAnimationFrame(() => { ta.selectionStart = ta.selectionEnd = newCursor; ta.focus(); });
+  // カーソル位置に1ブロックとして差し込む（前後の空行を整える）
+  function insertAtCursor(text: string) {
+    const cur = bodyRef.current;
+    const pos = insertPosRef.current ?? Math.min(caretRef.current, cur.length);
+    insertPosRef.current = null;
+    const inserted = insertBlockAt(cur, pos, text);
+    updateBody(inserted.body);
+    focusGlobal(inserted.body, inserted.blockEnd);
   }
 
   function addProduct() {
     setProducts((prev) => [...prev, { amazonUrl: '', rakutenUrl: '', title: '', image: '', price: '', brand: '' }]);
+  }
+
+  function openMediaPickerAtCursor() {
+    insertPosRef.current = Math.min(caretRef.current, bodyRef.current.length);
+    setShowMediaPicker(true);
   }
 
   function updateProduct(i: number, data: Partial<ProductData>) {
@@ -514,8 +858,7 @@ function insertAtCursor(text: string) {
     if (!files.length) return;
 
     // ドロップ時点のカーソル位置を保存
-    const ta = textareaRef.current;
-    const insertPos = ta ? ta.selectionStart : null;
+    const insertPos = Math.min(caretRef.current, body.length);
 
     const compressed = await Promise.all(files.map((f) => compressImage(f)));
     const newItems: UploadedImage[] = compressed.map((file) => ({
@@ -528,15 +871,9 @@ function insertAtCursor(text: string) {
 
     // プレースホルダーを本文に即時挿入
     const placeholders = newItems.map((_, i) => `[image:${startIdx + i}]`).join('\n\n');
-    if (insertPos !== null && ta) {
-      const before = body.slice(0, insertPos);
-      const after = body.slice(insertPos);
-      const prefix = before.length > 0 && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '';
-      const suffix = after.length > 0 && !after.startsWith('\n\n') ? (after.startsWith('\n') ? '\n' : '\n\n') : '';
-      setBody(before + prefix + placeholders + suffix + after);
-    } else {
-      setBody((prev) => prev + (prev.endsWith('\n\n') ? '' : '\n\n') + placeholders);
-    }
+    const inserted = insertBlockAt(bodyRef.current, insertPos, placeholders);
+    updateBody(inserted.body);
+    focusGlobal(inserted.body, inserted.blockEnd);
 
     // バックグラウンドでアップロード
     newItems.forEach(async (item, relIdx) => {
@@ -571,7 +908,8 @@ function insertAtCursor(text: string) {
       const formData = new FormData();
       formData.append('title', title.trim());
       formData.append('date', `${date}T09:00:00`);
-      formData.append('body', body);
+      // 編集中の記法（## など）を保存形式（[h2]…[/h2]）へ戻す
+      formData.append('body', editorToBracket(body));
       formData.append('products', JSON.stringify(products));
       formData.append('postStatus', postStatus);
       selectedCats.forEach((id) => formData.append('categoryIds', String(id)));
@@ -607,7 +945,8 @@ function insertAtCursor(text: string) {
 
   const isSubmitting = status === 'saving';
 
-  const previewContentNodes = body.split('\n\n').map((para, i) => {
+  // メディア段落（画像 / 商品カード / リンクカード）を実物として描画する
+  const renderBlockNode = (para: string, i: number) => {
     const t = para.trim();
     if (!t) return null;
     const h2m = t.match(/^\[h2\]([\s\S]*?)\[\/h2\]$/);
@@ -714,12 +1053,12 @@ function insertAtCursor(text: string) {
       );
     }
     return <p key={i} style={{ whiteSpace: 'pre-wrap' }}>{t}</p>;
-  });
+  };
 
   const eyecatchUrl = eyecatch?.localUrl;
 
-  const previewPanel = (
-    <div className="journal-article-page" style={{ background: 'transparent', padding: 0, maxWidth: 'none' }}>
+  const articleSurface = (
+    <div ref={surfaceRef} className={`journal-article-page ${styles.articleSurface}`} style={{ background: 'transparent', padding: 0, maxWidth: 'none' }}>
       <article className="journal-article">
         <div className="journal-article-body">
           {/* アイキャッチ（プレビュー上で直接設定） */}
@@ -776,16 +1115,125 @@ function insertAtCursor(text: string) {
                 </label>
               ))}
             </div>
-            <time className="journal-article-date">{date}</time>
-            <h1 className="journal-article-title">{title || <span style={{ opacity: 0.3 }}>タイトル未入力</span>}</h1>
+            {/* 投稿日・タイトルも記事の見た目のまま直接編集する */}
+            <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
+              className={`journal-article-date ${styles.inlineDate}`} />
+            <textarea
+              value={title}
+              onChange={(e) => { autoGrow(e.target); setTitle(e.target.value.replace(/[\r\n]+/g, ' ')); }}
+              onCompositionStart={() => { composingRef.current = true; }}
+              onCompositionEnd={(e) => { composingRef.current = false; setTitle(e.currentTarget.value.replace(/[\r\n]+/g, ' ')); }}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) e.preventDefault(); }}
+              ref={(el) => { if (el && el.value !== el.dataset.grown) { autoGrow(el); el.dataset.grown = el.value; } }}
+              onInput={(e) => autoGrow(e.currentTarget)}
+              rows={1}
+              placeholder="タイトルを入力"
+              className={`journal-article-title ${styles.inlineTitle}`}
+              required
+            />
           </div>
-          {body.trim() ? (
-            <div className="journal-article-content">
-              {previewContentNodes}
-            </div>
-          ) : (
-            <p style={{ fontSize: '12px', color: '#555', padding: '24px 0' }}>本文を入力するとプレビューが表示されます</p>
-          )}
+
+          {/* 本文：テキストは入力欄、画像やカードは実物を表示する */}
+          <div
+            className={`journal-article-content ${styles.blockEditor} ${isDraggingOnBody ? styles.blockEditorDragging : ''}`}
+            onDragOver={handleBodyDragOver}
+            onDragLeave={handleBodyDragLeave}
+            onDrop={handleBodyDrop}
+            onMouseDown={(e) => {
+              // 余白クリックで末尾のテキストブロックにカーソルを置く
+              if (e.target !== e.currentTarget) return;
+              e.preventDefault();
+              for (let i = taRefs.current.length - 1; i >= 0; i--) {
+                const ta = taRefs.current[i];
+                if (ta) { ta.focus(); ta.selectionStart = ta.selectionEnd = ta.value.length; break; }
+              }
+            }}
+          >
+            {bodySegs.map((seg, i) => {
+              if (seg.kind === 'media') {
+                return (
+                  <div key={`blk-${i}`} className={styles.blockMedia}>
+                    {renderBlockNode(body.slice(seg.start, seg.end), i)}
+                    <button type="button" className={styles.blockRemove} aria-label="このブロックを削除"
+                      onClick={() => removeSeg(seg)}>×</button>
+                  </div>
+                );
+              }
+
+              const raw = seg.virtual ? '' : body.slice(seg.start, seg.end);
+              const { format, value } = projectTextForEditor(raw);
+              // 見出し・引用・リストは実タグで囲み、サイト側のCSSをそのまま効かせる
+              const Wrapper = ({ plain: 'div', h2: 'h2', h3: 'h3', quote: 'blockquote', list: 'ul' } as const)[format];
+              const placeholder = seg.virtual
+                ? 'ここに本文を追加'
+                : format === 'h2' ? '見出し'
+                : format === 'h3' ? '小見出し'
+                : format === 'quote' ? '引用'
+                : format === 'list' ? '項目を改行で並べる'
+                : bodySegs.length === 1 ? '本文を入力（「/」で見出し・画像・アフィリを追加できます）'
+                : '';
+              return (
+                <Wrapper key={`blk-${i}`}
+                  className={`${styles.blockText} ${styles[`block_${format}`] ?? ''} ${seg.virtual ? styles.blockSlot : ''}`}>
+                  <textarea
+                    ref={(el) => {
+                      taRefs.current[i] = el;
+                      if (el && el.value !== el.dataset.grown) autoGrow(el);
+                    }}
+                    value={value}
+                    rows={1}
+                    onChange={(e) => handleRunChange(seg, e)}
+                    onCompositionStart={() => { composingRef.current = true; }}
+                    onCompositionEnd={() => {
+                      composingRef.current = false;
+                      const pending = pendingFocusRef.current;
+                      pendingFocusRef.current = null;
+                      if (pending) focusGlobal(pending.body, pending.caret);
+                    }}
+                    onKeyDown={(e) => handleBodyKeyDown(seg, i, e)}
+                    onSelect={(e) => syncCaret(seg, e.currentTarget)}
+                    onClick={(e) => syncCaret(seg, e.currentTarget)}
+                    onFocus={(e) => syncCaret(seg, e.currentTarget)}
+                    onKeyUp={(e) => syncCaret(seg, e.currentTarget)}
+                    onBlur={() => {
+                      composingRef.current = false;
+                      setTimeout(() => {
+                        const el = document.activeElement;
+                        if (el && surfaceRef.current?.contains(el)) return;
+                        setSlashMenu((prev) => (prev ? null : prev));
+                      }, 150);
+                    }}
+                    className={styles.blockTextArea}
+                    placeholder={placeholder}
+                  />
+                  {format !== 'plain' && !seg.virtual && (
+                    <span className={styles.blockFormatTag}>{format === 'list' ? 'UL' : format === 'quote' ? '❝' : format.toUpperCase()}</span>
+                  )}
+                  {format === 'plain' && slashMenu?.segIndex === i && (() => {
+                    const q = slashMenu.query;
+                    const filtered = SLASH_COMMANDS.filter(c => !q || c.label.toLowerCase().includes(q) || c.icon.toLowerCase().includes(q));
+                    if (filtered.length === 0) return null;
+                    return (
+                      <div className={`${styles.slashMenu} ${slashMenu.openUpward ? styles.slashMenuUp : ''}`}>
+                        {filtered.map((cmd, idx) => (
+                          <div
+                            key={cmd.icon}
+                            onMouseDown={(e) => { e.preventDefault(); applySlashCommand(SLASH_COMMANDS.indexOf(cmd)); }}
+                            onMouseEnter={() => setSlashIndex(idx)}
+                            className={`${styles.slashItem} ${idx === slashIndex ? styles.slashItemActive : ''}`}
+                          >
+                            <span className={styles.slashIcon}>{cmd.icon}</span>
+                            <span>{cmd.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })()}
+                </Wrapper>
+              );
+            })}
+            {isDraggingOnBody && <div className={styles.dropHint}>ここにドロップして挿入</div>}
+          </div>
         </div>
       </article>
     </div>
@@ -793,29 +1241,14 @@ function insertAtCursor(text: string) {
 
   return (
     <>
-    <div className={styles.editorLayout}>
-    <form onSubmit={handleSubmit} className={styles.form}>
-      {/* タイトル */}
-      <div className={styles.field}>
-        <label className={styles.label}>タイトル *</label>
-        <input type="text" value={title} onChange={(e) => setTitle(e.target.value)}
-          placeholder="記事タイトル" className={styles.titleInput} required />
-      </div>
+    <form id="post-editor-form" onSubmit={handleSubmit} className={styles.form}>
+      {/* 記事そのものを編集する（別枠のプレビューは持たない） */}
+      {articleSurface}
 
-      {/* 投稿日 */}
-      <div className={styles.field}>
-        <label className={styles.label}>投稿日</label>
-        <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
-          className={`${styles.input} ${styles.dateInput}`} />
-      </div>
-
-      {/* アフィリリンク */}
-      <div className={styles.field}>
-        <div className={styles.sectionHeader}>
-          <label className={styles.label}>アフィリリンク</label>
-          <button type="button" onClick={addProduct} className={styles.addProductBtn}>+ 商品を追加</button>
-        </div>
-        {products.length > 0 && (
+      {/* アフィリリンク（記事の下で管理し、「本文に挿入」で記事内に置く） */}
+      {products.length > 0 && (
+        <div ref={productSectionRef} className={styles.productSection}>
+          <p className={styles.label}>アフィリリンク</p>
           <div className={styles.productList}>
             {products.map((p, i) => (
               <ProductCardEditor
@@ -828,118 +1261,31 @@ function insertAtCursor(text: string) {
               />
             ))}
           </div>
-        )}
-      </div>
-
-      {/* 本文 */}
-      <div className={styles.field}>
-        <div className={styles.sectionHeader}>
-          <label className={styles.label}>本文</label>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button type="button" className={styles.toolBtn}
-              onClick={() => {
-                const ta = textareaRef.current;
-                if (!ta) return;
-                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
-                insertAtCursor(`[h2]${sel}[/h2]`);
-              }}>H2</button>
-            <button type="button" className={styles.toolBtn}
-              onClick={() => {
-                const ta = textareaRef.current;
-                if (!ta) return;
-                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '見出し';
-                insertAtCursor(`[h3]${sel}[/h3]`);
-              }}>H3</button>
-            <button type="button" className={styles.toolBtn}
-              onClick={() => {
-                const ta = textareaRef.current;
-                if (!ta) return;
-                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim();
-                const items = sel ? sel.split('\n').map(l => l.trim()).filter(Boolean).join('\n') : '項目1\n項目2\n項目3';
-                insertAtCursor(`[ul]\n${items}\n[/ul]`);
-              }}>UL</button>
-            <button type="button" className={styles.toolBtn}
-              onClick={() => {
-                const ta = textareaRef.current;
-                if (!ta) return;
-                const sel = body.slice(ta.selectionStart, ta.selectionEnd).trim() || '引用テキスト';
-                insertAtCursor(`[quote]${sel}[/quote]`);
-              }}>引用</button>
-          </div>
         </div>
-        <div style={{ position: 'relative' }}>
-          <textarea
-            ref={textareaRef}
-            value={body}
-            onChange={handleBodyChange}
-            onKeyDown={handleBodyKeyDown}
-            rows={20}
-            className={styles.textarea}
-            style={{ ...(isDraggingOnBody ? { outline: '2px dashed #ff764d', outlineOffset: '-2px' } : {}), minHeight: '400px' }}
-            placeholder={'本文を入力してください。段落は空行で区切ります。\n/ でブロック挿入メニューを表示。'}
-            onDragOver={handleBodyDragOver}
-            onDragLeave={handleBodyDragLeave}
-            onDrop={handleBodyDrop}
-          />
-          {slashMenu && (() => {
-            const filtered = SLASH_COMMANDS.filter(c =>
-              !slashMenu.query || c.label.toLowerCase().includes(slashMenu.query) || c.icon.toLowerCase().includes(slashMenu.query)
-            );
-            if (filtered.length === 0) return null;
-            return (
-              <div style={{
-                position: 'absolute', top: `${slashMenu.top}px`, left: '8px', zIndex: 100,
-                background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '8px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)', minWidth: '180px', overflow: 'hidden',
-              }}>
-                {filtered.map((cmd, idx) => (
-                  <div
-                    key={cmd.icon}
-                    onMouseDown={(e) => { e.preventDefault(); applySlashCommand(SLASH_COMMANDS.indexOf(cmd)); }}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '8px 14px', cursor: 'pointer', fontSize: '13px',
-                      background: idx === slashIndex ? '#3a3a3a' : 'transparent',
-                      color: idx === slashIndex ? '#fff' : '#a0a0a0',
-                    }}
-                    onMouseEnter={() => setSlashIndex(idx)}
-                  >
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700, fontSize: '11px', color: '#ff764d', width: '20px' }}>{cmd.icon}</span>
-                    <span>{cmd.label}</span>
-                  </div>
-                ))}
-              </div>
-            );
-          })()}
-          {isDraggingOnBody && (
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none', color: '#ff764d', fontSize: '13px', fontWeight: 700, letterSpacing: '1px' }}>
-              ここにドロップして挿入
-            </div>
-          )}
-        </div>
-      </div>
+      )}
 
       {errorMsg && <p className={styles.error}>{errorMsg}</p>}
       {status === 'done' && <p className={styles.success}>保存しました！ダッシュボードに戻ります...</p>}
       {status === 'saving' && <p className={styles.info}>保存中...</p>}
 
-      <div className={styles.actions}>
+    </form>
+    {headerActionsTarget && createPortal(
+      <div className={styles.headerActions}>
+        <button type="button" onClick={openMediaPickerAtCursor} className={styles.cancelBtn} disabled={isSubmitting}>
+          メディア
+        </button>
         <button type="button" onClick={() => router.push('/admin')} className={styles.cancelBtn} disabled={isSubmitting}>
           キャンセル
         </button>
         <button type="button" onClick={(e) => handleSubmit(e, 'draft')} disabled={isSubmitting || status === 'done'} className={styles.cancelBtn}>
           {isSubmitting ? '...' : '下書き保存'}
         </button>
-        <button type="submit" disabled={isSubmitting || status === 'done'} className={styles.submitBtn}>
+        <button type="submit" form="post-editor-form" disabled={isSubmitting || status === 'done'} className={styles.submitBtn}>
           {isSubmitting ? '送信中...' : initialData ? '更新する' : '投稿する'}
         </button>
-      </div>
-    </form>
-    <div className={styles.previewCol}>
-      <p className={styles.previewLabel}>Preview</p>
-      {previewPanel}
-    </div>
-    </div>
+      </div>,
+      headerActionsTarget
+    )}
     {showMediaPicker && (
       <MediaPicker
         onSelect={handleMediaSelect}

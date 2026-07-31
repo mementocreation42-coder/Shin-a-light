@@ -25,7 +25,7 @@ export default async function AdminPhotosPage() {
                     <Link href="/photos" target="_blank" className={styles.ghostBtn}>公開ページを見る ↗</Link>
                 </div>
             </header>
-            <main style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 24px 80px' }}>
+            <main className={styles.main}>
                 <PhotoManager initialPhotos={photos} />
             </main>
         </div>

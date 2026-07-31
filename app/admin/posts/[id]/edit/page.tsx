@@ -34,11 +34,14 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
           <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
           <span className={styles.breadcrumb}>/ 投稿を編集</span>
         </div>
-        {post.status === 'publish' && (
-          <Link href={`/journal/${id}`} target="_blank" className={styles.ghostBtn}>
-            公開ページを見る ↗
-          </Link>
-        )}
+        <div className={styles.headerRight}>
+          {post.status === 'publish' && (
+            <Link href={`/journal/${id}`} target="_blank" className={styles.ghostBtn}>
+              公開ページを見る ↗
+            </Link>
+          )}
+          <div id="post-editor-actions" />
+        </div>
       </header>
 
       <main className={styles.editorMain}>

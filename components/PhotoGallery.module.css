@@ -163,7 +163,7 @@
 .masonry {
     display: flex;
     align-items: flex-start;
-    gap: 16px;
+    gap: 3px;
 }
 
 .col {
@@ -171,24 +171,24 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 3px;
 }
 
 @media (max-width: 900px) {
     .masonry {
-        gap: 12px;
+        gap: 3px;
     }
     .col {
-        gap: 12px;
+        gap: 3px;
     }
 }
 
 @media (max-width: 560px) {
     .masonry {
-        gap: 8px;
+        gap: 6px;
     }
     .col {
-        gap: 8px;
+        gap: 6px;
     }
 }
 

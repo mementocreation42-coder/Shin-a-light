@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { getAdminPosts, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 import { logout } from '@/app/login/actions';
 import PostActions from '@/components/admin/PostActions';
-import AdminToolbar from '@/components/admin/AdminToolbar';
 import AdminNav from '@/components/admin/AdminNav';
 import styles from './admin.module.css';
 
@@ -46,7 +45,6 @@ export default async function AdminPage({
             投稿一覧
             <span className={styles.count}>{total}件</span>
           </h1>
-          <AdminToolbar />
         </div>
 
         <div className={styles.list}>

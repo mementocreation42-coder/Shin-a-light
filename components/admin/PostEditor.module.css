@@ -210,23 +210,6 @@
   align-items: center;
 }
 
-.addProductBtn {
-  font-size: 12px;
-  padding: 5px 12px;
-  background: #2a2a2a;
-  border: 1px solid #3a3a3a;
-  border-radius: 5px;
-  color: #a0a0a0;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s;
-}
-
-.addProductBtn:hover {
-  border-color: #ff764d;
-  color: #ff764d;
-}
-
 .productList {
   display: flex;
   flex-direction: column;
@@ -380,18 +363,18 @@
   margin: 0;
 }
 
-.actions {
+.headerActions {
   display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-  padding: 16px 0;
-  border-top: 1px solid #3a3a3a;
-  position: sticky;
-  bottom: 0;
-  background: rgba(26, 26, 26, 0.92);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 5;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerActions .cancelBtn,
+.headerActions .submitBtn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .cancelBtn {
@@ -448,23 +431,204 @@
   align-items: start;
 }
 
-.editorLayout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  align-items: start;
+.productSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.previewCol {
-  position: sticky;
-  top: 60px;
-  max-height: calc(100vh - 80px);
+/* 記事面：中の画像の実寸に引きずられて広がらないようにする */
+.articleSurface {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ===== 記事上のインライン入力 ===== */
+.inlineDate {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.inlineTitle {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+}
+
+.inlineTitle::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+/* ===== 本文ブロックエディタ ===== */
+.blockEditor {
+  position: relative;
+  min-height: 520px;
+}
+
+.blockEditorDragging {
+  outline: 2px dashed #ff764d;
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+
+.blockText {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.blockTextArea {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+  min-height: 0;
+  resize: none;
+  overflow: hidden;
+  outline: none;
+}
+
+
+.blockTextArea::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+/* 見出し・引用・リストは実タグで囲んでいるので、装飾はサイト側CSSに任せる。
+   ここではブロック内の入力欄まわりの調整だけを持つ */
+.block_h2,
+.block_h3,
+.block_quote,
+.block_list {
+  margin-bottom: 24px;
+}
+
+.block_list {
+  list-style: none;
+}
+
+.blockFormatTag {
+  position: absolute;
+  top: 2px;
+  left: -34px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #bbb;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.blockText:hover .blockFormatTag,
+.blockText:focus-within .blockFormatTag {
+  opacity: 1;
+}
+
+/* 画像や見出しの前後に置く、書き出し用の空欄 */
+.blockSlot {
+  margin-bottom: 8px;
+}
+
+.blockSlot .blockTextArea::placeholder {
+  color: rgba(0, 0, 0, 0.22);
+  font-size: 13px;
+}
+
+.blockMedia {
+  position: relative;
+}
+
+.blockRemove {
+  position: absolute;
+  top: 32px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.blockMedia:hover .blockRemove {
+  opacity: 1;
+}
+
+.dropHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #ff764d;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* ===== スラッシュメニュー ===== */
+.slashMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  min-width: 180px;
+  max-height: calc(100vh - 32px);
+  overflow-x: hidden;
   overflow-y: auto;
-  border-radius: 16px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono), monospace;
 }
 
-.previewLabel {
-  display: none;
+.slashMenuUp {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.slashItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  color: #a0a0a0;
+}
+
+.slashItemActive {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.slashIcon {
+  width: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff764d;
 }
 
 /* プレビュー内でアイキャッチを直接設定できるヒーロー */
@@ -532,7 +696,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 160px;
+  min-height: 300px;
   padding: 24px;
   color: #a0a0a0;
   font-size: 13px;
@@ -567,30 +731,16 @@
     grid-template-columns: 1fr;
   }
 
-  .editorLayout {
-    grid-template-columns: 1fr;
+  .headerActions {
+    gap: 4px;
   }
 
-  .previewCol {
-    position: static;
-    max-height: none;
-  }
-
-  /* アクションバー：3ボタンが折り返さないように均等幅＋詰める */
-  .actions {
-    gap: 8px;
-    padding: 10px 0;
-  }
-
-  .cancelBtn,
-  .submitBtn {
-    flex: 1;
-    min-width: 0;
-    padding: 12px 6px;
-    font-size: 12px;
+  .headerActions .cancelBtn,
+  .headerActions .submitBtn {
+    padding: 7px 8px;
+    font-size: 10.5px;
     letter-spacing: 0;
     white-space: nowrap;
-    text-align: center;
   }
 
   /* 本文ツールバー（H2/H3/UL/引用）を折り返し可に */
@@ -599,4 +749,3 @@
     gap: 8px;
   }
 }
-

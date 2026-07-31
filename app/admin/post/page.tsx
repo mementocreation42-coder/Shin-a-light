@@ -19,6 +19,7 @@ export default async function NewPostPage() {
           <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
           <span className={styles.breadcrumb}>/ 新規投稿</span>
         </div>
+        <div id="post-editor-actions" className={styles.headerRight} />
       </header>
 
       <main className={styles.editorMain}>
