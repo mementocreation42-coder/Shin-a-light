@@ -12,6 +12,7 @@ import {
   bracketToEditor, editorToBracket,
   type BodySeg,
 } from './bodyBlocks';
+import { useDraftAutosave } from './useDraftAutosave';
 
 // ===== HTML → プレーンテキスト =====
 function htmlToPlainText(html: string): string {
@@ -76,6 +77,16 @@ function parsePostContent(html: string): {
 }
 
 // 本文のブロック分解・記法の投影は bodyBlocks.ts（hl-fishing から移植）に集約
+
+// 退避時刻は「さっき」か「いつ」かが分かれば十分なので、直近は相対表示にする
+function formatSavedAt(ts: number): string {
+  const diffSec = Math.floor((Date.now() - ts) / 1000);
+  if (diffSec < 60) return 'たった今';
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}分前`;
+  const d = new Date(ts);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getMonth() + 1}/${d.getDate()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 
 // ===== Types =====
 interface UploadedImage {
@@ -272,6 +283,48 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
   const bodyRef = useRef(body);
   useEffect(() => { bodyRef.current = body; }, [body]);
   function updateBody(next: string) { bodyRef.current = next; setBody(next); }
+
+  // ===== 未保存内容の自動退避 =====
+  // 初期状態を控えておき、そこから変化したときだけ退避・離脱警告を有効にする
+  const initialSignatureRef = useRef<string>('');
+  const draftSnapshot = useMemo(() => ({
+    title,
+    date,
+    categoryIds: selectedCats,
+    body,
+    products: products as unknown[],
+    // アップロード済みの画像だけが復元できる（blob URL はリロードで失効するため）
+    images: images.filter((img) => img.url && img.id).map((img) => ({ url: img.url!, id: img.id! })),
+    eyecatch: eyecatch?.url && eyecatch.id ? { url: eyecatch.url, id: eyecatch.id } : null,
+  }), [title, date, selectedCats, body, products, images, eyecatch]);
+
+  const snapshotSignature = JSON.stringify(draftSnapshot);
+  if (!initialSignatureRef.current) initialSignatureRef.current = snapshotSignature;
+  const isDirty = snapshotSignature !== initialSignatureRef.current;
+
+  const { savedAt, restorable, clearDraft, dismissRestore } = useDraftAutosave({
+    postId: initialData?.id,
+    snapshot: draftSnapshot,
+    dirty: isDirty,
+    // サーバーへ保存中／完了後は退避も離脱警告も不要
+    enabled: status === 'idle' || status === 'error',
+  });
+
+  function restoreDraft() {
+    if (!restorable) return;
+    setTitle(restorable.title);
+    setDate(restorable.date);
+    setSelectedCats(restorable.categoryIds);
+    updateBody(restorable.body);
+    setProducts(restorable.products as ProductData[]);
+    setImages(restorable.images.map((img, i) => ({
+      uid: Date.now() + i, localUrl: img.url, url: img.url, id: img.id, uploading: false,
+    })));
+    setEyecatch(restorable.eyecatch
+      ? { uid: -1, localUrl: restorable.eyecatch.url, url: restorable.eyecatch.url, id: restorable.eyecatch.id, uploading: false }
+      : null);
+    dismissRestore();
+  }
 
   // 本文全体でのキャレット位置を指定して、その位置のブロックへフォーカスする
   const focusGlobal = useCallback((nextBody: string, globalPos: number) => {
@@ -936,6 +989,7 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
       }
       if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`);
       setStatus('done');
+      clearDraft();
       setTimeout(() => router.push('/admin'), 1200);
     } catch (err: unknown) {
       setStatus('error');
@@ -1242,6 +1296,19 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
   return (
     <>
     <form id="post-editor-form" onSubmit={handleSubmit} className={styles.form}>
+      {/* 前回の未保存内容が残っていれば復元を促す */}
+      {restorable && (
+        <div className={styles.restoreBanner}>
+          <span className={styles.restoreText}>
+            保存されていない編集内容があります（{formatSavedAt(restorable.savedAt)}）
+          </span>
+          <div className={styles.restoreActions}>
+            <button type="button" onClick={restoreDraft} className={styles.restoreBtn}>復元する</button>
+            <button type="button" onClick={clearDraft} className={styles.restoreDismiss}>破棄</button>
+          </div>
+        </div>
+      )}
+
       {/* 記事そのものを編集する（別枠のプレビューは持たない） */}
       {articleSurface}
 
@@ -1271,6 +1338,9 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     </form>
     {headerActionsTarget && createPortal(
       <div className={styles.headerActions}>
+        {savedAt && status === 'idle' && (
+          <span className={styles.autosaveNote}>下書き退避 {formatSavedAt(savedAt)}</span>
+        )}
         <button type="button" onClick={openMediaPickerAtCursor} className={styles.cancelBtn} disabled={isSubmitting}>
           メディア
         </button>
