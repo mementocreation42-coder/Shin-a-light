@@ -34,7 +34,11 @@ export default function Footer() {
                 <p style={{ marginTop: "0.5rem" }}>徳島を拠点に全国へ映像・Web・AIクリエイティブ・ヘルスケアを提供</p>
             </div>
 
-            <p>© DAISUKE KOBAYASHI</p>
+            <p className="footer-copy">
+                © DAISUKE KOBAYASHI
+                {/* 管理画面への導線。検索エンジンには辿らせない */}
+                <Link href="/login" rel="nofollow" className="footer-admin-link">ログイン</Link>
+            </p>
         </footer>
     );
 }
