@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { isAdminAuthed } from '@/lib/adminAuth';
 
 const WP_REST_BASE = 'https://journal.shinealight.jp/index.php?rest_route=/wp/v2';
 
@@ -10,8 +10,7 @@ function authHeader(): string {
 }
 
 export async function GET(req: NextRequest) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('sal_admin_auth')?.value !== 'true') {
+  if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -54,8 +53,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('sal_admin_auth')?.value !== 'true') {
+  if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

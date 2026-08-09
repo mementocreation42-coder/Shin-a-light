@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath } from 'next/cache';
 import { fetchOGP } from '@/lib/ogp';
 import { uploadMedia, updateWPPost } from '@/lib/wordpress';
@@ -45,8 +45,7 @@ async function fetchAllPostsWithoutEyecatch(): Promise<{ id: number; content: st
 }
 
 export async function POST() {
-  const cookieStore = await cookies();
-  if (cookieStore.get('sal_admin_auth')?.value !== 'true') {
+  if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

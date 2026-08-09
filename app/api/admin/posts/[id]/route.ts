@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath } from 'next/cache';
 import { updateWPPost, deleteWPPost } from '@/lib/wordpress';
 
@@ -74,8 +74,7 @@ function buildContent(fields: {
 }
 
 async function checkAuth() {
-  const cookieStore = await cookies();
-  return cookieStore.get('sal_admin_auth')?.value === 'true';
+  return isAdminAuthed();
 }
 
 export async function PUT(

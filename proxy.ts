@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SESSION_COOKIE, verifyToken } from '@/lib/adminAuth';
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Pass pathname to server components via request header
@@ -8,11 +9,15 @@ export function proxy(request: NextRequest) {
   requestHeaders.set('x-pathname', pathname);
 
   if (pathname.startsWith('/admin')) {
-    const auth = request.cookies.get('sal_admin_auth');
-    if (!auth || auth.value !== 'true') {
+    // 署名と有効期限を検証する（クッキーを立てるだけでは通らない）
+    const ok = await verifyToken(request.cookies.get(SESSION_COOKIE)?.value, 'session');
+    if (!ok) {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('from', pathname);
-      return NextResponse.redirect(loginUrl);
+      const res = NextResponse.redirect(loginUrl);
+      // 失効したセッションは持ち越さない
+      res.cookies.delete(SESSION_COOKIE);
+      return res;
     }
   }
 

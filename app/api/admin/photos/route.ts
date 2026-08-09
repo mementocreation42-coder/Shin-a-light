@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath } from 'next/cache';
 import {
     getAdminGalleryPhotos,
@@ -14,8 +14,7 @@ import {
 const GALLERY_CONTENT_MARKER = '<!-- gallery photo -->';
 
 async function requireAuth(): Promise<boolean> {
-    const cookieStore = await cookies();
-    return cookieStore.get('sal_admin_auth')?.value === 'true';
+    return isAdminAuthed();
 }
 
 // 一覧

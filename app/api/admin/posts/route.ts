@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath } from 'next/cache';
 import { createWPPost } from '@/lib/wordpress';
 
@@ -74,8 +74,7 @@ function buildContent(fields: {
 }
 
 export async function POST(request: NextRequest) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('sal_admin_auth')?.value !== 'true') {
+  if (!(await isAdminAuthed())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
