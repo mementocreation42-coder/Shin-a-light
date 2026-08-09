@@ -255,14 +255,22 @@ export interface WPPostAdmin extends WPPost {
   };
 }
 
-export async function getAdminPosts(page = 1, perPage = 20): Promise<{
+export async function getAdminPosts(
+  page = 1,
+  perPage = 20,
+  filters: { search?: string; status?: 'publish' | 'draft'; categoryId?: number } = {}
+): Promise<{
   posts: WPPostAdmin[];
   totalPages: number;
   total: number;
 }> {
   const galleryId = await getGalleryCategoryId();
-  const exclude = galleryId ? `&categories_exclude=${galleryId}` : '';
-  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=publish,draft${exclude}`;
+  // カテゴリ絞り込み時は categories が優先されるため、除外指定は付けない
+  const exclude = galleryId && !filters.categoryId ? `&categories_exclude=${galleryId}` : '';
+  const status = filters.status ?? 'publish,draft';
+  const search = filters.search ? `&search=${encodeURIComponent(filters.search)}` : '';
+  const category = filters.categoryId ? `&categories=${filters.categoryId}` : '';
+  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=${status}${exclude}${search}${category}`;
   const res = await fetch(url, {
     headers: { Authorization: authHeader() },
     cache: 'no-store',
