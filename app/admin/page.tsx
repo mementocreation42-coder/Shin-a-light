@@ -20,7 +20,10 @@ export default async function AdminPage({
   const { page: pageParam, q, status: statusParam, cat } = await searchParams;
   const page = parseInt(pageParam || '1', 10);
   const search = q?.trim() || undefined;
-  const statusFilter = statusParam === 'publish' || statusParam === 'draft' ? statusParam : undefined;
+  const statusFilter =
+    statusParam === 'publish' || statusParam === 'draft' || statusParam === 'future'
+      ? statusParam
+      : undefined;
   const categoryId = cat ? parseInt(cat, 10) || undefined : undefined;
 
   const [{ posts, totalPages, total }, categories] = await Promise.all([
@@ -84,9 +87,10 @@ export default async function AdminPage({
           {posts.map((post) => {
             const imgUrl = getFeaturedImageUrl(post);
             const isDraft = post.status === 'draft';
+            const isFuture = post.status === 'future';
             const plainTitle = post.title.rendered.replace(/<[^>]*>/g, '');
             return (
-              <div key={post.id} className={`${styles.item} ${isDraft ? styles.itemDraft : ''}`}>
+              <div key={post.id} className={`${styles.item} ${isDraft || isFuture ? styles.itemDraft : ''}`}>
                 <div className={styles.thumb}>
                   {imgUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -102,6 +106,11 @@ export default async function AdminPage({
                       <span key={cat.id} className={styles.catTag}>{cat.name}</span>
                     ))}
                     {isDraft && <span className={styles.draftBadge}>下書き</span>}
+                    {isFuture && (
+                      <span className={styles.futureBadge}>
+                        予約 {new Date(post.date).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    )}
                   </div>
                   {post.status === 'publish' ? (
                     <Link href={`/journal/${post.id}`} target="_blank" className={styles.title}>

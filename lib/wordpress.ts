@@ -248,7 +248,7 @@ function authHeader(): string {
 }
 
 export interface WPPostAdmin extends WPPost {
-  status: 'publish' | 'draft' | 'private';
+  status: 'publish' | 'draft' | 'future' | 'private';
   _embedded?: {
     'wp:featuredmedia'?: WPMedia[];
     'wp:term'?: Array<Array<WPCategory>>;
@@ -258,7 +258,7 @@ export interface WPPostAdmin extends WPPost {
 export async function getAdminPosts(
   page = 1,
   perPage = 20,
-  filters: { search?: string; status?: 'publish' | 'draft'; categoryId?: number } = {}
+  filters: { search?: string; status?: 'publish' | 'draft' | 'future'; categoryId?: number } = {}
 ): Promise<{
   posts: WPPostAdmin[];
   totalPages: number;
@@ -267,7 +267,7 @@ export async function getAdminPosts(
   const galleryId = await getGalleryCategoryId();
   // カテゴリ絞り込み時は categories が優先されるため、除外指定は付けない
   const exclude = galleryId && !filters.categoryId ? `&categories_exclude=${galleryId}` : '';
-  const status = filters.status ?? 'publish,draft';
+  const status = filters.status ?? 'publish,future,draft';
   const search = filters.search ? `&search=${encodeURIComponent(filters.search)}` : '';
   const category = filters.categoryId ? `&categories=${filters.categoryId}` : '';
   const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=${status}${exclude}${search}${category}`;
@@ -317,7 +317,7 @@ export async function updateWPPost(id: number, data: {
   content?: string;
   excerpt?: string;
   date?: string;
-  status?: 'publish' | 'draft';
+  status?: 'publish' | 'draft' | 'future';
   categories?: number[];
   tags?: number[];
   featured_media?: number;

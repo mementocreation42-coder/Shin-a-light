@@ -68,6 +68,7 @@ export default function PostFilters({ categories }: { categories: Category[] }) 
       >
         <option value="">すべての状態</option>
         <option value="publish">公開のみ</option>
+        <option value="future">予約のみ</option>
         <option value="draft">下書きのみ</option>
       </select>
 
