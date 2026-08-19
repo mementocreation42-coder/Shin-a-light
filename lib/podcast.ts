@@ -166,3 +166,34 @@ export async function getPodcast(): Promise<PodcastShow | null> {
         return null;
     }
 }
+
+/**
+ * エピソードの open.spotify.com の URL を、番組ページの HTML から引く。
+ *
+ * RSS(Anchor) に載る link は podcasters.spotify.com 形式で、WordPress の
+ * oEmbed がプレイヤーに展開してくれない。埋め込みには open.spotify.com/episode/
+ * 形式が必要で、それは番組ページに載っている（直近12本ほど）。
+ * 見つからなければ null（呼び出し側は RSS の link にフォールバックする）。
+ */
+export async function resolveSpotifyEpisodeUrl(episodeTitle: string): Promise<string | null> {
+    try {
+        const res = await fetch(SPOTIFY_SHOW_URL, {
+            headers: { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' },
+            next: { revalidate: 3600 },
+        });
+        if (!res.ok) return null;
+        const html = await res.text();
+
+        // タイトルは "Episode 43：..." で始まる。番号までの前方一致で引き当てる
+        const prefix = episodeTitle.match(/^Episode\s*\d+/i)?.[0] ?? episodeTitle.slice(0, 20);
+        const re = /href="\/episode\/([A-Za-z0-9]{22})"[^>]*>(.*?)<\/a>/g;
+        for (const m of html.matchAll(re)) {
+            const text = m[2].replace(/<[^>]+>/g, '');
+            if (text.startsWith(prefix)) return `https://open.spotify.com/episode/${m[1]}`;
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
