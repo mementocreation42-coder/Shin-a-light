@@ -7,6 +7,7 @@ import styles from '@/app/admin/admin.module.css';
 const TABS = [
   { href: '/admin', label: '投稿管理' },
   { href: '/admin/photos', label: 'フォト管理' },
+  { href: '/admin/newsletter', label: 'ニュースレター' },
 ] as const;
 
 export default function AdminNav() {

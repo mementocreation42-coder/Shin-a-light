@@ -42,3 +42,12 @@ next-env.d.ts
 
 # claude code (local agent worktrees & helpers)
 .claude/
+
+# newsletter (ローカル送信の書き出し先)
+.mail-outbox/
+
+# newsletter (DBを繋ぐ前のローカル原稿)
+/content/newsletter/
+
+# newsletter (手元のPGlite)
+/.data/

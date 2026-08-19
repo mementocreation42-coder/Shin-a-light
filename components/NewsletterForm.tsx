@@ -6,6 +6,8 @@ export default function NewsletterForm({ giftText, benefits }: { giftText?: stri
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    // 確認メール方式(ダブルオプトイン)が動いているか。完了文言を切り替える
+    const [doubleOptIn, setDoubleOptIn] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -31,6 +33,7 @@ export default function NewsletterForm({ giftText, benefits }: { giftText?: stri
                 throw new Error(data.error || 'エラーが発生しました。');
             }
 
+            setDoubleOptIn(Boolean(data.doubleOptIn));
             setStatus('success');
         } catch (error) {
             setStatus('error');
@@ -41,10 +44,19 @@ export default function NewsletterForm({ giftText, benefits }: { giftText?: stri
     if (status === 'success') {
         return (
             <div className="nl-success">
-                <div className="nl-success-icon">✓</div>
-                <h3 className="nl-success-title">登録ありがとうございます！</h3>
+                <div className="nl-success-icon">{doubleOptIn ? '✉' : '✓'}</div>
+                <h3 className="nl-success-title">
+                    {doubleOptIn ? '確認メールを送りました' : '登録ありがとうございます！'}
+                </h3>
                 <p className="nl-success-desc">
-                    最初のニュースレターをお楽しみに。
+                    {doubleOptIn ? (
+                        <>
+                            メール内のボタンを押すと登録が完了します。<br />
+                            届かない場合は迷惑メールフォルダをご確認ください。
+                        </>
+                    ) : (
+                        <>最初のニュースレターをお楽しみに。</>
+                    )}
                 </p>
             </div>
         );

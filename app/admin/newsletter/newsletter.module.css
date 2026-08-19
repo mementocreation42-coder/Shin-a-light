@@ -1,0 +1,671 @@
+/* ===== ニュースレター管理 =====
+   共通の枠・ヘッダー・リストは admin.module.css を使う。
+   ここにはニュースレター固有のものだけを置く。 */
+
+/* ===== 名簿サマリ ===== */
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.statCard {
+  padding: 14px 16px;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 10px;
+}
+
+.statCardLink {
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.statCardLink:hover {
+  border-color: #ff764d;
+}
+
+.statValue {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.statValueMuted {
+  color: #777;
+}
+
+.statLabel {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+/* 数字の脇に添える割合など */
+.statSub {
+  font-size: 12px;
+  font-weight: 400;
+  color: #888;
+}
+
+/* ===== 状態バッジ ===== */
+.badge {
+  font-size: 10px;
+  padding: 2px 9px;
+  border-radius: 10px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.badgeActive {
+  background: rgba(135, 211, 124, 0.14);
+  border: 1px solid rgba(135, 211, 124, 0.5);
+  color: #4e9b43;
+}
+
+.badgePending {
+  background: rgba(249, 230, 84, 0.16);
+  border: 1px solid rgba(200, 175, 40, 0.5);
+  color: #8a7413;
+}
+
+.badgeOff {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #bcbcbc;
+  color: #666;
+}
+
+.badgeBad {
+  background: rgba(247, 93, 93, 0.12);
+  border: 1px solid rgba(247, 93, 93, 0.5);
+  color: #c23c3c;
+}
+
+/* ===== 登録者一覧（ニュースレター管理トップの下段）===== */
+.subscriberSection {
+  display: block;
+  margin-top: 44px;
+  padding-top: 28px;
+  border-top: 1px solid #333;
+  /* 錨で飛んできたとき、見出しがヘッダーの下に隠れないようにする */
+  scroll-margin-top: 76px;
+}
+
+/* ===== 手動での登録 ===== */
+.addRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.addPanel {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #222;
+  border: 1px solid #3d3d3d;
+  border-radius: 10px;
+}
+
+/* 原稿用の .textarea（min-height 460px）を打ち消す。
+   あちらが後ろで定義されているので、詳細度を上げて効かせる */
+.addPanel .addTextarea {
+  min-height: 132px;
+}
+
+.addResult {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #87d37c;
+}
+
+.addError {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #f75d5d;
+}
+
+/* 確認メールを挟まない口なので、性質を目立たせておく */
+.addWarn {
+  margin: 10px 0 0;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #f9e654;
+}
+
+/* ===== 購読者の行 ===== */
+.subRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #c8c8c8;
+}
+
+.subRow:last-child {
+  border-bottom: none;
+}
+
+.subEmail {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: #1a1a1a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.subMeta {
+  font-size: 11px;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* ===== エディタ ===== */
+.editorGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .editorGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 執筆は1カラム。上から件名・本文・プレビューの順に縦へ積む。
+   横に並べると入力もプレビューも半分の幅になり、
+   600px 幅のメールが実寸で見られない */
+.editorStack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: #888;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 11px 13px;
+  background: #222;
+  border: 1px solid #383838;
+  border-radius: 8px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: #ff764d;
+}
+
+/* 1カラムなので、本文で画面を埋めきらない高さにする。
+   書きながら下のプレビューが視界に入るのが狙い。足りなければ引き伸ばせる */
+.textarea {
+  min-height: 300px;
+  resize: vertical;
+}
+
+
+.hint {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* 編集画面はメールの幅（600px）に合わせる。
+   見出し・保存ボタン・テスト送信も同じ幅に収め、左右の端をそろえる */
+.editorPage {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== 執筆面（届くメールそのものの上に書く）=====
+   色と余白は lib/email/render.ts の palette / renderMarkdown に合わせてある。
+   ここがずれると「書いた見た目」と「届く見た目」が食い違う。 */
+
+.mailSurface {
+  background: #ffffff;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  color: #1e1e1e;
+  font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic', Meiryo, sans-serif;
+}
+
+.mailHead {
+  padding: 24px 32px;
+  border-bottom: 3px solid #ff764d;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.mailBodyArea {
+  padding: 32px;
+}
+
+/* 件名。メール本文の見出し（h1）と同じ大きさで置く */
+.mailSubject {
+  display: block;
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  /* globals.css の textarea { min-height: 120px } を打ち消す。
+     高さは中身に合わせて autoGrow が決める */
+  min-height: 0;
+  font-family: inherit;
+  font-size: 24px;
+  line-height: 1.5;
+  font-weight: 700;
+  color: #1e1e1e;
+}
+
+.mailBody {
+  min-height: 320px;
+}
+
+.mailBlock {
+  position: relative;
+  margin: 0 0 18px;
+}
+
+/* 入力欄は完全に透明にして、囲みタグ側の体裁だけを見せる */
+.mailBlockArea {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  overflow: hidden;
+  /* globals.css の textarea { min-height: 120px } を打ち消す */
+  min-height: 0;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+
+.mailBlockArea::placeholder {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.mailBlockArea:disabled {
+  color: inherit;
+  -webkit-text-fill-color: #1e1e1e;
+}
+
+.mail_plain {
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.mail_h2 {
+  margin: 32px 0 14px;
+  padding-left: 12px;
+  border-left: 4px solid #ff764d;
+  font-size: 21px;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.mail_h3 {
+  margin: 26px 0 12px;
+  font-size: 17px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.mail_list {
+  margin: 0 0 18px;
+  padding-left: 22px;
+  list-style: none;
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.mail_quote {
+  margin: 0 0 18px;
+  padding: 14px 18px;
+  background: #faf7f5;
+  border-left: 3px solid #ff764d;
+  font-size: 15px;
+  line-height: 1.8;
+  color: #666666;
+}
+
+/* 書式の目印。普段は出さず、触っているブロックにだけ出す */
+.mailFormatTag {
+  position: absolute;
+  top: 2px;
+  left: -34px;
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #c9c9c9;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mailBlock:hover .mailFormatTag,
+.mailBlock:focus-within .mailFormatTag {
+  opacity: 1;
+}
+
+/* ===== 「/」の差し込みメニュー ===== */
+.slashMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  min-width: 190px;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  /* メールの本文書体ではなく、管理画面側の書体で出す。
+     原稿の一部ではなく操作パネルだと分かるようにする */
+  font-family: var(--font-mono), monospace;
+}
+
+.slashItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #a0a0a0;
+  cursor: pointer;
+}
+
+.slashItemActive {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.slashIcon {
+  width: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff764d;
+}
+
+/* メールの足元。実際の差出人表記の位置にプレヒーダーを置いて編集する */
+.mailFoot {
+  padding: 24px 32px;
+  border-top: 1px solid #e2e2e2;
+}
+
+.mailPreheader {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #666666;
+}
+
+.mailPreheader::placeholder {
+  color: rgba(0, 0, 0, 0.28);
+}
+
+.mailFootNote {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.8;
+  color: #a0a0a0;
+}
+
+/* ===== プレビュー ===== */
+.previewHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.previewFrame {
+  width: 100%;
+  height: 620px;
+  background: #f4f4f4;
+  border: 1px solid #383838;
+  border-radius: 8px;
+}
+
+
+
+
+
+/* ===== 保存状態 ===== */
+.saveState {
+  font-size: 11px;
+  color: #777;
+  white-space: nowrap;
+}
+
+.saveStateDirty {
+  color: #f9e654;
+}
+
+.saveStateError {
+  color: #f75d5d;
+}
+
+/* ===== DB を繋ぐ前（ファイル保存）の案内 ===== */
+.fileModeNotice {
+  margin: 0 0 24px;
+  padding: 11px 14px;
+  background: #222;
+  border: 1px dashed #3d3d3d;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #999;
+}
+
+.fileModeNotice code {
+  padding: 1px 6px;
+  background: #2c2c2c;
+  border-radius: 4px;
+  color: #ccc;
+}
+
+/* ===== 配信ページ ===== */
+.sendSummary {
+  margin: 0;
+  padding: 14px 16px;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 8px 14px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.sendSummary dt {
+  color: #888;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  padding-top: 2px;
+}
+
+.sendSummary dd {
+  margin: 0;
+  color: #eee;
+  overflow-wrap: anywhere;
+}
+
+.sendMissing {
+  color: #f75d5d;
+}
+
+/* 実行のかたまり。押したら戻せないので、他より一段強く囲う */
+.sendPanel {
+  padding: 16px;
+  background: #222;
+  border: 1px solid #3d3d3d;
+  border-radius: 10px;
+}
+
+.sendLead {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #ccc;
+}
+
+.sendCount {
+  font-size: 17px;
+  color: #fff;
+}
+
+.sendConfirmText {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #ff764d;
+}
+
+.sendResult {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #87d37c;
+}
+
+.sendWarn {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #f9e654;
+}
+
+.sendError {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: #f75d5d;
+}
+
+.sendDone {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #999;
+}
+
+/* ===== 失敗した宛先 ===== */
+.failList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* アドレスと理由は横に並べない。どちらも省略されて読めなくなるため、
+   1行目にアドレスと時刻、2行目に理由を置く */
+.failRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #333;
+}
+
+.failRow:last-child {
+  border-bottom: none;
+}
+
+.failRow .subEmail {
+  color: #eee;
+}
+
+.failReason {
+  grid-column: 1 / -1;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #f75d5d;
+  overflow-wrap: anywhere;
+}
+
+/* ===== 設定が済んでいないときの案内 ===== */
+.setupNotice {
+  padding: 28px 24px;
+  background: #222;
+  border: 1px dashed #444;
+  border-radius: 12px;
+}
+
+.setupTitle {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff764d;
+}
+
+.setupBody {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #aaa;
+}
+
+.setupCode {
+  display: block;
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 12px;
+  color: #ddd;
+  overflow-x: auto;
+  white-space: pre;
+}

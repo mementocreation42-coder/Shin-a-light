@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 手元の DB（PGlite）は WASM をファイルから読む。バンドルに巻き込まず実行時に require させる
+  serverExternalPackages: ['@electric-sql/pglite'],
   images: {
     remotePatterns: [
       {
