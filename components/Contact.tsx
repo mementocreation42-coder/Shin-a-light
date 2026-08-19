@@ -1,10 +1,23 @@
 'use client';
 
-import { useState, FormEvent } from 'react';
+import { useState, useEffect, useRef, FormEvent } from 'react';
+
+/** /pro など他ページからカテゴリを指定して着地させるための対応表（?c=...） */
+const CATEGORY_PRESETS: Record<string, string> = {
+    produce: '企画・プロデュース／ディレクション',
+};
 
 export default function Contact() {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
+    const subjectRef = useRef<HTMLSelectElement>(null);
+
+    // useSearchParams を使うとページ全体が Suspense 境界を要求するため、
+    // マウント後に location から読んで select に直接反映する。
+    useEffect(() => {
+        const preset = CATEGORY_PRESETS[new URLSearchParams(window.location.search).get('c') ?? ''];
+        if (preset && subjectRef.current) subjectRef.current.value = preset;
+    }, []);
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -71,7 +84,14 @@ export default function Contact() {
                     </div>
                     <div className="form-group">
                         <label htmlFor="subject">Category</label>
-                        <select id="subject" name="subject" defaultValue="" required disabled={status === 'submitting'}>
+                        <select
+                            id="subject"
+                            name="subject"
+                            ref={subjectRef}
+                            defaultValue=""
+                            required
+                            disabled={status === 'submitting'}
+                        >
                             <option value="" disabled>お問い合わせ内容を選択</option>
                             <option value="企画・プロデュース／ディレクション">企画・プロデュース／ディレクション</option>
                             <option value="映像制作">映像制作</option>
