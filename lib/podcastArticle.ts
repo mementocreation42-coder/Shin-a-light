@@ -58,7 +58,7 @@ EXCERPT: 抜粋（80〜120字、1文か2文）
 export async function draftArticle(
   episode: EpisodeInfo,
   transcript: string,
-  opts: { styleSamples?: string[]; model?: string } = {}
+  opts: { styleSamples?: string[]; voiceNotes?: string; model?: string } = {}
 ): Promise<ArticleDraft> {
   const client = new Anthropic();
 
@@ -69,6 +69,9 @@ export async function draftArticle(
   const user = [
     samples
       ? `この人が過去に書いた記事の文体見本です。語り口・段落の長さ・言い回しをここに寄せてください。内容は参照しないこと。\n\n${samples}\n`
+      : '',
+    opts.voiceNotes
+      ? `過去の下書きが公開前にどう直されたかを見て溜めた、文体の注意点です。書くときに反映してください。\n\n<voice_notes>\n${opts.voiceNotes.trim()}\n</voice_notes>\n`
       : '',
     `エピソード情報
 - タイトル: ${episode.title}
