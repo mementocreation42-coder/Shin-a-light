@@ -750,6 +750,27 @@
   opacity: 1;
 }
 
+.heroPickBtn {
+  margin-top: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 118, 77, 0.12);
+  border: 1px solid #ff764d;
+  border-radius: 6px;
+  color: #ff764d;
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.heroPickBtn:hover {
+  background: rgba(255, 118, 77, 0.22);
+}
+
+.heroOverlay .heroPickBtn {
+  margin-top: 0;
+}
+
 .heroRemoveBtn {
   padding: 4px 12px;
   background: rgba(231, 76, 60, 0.9);

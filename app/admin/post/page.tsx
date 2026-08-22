@@ -15,7 +15,7 @@ export default async function NewPostPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <Link href="/admin" className={styles.logo}>SAL</Link>
+          <Link href="/" className={styles.logo}>SAL</Link>
           <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
           <span className={styles.breadcrumb}>/ 新規投稿</span>
         </div>

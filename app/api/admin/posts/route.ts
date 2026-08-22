@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath } from 'next/cache';
 import { createWPPost } from '@/lib/wordpress';
+import { resolveDraftEyecatch } from '@/lib/eyecatch/draftEyecatch';
 
 function escAttr(s: string) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -100,7 +101,8 @@ export async function POST(request: NextRequest) {
       date,
       status: postStatus,
       categories: categoryIds,
-      featured_media: eyecatchId,
+      // 下書きでアイキャッチが無ければ、タイトル文字の仮画像を入れておく
+      featured_media: await resolveDraftEyecatch(postStatus, eyecatchId, title),
     });
 
     revalidatePath('/', 'layout');

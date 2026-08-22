@@ -223,6 +223,18 @@ export function getFeaturedImageUrl(post: WPPost & { _embedded?: { 'wp:featuredm
     return null;
 }
 
+/**
+ * 一覧のサムネ用に小さいサイズの URL を返す。
+ * 原寸を 20 枚並べると数MB になるので、WP が生成した medium / thumbnail を優先する。
+ */
+export function getFeaturedThumbUrl(post: WPPost & { _embedded?: { 'wp:featuredmedia'?: WPMedia[] } }): string | null {
+    const media = post._embedded?.['wp:featuredmedia']?.[0];
+    if (!media) return null;
+    const sizes = media.media_details?.sizes;
+    const url = sizes?.medium?.source_url ?? sizes?.thumbnail?.source_url ?? media.source_url;
+    return url ? encodeURI(url) : null;
+}
+
 // Helper to strip HTML tags and decode HTML entities from excerpt
 export function stripHtml(html: string): string {
     return html
@@ -233,7 +245,10 @@ export function stripHtml(html: string): string {
         .replace(/&quot;/g, '"')
         .replace(/&#039;/g, "'")
         .replace(/&nbsp;/g, ' ')
-        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(Number(code)))
+        .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+        .replace(/&(ldquo|rdquo|lsquo|rsquo|hellip|mdash|ndash);/g, (_, name) =>
+            ({ ldquo: '“', rdquo: '”', lsquo: '‘', rsquo: '’', hellip: '…', mdash: '—', ndash: '–' })[name as string] ?? '')
         .trim();
 }
 
@@ -270,7 +285,9 @@ export async function getAdminPosts(
   const status = filters.status ?? 'publish,future,draft';
   const search = filters.search ? `&search=${encodeURIComponent(filters.search)}` : '';
   const category = filters.categoryId ? `&categories=${filters.categoryId}` : '';
-  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed&status=${status}${exclude}${search}${category}`;
+  // 一覧に本文は要らない。_fields で絞り、_embed もサムネとカテゴリだけにして転送量を落とす
+  const fields = '_fields=id,date,status,title,featured_media,categories,_links,_embedded';
+  const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term&${fields}&status=${status}${exclude}${search}${category}`;
   const res = await fetch(url, {
     headers: { Authorization: authHeader() },
     cache: 'no-store',
@@ -368,6 +385,12 @@ let _galleryCatId: number | null = null;
 // Resolve the gallery category id (read-only). Cached in-process + via fetch cache.
 export async function getGalleryCategoryId(): Promise<number | null> {
     if (_galleryCatId) return _galleryCatId;
+    // まずは1時間キャッシュ済みの全カテゴリ一覧から引く（毎回 WP に問い合わせない）
+    const fromList = (await getCategories()).find((c) => c.slug === GALLERY_CATEGORY_SLUG);
+    if (fromList?.id) {
+        _galleryCatId = fromList.id;
+        return _galleryCatId;
+    }
     try {
         // カテゴリ未作成→作成後の遷移を確実に反映するためキャッシュしない。
         // 成功したidはモジュール変数に memo するので追加リクエストは最小限。
@@ -445,6 +468,8 @@ export async function getOrCreateMementoTagId(): Promise<number> {
 
 export interface GalleryPhoto {
     id: number;
+    /** アイキャッチ等に流用するための添付ファイル（メディア）ID */
+    mediaId: number;
     caption: string;
     /** 原寸画像（ライトボックス表示用） */
     url: string;
@@ -477,6 +502,7 @@ function mapGalleryPost(post: WPPostAdmin, mementoTagId: number | null): Gallery
     const isMemento = !!mementoTagId && (post.tags?.includes(mementoTagId) ?? false);
     return {
         id: post.id,
+        mediaId: media.id,
         caption: stripHtml(post.title.rendered),
         url: encodeURI(media.source_url),
         thumbUrl: pickThumb(media),

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getAdminPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
+import { getAdminPosts, getCategories, getFeaturedThumbUrl, formatDate, stripHtml } from '@/lib/wordpress';
 import { logout } from '@/app/login/actions';
 import PostActions from '@/components/admin/PostActions';
 import PostFilters from '@/components/admin/PostFilters';
@@ -47,15 +47,11 @@ export default async function AdminPage({
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <span className={styles.logo}>SAL</span>
+          <Link href="/" className={styles.logo}>SAL</Link>
           <span className={styles.logoBadge}>ADMIN</span>
           <AdminNav />
         </div>
         <div className={styles.headerRight}>
-          <Link href="/" target="_blank" className={styles.siteLink}>
-            <span className={styles.siteLinkText}>サイトを見る</span>
-            <span aria-hidden="true">↗</span>
-          </Link>
           <Link href="/admin/post" className={styles.primaryBtn}>
             <span className={styles.btnIcon}>＋</span>
             <span className={styles.btnText}>新規投稿</span>
@@ -85,16 +81,16 @@ export default async function AdminPage({
         ) : (
         <div className={styles.list}>
           {posts.map((post) => {
-            const imgUrl = getFeaturedImageUrl(post);
+            const imgUrl = getFeaturedThumbUrl(post);
             const isDraft = post.status === 'draft';
             const isFuture = post.status === 'future';
-            const plainTitle = post.title.rendered.replace(/<[^>]*>/g, '');
+            const plainTitle = stripHtml(post.title.rendered);
             return (
               <div key={post.id} className={`${styles.item} ${isDraft || isFuture ? styles.itemDraft : ''}`}>
                 <div className={styles.thumb}>
                   {imgUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={imgUrl} alt="" className={styles.thumbImg} />
+                    <img src={imgUrl} alt="" loading="lazy" decoding="async" className={styles.thumbImg} />
                   ) : (
                     <span className={styles.thumbEmpty}>—</span>
                   )}

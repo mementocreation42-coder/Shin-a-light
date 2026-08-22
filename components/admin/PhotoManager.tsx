@@ -93,7 +93,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const pRes = await fetch('/api/admin/photos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mediaId: upData.id, caption: '', date: shotDate, category }),
+                body: JSON.stringify({ mediaId: Number(upData.id), caption: '', date: shotDate, category }),
             });
             const pData = await parseJsonSafe(pRes);
             if (pRes.status === 401) throw new Error(AUTH_EXPIRED_MSG);
@@ -101,7 +101,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const newId = pData.id;
 
             setPhotos((prev) => [
-                { id: newId, caption: '', url: mediaUrl, thumbUrl: mediaUrl, width: 1600, height: 1067, date: shotDate ?? new Date().toISOString(), category },
+                { id: newId, mediaId: Number(upData.id), caption: '', url: mediaUrl, thumbUrl: mediaUrl, width: 1600, height: 1067, date: shotDate ?? new Date().toISOString(), category },
                 ...prev,
             ]);
         } catch (err: unknown) {

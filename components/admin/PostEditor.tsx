@@ -261,6 +261,8 @@ const [isDraggingOnBody, setIsDraggingOnBody] = useState(false);
   const [slashMenu, setSlashMenu] = useState<{ segIndex: number; query: string; openUpward: boolean } | null>(null);
   const [slashIndex, setSlashIndex] = useState(0);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  // メディアピッカーをアイキャッチ選択として開いているか（通常は本文への画像挿入）
+  const [pickerForEyecatch, setPickerForEyecatch] = useState(false);
 
 const eyecatchInputRef = useRef<HTMLInputElement>(null);
   const autoFetchedUrlRef = useRef<string>('');
@@ -447,6 +449,14 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
 
   function handleMediaSelect(item: { id: number; source_url: string; alt_text: string; title: { rendered: string } }) {
     const uid = ++uidRef.current;
+    if (pickerForEyecatch) {
+      // ライブラリ／フォトから選んだ画像をそのままアイキャッチに（アップロード不要）
+      setEyecatch({ uid, localUrl: item.source_url, url: item.source_url, id: item.id, uploading: false });
+      setEyecatchStatus('idle');
+      setPickerForEyecatch(false);
+      setShowMediaPicker(false);
+      return;
+    }
     const newImg = { uid, localUrl: item.source_url, url: item.source_url, id: item.id, uploading: false };
     // setStateの更新関数は2回呼ばれることがあるので、本文への差し込みは外で1回だけ行う
     const idx = images.length;
@@ -1136,6 +1146,8 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
                 <img src={eyecatchUrl} alt="" style={{ opacity: eyecatch?.uploading ? 0.5 : 1 }} />
                 <div className={styles.heroOverlay}>
                   <span>{eyecatch?.uploading ? 'アップロード中...' : 'クリックで差し替え'}</span>
+                  <button type="button" className={styles.heroPickBtn}
+                    onClick={(e) => { e.stopPropagation(); setPickerForEyecatch(true); setShowMediaPicker(true); }}>ライブラリから選ぶ</button>
                   <button type="button" className={styles.heroRemoveBtn}
                     onClick={(e) => { e.stopPropagation(); setEyecatch(null); }}>削除</button>
                 </div>
@@ -1145,6 +1157,10 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
                 <span className={styles.heroPlaceholderIcon}>＋</span>
                 <span>アイキャッチを設定</span>
                 <span className={styles.heroPlaceholderHint}>クリック / ドラッグ&ドロップ ・ JPG・PNG・HEIC</span>
+                <button type="button" className={styles.heroPickBtn}
+                  onClick={(e) => { e.stopPropagation(); setPickerForEyecatch(true); setShowMediaPicker(true); }}>
+                  メディア・フォトから選ぶ
+                </button>
               </div>
             )}
           </div>
@@ -1358,8 +1374,9 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     )}
     {showMediaPicker && (
       <MediaPicker
+        title={pickerForEyecatch ? 'アイキャッチを選ぶ' : 'MEDIA LIBRARY'}
         onSelect={handleMediaSelect}
-        onClose={() => setShowMediaPicker(false)}
+        onClose={() => { setShowMediaPicker(false); setPickerForEyecatch(false); }}
       />
     )}
     </>

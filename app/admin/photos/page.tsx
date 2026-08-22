@@ -17,7 +17,7 @@ export default async function AdminPhotosPage() {
         <div className={styles.page}>
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <Link href="/admin" className={styles.logo}>SAL</Link>
+                    <Link href="/" className={styles.logo}>SAL</Link>
                     <span className={styles.logoBadge}>ADMIN</span>
                     <AdminNav />
                 </div>

@@ -13,7 +13,22 @@ interface MediaItem {
 interface Props {
   onSelect: (item: MediaItem) => void;
   onClose: () => void;
+  /** ダイアログ見出し。既定は MEDIA LIBRARY */
+  title?: string;
 }
+
+interface GalleryPhotoItem {
+  id: number;
+  mediaId: number;
+  caption: string;
+  url: string;
+  thumbUrl: string;
+  width: number;
+  height: number;
+  category?: string;
+}
+
+type Source = 'media' | 'photos';
 
 const currentYear = new Date().getFullYear();
 const YEARS = Array.from({ length: currentYear - 2019 }, (_, i) => currentYear - i);
@@ -26,11 +41,15 @@ const MONTHS = [
 
 const sel: React.CSSProperties = {
   background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '6px',
-  padding: '6px 8px', color: '#fff', fontSize: '12px', fontFamily: 'inherit', cursor: 'pointer',
+  padding: '6px 8px', color: '#fff', fontSize: '12px', fontFamily: 'inherit', cursor: 'pointer', width: 'auto',
 };
 
-export default function MediaPicker({ onSelect, onClose }: Props) {
+export default function MediaPicker({ onSelect, onClose, title = 'MEDIA LIBRARY' }: Props) {
+  const [source, setSource] = useState<Source>('media');
   const [items, setItems] = useState<MediaItem[]>([]);
+  // フォト（gallery カテゴリの投稿）は件数が少ないので一度に全件取る
+  const [photos, setPhotos] = useState<GalleryPhotoItem[] | null>(null);
+  const [photoCategory, setPhotoCategory] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [search, setSearch] = useState('');
@@ -59,6 +78,33 @@ export default function MediaPicker({ onSelect, onClose }: Props) {
   }, []);
 
   useEffect(() => { fetchMedia(1, '', '', ''); }, [fetchMedia]);
+
+  // フォトタブを初めて開いたときだけ取得
+  useEffect(() => {
+    if (source !== 'photos' || photos !== null) return;
+    setLoading(true);
+    fetch('/api/admin/photos')
+      .then((r) => r.json())
+      .then((data) => setPhotos(data.photos ?? []))
+      .catch(() => setPhotos([]))
+      .finally(() => setLoading(false));
+  }, [source, photos]);
+
+  const visiblePhotos = (photos ?? []).filter((p) => {
+    if (photoCategory && (p.category ?? 'Archive') !== photoCategory) return false;
+    if (search && !p.caption.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  function handlePhotoSelect(p: GalleryPhotoItem) {
+    onSelect({
+      id: p.mediaId,
+      source_url: p.url,
+      alt_text: p.caption,
+      title: { rendered: p.caption },
+      media_details: { width: p.width, height: p.height },
+    });
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => { setPage(1); fetchMedia(1, search, year, month); }, 400);
@@ -122,9 +168,28 @@ export default function MediaPicker({ onSelect, onClose }: Props) {
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid #3a3a3a', gap: '10px', flexWrap: 'wrap' }}>
-          <span style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, color: '#ff764d', letterSpacing: '1px', flexShrink: 0 }}>MEDIA LIBRARY</span>
+          <span style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, color: '#ff764d', letterSpacing: '1px', flexShrink: 0 }}>{title}</span>
+
+          {/* 取得元の切り替え：メディアライブラリ / フォト（ギャラリー投稿） */}
+          <div style={{ display: 'flex', gap: '2px', background: '#141414', borderRadius: '6px', padding: '2px', flexShrink: 0 }}>
+            {([['media', 'メディア'], ['photos', 'フォト']] as const).map(([key, label]) => (
+              <button key={key} type="button" onClick={() => { setSource(key); setDeleteMode(false); setSelected(new Set()); }}
+                style={{ padding: '5px 12px', borderRadius: '5px', border: 'none', fontSize: '12px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer',
+                  background: source === key ? '#2e2e2e' : 'transparent', color: source === key ? '#fff' : '#777' }}>
+                {label}
+              </button>
+            ))}
+          </div>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', flex: 1, justifyContent: 'flex-end' }}>
+            {source === 'photos' && (
+              <select value={photoCategory} onChange={(e) => setPhotoCategory(e.target.value)} style={sel}>
+                <option value="">すべて</option>
+                <option value="Archive">Archive</option>
+                <option value="MEMENTO">MEMENTO</option>
+              </select>
+            )}
+            {source === 'media' && (<>
             <select value={year} onChange={(e) => { setYear(e.target.value); setMonth(''); applyFilter(e.target.value, ''); }} style={sel}>
               <option value="">全年</option>
               {YEARS.map((y) => <option key={y} value={String(y)}>{y}年</option>)}
@@ -134,19 +199,20 @@ export default function MediaPicker({ onSelect, onClose }: Props) {
               <option value="">全月</option>
               {MONTHS.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
             </select>
+            </>)}
 
             <input
               type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="検索..."
               style={{ background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '6px', padding: '6px 12px', color: '#fff', fontSize: '12px', fontFamily: 'inherit', width: '130px' }}
             />
 
-            {/* 削除モード切り替え */}
-            <button
+            {/* 削除モード切り替え（メディアのみ） */}
+            {source === 'media' && <button
               onClick={() => { setDeleteMode((v) => !v); setSelected(new Set()); }}
               style={{ padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontFamily: 'inherit', fontWeight: 600, cursor: 'pointer', border: '1px solid', background: deleteMode ? 'rgba(231,76,60,0.15)' : 'transparent', borderColor: deleteMode ? '#e74c3c' : '#3a3a3a', color: deleteMode ? '#e74c3c' : '#666' }}
             >
               {deleteMode ? '選択モード中' : '削除選択'}
-            </button>
+            </button>}
 
             <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#666', cursor: 'pointer', fontSize: '18px', lineHeight: 1 }}>×</button>
           </div>
@@ -174,6 +240,22 @@ export default function MediaPicker({ onSelect, onClose }: Props) {
         <div style={{ flex: 1, overflowY: 'auto', padding: '12px' }}>
           {loading ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#666', fontSize: '13px' }}>読み込み中...</div>
+          ) : source === 'photos' ? (
+            visiblePhotos.length === 0 ? (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#666', fontSize: '13px' }}>フォトが見つかりません</div>
+            ) : (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '6px' }}>
+                {visiblePhotos.map((p) => (
+                  <div key={p.id} onClick={() => handlePhotoSelect(p)} title={p.caption}
+                    style={{ aspectRatio: '1', borderRadius: '4px', overflow: 'hidden', cursor: 'pointer', border: '2px solid transparent', background: '#2a2a2a', transition: 'border-color 0.1s' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ff764d'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'transparent'; }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={p.thumbUrl} alt={p.caption} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+                  </div>
+                ))}
+              </div>
+            )
           ) : items.length === 0 ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '200px', color: '#666', fontSize: '13px' }}>画像が見つかりません</div>
           ) : (
@@ -206,14 +288,14 @@ export default function MediaPicker({ onSelect, onClose }: Props) {
           )}
         </div>
 
-        {/* Pagination */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '10px 20px', borderTop: '1px solid #3a3a3a' }}>
+        {/* Pagination（メディアのみ） */}
+        {source === 'media' && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', padding: '10px 20px', borderTop: '1px solid #3a3a3a' }}>
           <button onClick={() => { const p = page - 1; setPage(p); fetchMedia(p, search, year, month); }} disabled={page <= 1}
             style={{ padding: '5px 14px', background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '6px', color: page <= 1 ? '#444' : '#a0a0a0', cursor: page <= 1 ? 'default' : 'pointer', fontSize: '12px', fontFamily: 'inherit' }}>← 前</button>
           <span style={{ fontSize: '12px', color: '#666' }}>{page} / {totalPages}</span>
           <button onClick={() => { const p = page + 1; setPage(p); fetchMedia(p, search, year, month); }} disabled={page >= totalPages}
             style={{ padding: '5px 14px', background: '#2a2a2a', border: '1px solid #3a3a3a', borderRadius: '6px', color: page >= totalPages ? '#444' : '#a0a0a0', cursor: page >= totalPages ? 'default' : 'pointer', fontSize: '12px', fontFamily: 'inherit' }}>次 →</button>
-        </div>
+        </div>}
       </div>
     </div>
   );

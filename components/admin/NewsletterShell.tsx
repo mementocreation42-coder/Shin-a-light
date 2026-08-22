@@ -18,7 +18,7 @@ export default function NewsletterShell({
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <Link href="/admin" className={styles.logo}>SAL</Link>
+          <Link href="/" className={styles.logo}>SAL</Link>
           {breadcrumb ? (
             <>
               <Link href="/admin/newsletter" className={styles.breadcrumb}>/ ニュースレター</Link>

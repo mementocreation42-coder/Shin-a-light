@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { getAdminPostById, getCategories, getFeaturedImageUrl } from '@/lib/wordpress';
+import { getAdminPostById, getCategories, getFeaturedImageUrl, stripHtml } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
 import styles from '../../../admin.module.css';
 
@@ -17,7 +17,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
 
   const initialData = {
     id,
-    title: post.title.rendered.replace(/<[^>]*>/g, ''),
+    title: stripHtml(post.title.rendered),
     date: post.date.split('T')[0],
     categoryIds: post.categories,
     content: post.content.rendered,
@@ -32,7 +32,7 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     <div className={styles.page}>
       <header className={styles.header}>
         <div className={styles.headerLeft}>
-          <Link href="/admin" className={styles.logo}>SAL</Link>
+          <Link href="/" className={styles.logo}>SAL</Link>
           <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
           <span className={styles.breadcrumb}>/ 投稿を編集</span>
         </div>

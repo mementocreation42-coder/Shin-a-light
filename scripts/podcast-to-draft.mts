@@ -140,9 +140,12 @@ if (articlePath) {
       throw new Error('ANTHROPIC_API_KEY が無いため記事化できません。--article で原稿を渡すこともできます。');
     }
     console.log('記事化中…');
+    const voiceNotesPath = join(process.cwd(), 'docs', 'podcast-voice-notes.md');
+    const voiceNotes = existsSync(voiceNotesPath) ? readFileSync(voiceNotesPath, 'utf8') : undefined;
     article = await draftArticle(
       { title: episode.title, link: episode.link, pubDate: episode.pubDate, duration: episode.duration, summary: episode.summary },
-      transcript
+      transcript,
+      { voiceNotes }
     );
     writeFileSync(articleFile, `TITLE: ${article.title}\nEXCERPT: ${article.excerpt}\n---\n${article.bodyMd}\n`);
     console.log(`原稿を保存: ${articleFile}`);
@@ -163,7 +166,10 @@ if (dryRun) {
   console.log('\n--dry-run のため WordPress には作成していません。');
 } else {
   // journal(10)。カテゴリの追加は WP 側で
-  const post = await createWPPost({ title: article.title, content, excerpt: article.excerpt, status: 'draft', categories: [10] });
+  // 下書きにはタイトル文字の仮アイキャッチを付けておく（失敗しても投稿は作る）
+  const { createTitleEyecatchMedia } = await import('../lib/eyecatch/draftEyecatch');
+  const featured_media = (await createTitleEyecatchMedia(article.title)) || undefined;
+  const post = await createWPPost({ title: article.title, content, excerpt: article.excerpt, status: 'draft', categories: [10], featured_media });
   const url = `https://journal.shinealight.jp/wp-admin/post.php?post=${post.id}&action=edit`;
   // 処理済みの印。--list と二重作成の防止に使う
   writeFileSync(join(DIR, `ep${slug}.done`), `${new Date().toISOString()} ${url}\n`);
