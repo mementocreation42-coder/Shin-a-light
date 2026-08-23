@@ -4,33 +4,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SKILL_GROUPS } from '@/data/skills';
 
-/** /pro 配下ではヘッダーと同じ Pro カテゴリの列に入れ替える */
-const PRO_FOOTER_GROUPS = [
-    {
-        label: '映像・写真',
-        href: '/pro/visual',
-        items: ['年間の視覚設計', '定期撮影', '映像のシリーズ化', '写真アーカイブ'],
-    },
-    {
-        label: 'システム開発',
-        href: '/pro/systems',
-        items: ['業務の自動化', '巡回・通知', '数字の見える化', 'AIアシスタント'],
-    },
-    {
-        label: '補助金',
-        href: '/pro/hojokin',
-        items: ['国の補助金', '徳島県の補助金', '町の補助金', '使い方の流れ'],
-    },
-    {
-        label: '考え方',
-        href: '/pro/approach',
-        items: ['企画書をそのまま公開', '受け皿から逆算する'],
-    },
-    {
-        label: '相談する',
-        href: '/pro/contact',
-        items: ['相談する（無料）', 'まだ形がなくてOK'],
-    },
+/** /pro 配下のフッターナビ */
+const PRO_FOOTER_LINKS = [
+    { label: '映像・写真', href: '/pro/visual' },
+    { label: 'システム開発', href: '/pro/systems' },
+    { label: '補助金', href: '/pro/hojokin' },
 ];
 
 export default function Footer() {
@@ -40,22 +18,13 @@ export default function Footer() {
     return (
         <footer className="footer">
             {isPro ? (
-                <div className="footer-skills">
-                    {PRO_FOOTER_GROUPS.map((group) => (
-                        <div key={group.href} className="footer-skill-group">
-                            <h3 className="footer-skill-head">
-                                <Link href={group.href}>{group.label}</Link>
-                            </h3>
-                            <ul className="footer-skill-list">
-                                {group.items.map((item) => (
-                                    <li key={item} className="footer-skill-item">
-                                        <Link href={group.href}>{item}</Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                <nav className="footer-pro-nav" aria-label="Pro ページ内ナビゲーション">
+                    {PRO_FOOTER_LINKS.map((link) => (
+                        <Link key={link.href} href={link.href}>
+                            {link.label}
+                        </Link>
                     ))}
-                </div>
+                </nav>
             ) : (
                 <div className="footer-skills">
                     {SKILL_GROUPS.map((group) => (
