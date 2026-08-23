@@ -8904,3 +8904,10 @@ body:has(.b-side) .pro-final-title,
 body:has(.b-side) .approach-cta-title {
   font-weight: 700;
 }
+
+/* 共感の締めは一言のパンチラインとして大きく */
+body:has(.b-side) .pro-empathy-close {
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 700;
+  line-height: 1.7;
+}

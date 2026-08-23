@@ -88,9 +88,8 @@ export default function ProPage() {
                     最も映える形にして手渡す。
                 </h1>
                 <p className="pro-hero-lead">
-                    映像も、写真も、Webも、システムも。バラバラに頼まなくて大丈夫。
-                    企画から発信まで、一人の作り手がまとめて引き受けます。
-                    拠点は徳島・牟岐町。打ち合わせはオンラインで、全国どこからでも。
+                    映像も、写真も、Webも、システムも。
+                    ぜんぶ、一人で引き受けます。
                 </p>
                 <div className="pro-hero-actions">
                     <Link href={CTA_HREF} className="pro-cta-button">
@@ -179,7 +178,6 @@ export default function ProPage() {
                         </li>
                     </ul>
                     <p className="pro-empathy-close">
-                        バラバラに頼むと、大事なことが途中で少しずつ薄れていきます。
                         だから、最初から最後まで、ひとりで通します。
                     </p>
                 </div>
@@ -189,7 +187,7 @@ export default function ProPage() {
             <section className="pro-section">
                 <div className="pro-inner">
                     <h2 className="pro-heading">引き受ける範囲</h2>
-                    <p className="pro-sub">構想から運用まで、途切れさせずに担当します。</p>
+                    <p className="pro-sub">考える、つくる、届ける。ぜんぶ。</p>
                     <div className="pro-service-grid">
                         {PRO_SERVICES.map((group) => (
                             <div key={group.label} className="pro-service-card">
@@ -210,13 +208,12 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-heading">映像と写真は、続けてこそ効く</h2>
                     <p className="pro-sub">
-                        一本の映像は「その時点」を映すだけで、事業は動き続けます。
-                        年間を通して映像と写真を積み上げ、事業の見え方そのものを設計・運用する、ビジュアルコミュニケーション戦略として引き受けます。
+                        一本つくって終わり、にしない。年間で「見え方」を育てます。
                     </p>
                     <div className="pro-visual-box">
                         <p>
-                            牟岐町とは 2018 年から撮り続けています。同じ土地と人を同じ人間が撮ることで、
-                            映像も写真も「その町らしさ」として積み上がり、サイト・SNS・印刷物のどこで見ても同じ顔になります。
+                            牟岐町は 2018 年から撮り続けて9年目。
+                            サイトでも SNS でも印刷物でも、どこで見ても「その町らしさ」がある状態をつくってきました。
                         </p>
                         <ul className="pro-visual-points">
                             <li>年間の視覚設計（トーン・被写体・出す場所）</li>
@@ -236,21 +233,20 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-heading">各社に合わせた、システム開発も</h2>
                     <p className="pro-sub">
-                        映像や Web と同じ人間が、業務の裏側も組みます。既製のクラウドサービスに仕事を合わせるのではなく、
-                        御社の仕事の流れに合わせて小さくつくる。話を聞いた人がそのまま設計・実装・運用するので、伝言で薄まりません。
+                        映像と同じ人間が、業務の裏側まで。御社の仕事に合わせて小さく組みます。
                     </p>
                     <div className="pro-systems-grid">
                         <div className="pro-systems-card">
                             <p className="pro-systems-label">自動化</p>
-                            <p>問い合わせ → 見積 → 請求のような手作業の連鎖を一本に。スプレッドシートや Notion はそのまま使えます。</p>
+                            <p>問い合わせ → 見積 → 請求。手作業の連鎖を、一本につなげます。</p>
                         </div>
                         <div className="pro-systems-card">
                             <p className="pro-systems-label">巡回・通知</p>
-                            <p>役所の募集、取引先の更新、競合の価格。見に行く仕事を、変わったときだけ届く仕事に変えます。</p>
+                            <p>役所の募集や取引先の更新。変わったときだけ、通知が届くように。</p>
                         </div>
                         <div className="pro-systems-card">
                             <p className="pro-systems-label">発信の裏側と AI</p>
-                            <p>CMS・メルマガ基盤・記事下書きの自動生成・社内 FAQ。自分の事業で先に使っているものから提案します。</p>
+                            <p>CMS・メルマガ・AI下書き。自分の事業で使っているものから提案します。</p>
                         </div>
                     </div>
                     <p className="pro-inline-link">
@@ -263,7 +259,7 @@ export default function ProPage() {
             <section className="pro-section">
                 <div className="pro-inner">
                     <h2 className="pro-heading">進め方</h2>
-                    <p className="pro-sub">最初の相談から、届いたあとの改善まで。</p>
+                    <p className="pro-sub">相談から改善まで、5ステップ。</p>
                     <ol className="pro-steps">
                         {PRO_STEPS.map((step) => (
                             <li key={step.no} className="pro-step">
@@ -287,7 +283,7 @@ export default function ProPage() {
             <section className="pro-section">
                 <div className="pro-inner">
                     <h2 className="pro-heading">これまでの仕事</h2>
-                    <p className="pro-sub">自治体・企業・個人事業まで。各案件の詳細は Works に。</p>
+                    <p className="pro-sub">自治体から個人事業まで。</p>
                     <ul className="pro-work-grid">
                         {proWorks.map((work) => (
                             <li key={work.slug}>
@@ -324,7 +320,7 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-heading">ご依頼の形と費用</h2>
                     <p className="pro-sub">
-                        内容によって変わるため、判断の目安としての金額です。正確なお見積りは打ち合わせのあとに。
+                        目安の金額です。正確なお見積りは、打ち合わせのあとに。
                     </p>
                     <div className="pro-plan-grid">
                         {PRO_PLANS.map((plan) => (
@@ -356,9 +352,7 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-heading">制作費に、補助金を使う</h2>
                     <p className="pro-sub">
-                        海部郡（牟岐町・美波町・海陽町）の事業者なら、動画・ホームページ・チラシの制作費に
-                        国・県・町の補助金が使えることがあります。制度の整理から、申請に必要な企画書・見積の作成、
-                        交付決定後の制作、実績報告用の資料づくりまで対応します。
+                        海部郡の事業者なら、制作費の半分〜2/3が戻ることも。制度探しから実績報告まで手伝います。
                     </p>
                     <div className="pro-hojokin-box">
                         <dl className="pro-hojokin-stats">
@@ -373,8 +367,7 @@ export default function ProPage() {
                         </dl>
                         <div className="pro-hojokin-body">
                             <p>
-                                持続化補助金（国）、採用活動支援補助金（県）、創業促進補助金（牟岐町）など、
-                                一次資料で確認した制度を締切・補助率・上限・窓口つきで一覧にしています。
+                                国・県・町の制度を一次資料で確認して、締切・補助率・窓口つきで一覧にしています。
                             </p>
                             <Link href="/pro/hojokin" className="pro-hojokin-link">
                                 海部郡で動画・Webに使える補助金を見る →
@@ -404,13 +397,12 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-final-title">まず、話を聞かせてください。</h2>
                     <p className="pro-final-lead">
-                        企画になる前の「こんなことはできる？」の段階が、いちばん面白い相談です。
-                        いただいた内容を確認のうえ、数日以内にご返信します。
+                        「こんなことできる？」の段階が、いちばん面白い相談です。
                     </p>
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島県牟岐町</p>
+                    <p className="pro-final-note">数日以内にご返信します ｜ 小林大介 / Shine a Light（徳島県牟岐町）</p>
                 </div>
             </section>
         </div>
