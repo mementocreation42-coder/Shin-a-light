@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 export default function FloatingNav() {
   const pathname = usePathname();
   const isJournalArticle = /^\/journal\/\d+/.test(pathname);
+  const isPro = pathname?.startsWith('/pro');
   const [visible, setVisible] = useState(false);
   const footerRef = useRef<IntersectionObserver | null>(null);
   const footerVisible = useRef(false);
@@ -42,6 +43,25 @@ export default function FloatingNav() {
   }, []);
 
   if (isJournalArticle) return null;
+
+  // /pro 配下は Pro のカテゴリに入れ替える
+  if (isPro) {
+    return (
+      <div className={`floating-nav ${visible ? 'floating-nav--visible' : ''}`} aria-hidden={!visible}>
+        <Link href="/pro/visual" className="floating-nav__link">
+          映像・写真
+        </Link>
+        <span className="floating-nav__divider" />
+        <Link href="/pro/systems" className="floating-nav__link">
+          システム開発
+        </Link>
+        <span className="floating-nav__divider" />
+        <Link href="/pro/hojokin" className="floating-nav__link">
+          補助金
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className={`floating-nav ${visible ? 'floating-nav--visible' : ''}`} aria-hidden={!visible}>
