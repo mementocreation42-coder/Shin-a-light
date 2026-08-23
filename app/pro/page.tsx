@@ -88,9 +88,9 @@ export default function ProPage() {
                     最も映える形にして手渡す。
                 </h1>
                 <p className="pro-hero-lead">
-                    どこに頼めばいいか分からない、を終わらせます。
-                    企画・映像・写真・Web・執筆・システム開発・運営まで、分業に預けず一人の作り手が通して引き受けます。
-                    徳島・牟岐町を拠点に、打ち合わせはオンラインで全国どこでも。
+                    映像も、写真も、Webも、システムも。バラバラに頼まなくて大丈夫。
+                    企画から発信まで、一人の作り手がまとめて引き受けます。
+                    拠点は徳島・牟岐町。打ち合わせはオンラインで、全国どこからでも。
                 </p>
                 <div className="pro-hero-actions">
                     <Link href={CTA_HREF} className="pro-cta-button">
@@ -131,21 +131,21 @@ export default function ProPage() {
                         <li>
                             <Link href="/pro/visual" className="pro-index-card">
                                 <span className="pro-index-label">映像・写真</span>
-                                <span className="pro-index-title">続けて撮る、ビジュアル戦略</span>
+                                <span className="pro-index-title">続けて撮る映像・写真</span>
                                 <span className="pro-index-sub">年間で見え方をつくる</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/pro/systems" className="pro-index-card">
                                 <span className="pro-index-label">システム</span>
-                                <span className="pro-index-title">仕事に合わせた、小さな開発</span>
+                                <span className="pro-index-title">小さなシステム開発</span>
                                 <span className="pro-index-sub">自動化・通知・AI・立ち上げ</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/pro/hojokin" className="pro-index-card">
                                 <span className="pro-index-label">補助金</span>
-                                <span className="pro-index-title">制作費に使える制度の一覧</span>
+                                <span className="pro-index-title">使える補助金の一覧</span>
                                 <span className="pro-index-sub">海部郡向け・一次資料で確認</span>
                             </Link>
                         </li>
@@ -179,8 +179,8 @@ export default function ProPage() {
                         </li>
                     </ul>
                     <p className="pro-empathy-close">
-                        分業が悪いのではありません。ただ、人と土地の物語は、手から手へ渡るたびに少しずつ薄まります。
-                        だから、通します。
+                        バラバラに頼むと、大事なことが途中で少しずつ薄れていきます。
+                        だから、最初から最後まで、ひとりで通します。
                     </p>
                 </div>
             </section>

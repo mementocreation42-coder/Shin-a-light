@@ -8766,7 +8766,6 @@ body:has(.b-side) .pro-step-no {
 body:has(.b-side) .pro-heading,
 body:has(.b-side) .pro-final-title,
 body:has(.b-side) .approach-cta-title,
-body:has(.b-side) .pro-index-title,
 body:has(.b-side) .pro-work-title,
 body:has(.b-side) .hojokin-name,
 body:has(.b-side) .systems-type-title,
@@ -8797,4 +8796,111 @@ body:has(.b-side) .visual-reason-title {
   border: none !important;
   color: var(--accent-orange) !important;
   padding: 0 !important;
+}
+
+/* ============================================
+   B面 — クリームテーマ（清潔・ライト）
+   墨の帯を淡い黄色クリームに差し替え、
+   全体を白×クリーム×橙の明るい配色にする。
+   ============================================ */
+
+body:has(.b-side) {
+  --bg-primary: #fdf9ee;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f6eed6;
+  --border: 1px solid #ecdfbd;
+  --b-cream: #faf0d2;
+  --b-amber: #a3720a;
+  --b-shadow: 0 1px 2px rgba(140, 100, 20, 0.04), 0 8px 20px rgba(140, 100, 20, 0.06);
+}
+
+/* 帯状タイルの仕切りもクリームに */
+body:has(.b-side) .pro-trust,
+body:has(.b-side) .hojokin-summary,
+body:has(.b-side) .visual-reasons,
+body:has(.b-side) .systems-principles {
+  background: #ecdfbd;
+  border: var(--border);
+}
+
+/* --- 墨の帯 → クリームの帯 --- */
+body:has(.b-side) .pro-empathy {
+  background: var(--b-cream);
+  color: var(--text-primary);
+}
+
+body:has(.b-side) .pro-empathy .pro-heading {
+  color: #0f0e0c;
+}
+
+body:has(.b-side) .pro-pain-list {
+  gap: 10px;
+}
+
+body:has(.b-side) .pro-pain-list li {
+  background: #ffffff;
+  color: var(--text-secondary);
+  border: 1px solid #eee3c4;
+  border-radius: 12px;
+}
+
+body:has(.b-side) .pro-empathy-close {
+  color: var(--text-primary);
+}
+
+body:has(.b-side) .pro-final,
+body:has(.b-side) .approach-cta {
+  background: var(--b-cream);
+  color: var(--text-primary);
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  color: #0f0e0c;
+}
+
+body:has(.b-side) .pro-final-lead,
+body:has(.b-side) .approach-cta p {
+  color: var(--text-secondary);
+}
+
+body:has(.b-side) .pro-final-note {
+  color: var(--text-muted);
+}
+
+body:has(.b-side) .pro-final .pro-inline-link a,
+body:has(.b-side) .approach-cta a:not(.pro-cta-button) {
+  color: var(--text-primary);
+  text-decoration-color: #d3b96a;
+}
+
+body:has(.b-side) .pro-final .pro-cta-button,
+body:has(.b-side) .approach-cta .pro-cta-button {
+  background: var(--accent-orange);
+  box-shadow: 0 6px 18px rgba(228, 88, 43, 0.25);
+}
+
+/* --- ラベルを小さな黄色チップに（軽さと分かりやすさ） --- */
+body:has(.b-side) .pro-index-label,
+body:has(.b-side) .pro-systems-label,
+body:has(.b-side) .systems-type-label,
+body:has(.b-side) .visual-service-label,
+body:has(.b-side) .pro-service-label {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--b-cream);
+  color: var(--b-amber);
+  letter-spacing: 0.08em;
+}
+
+/* --- 表情をやわらげる --- */
+body:has(.b-side) .pro-hero-title {
+  font-weight: 700;
+}
+
+body:has(.b-side) .pro-final-title,
+body:has(.b-side) .approach-cta-title {
+  font-weight: 700;
 }
