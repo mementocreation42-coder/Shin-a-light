@@ -59,6 +59,10 @@ export default function FloatingNav() {
         <Link href="/pro/hojokin" className="floating-nav__link">
           補助金
         </Link>
+        <span className="floating-nav__divider" />
+        <Link href="/pro/contact" className="floating-nav__link floating-nav__link--accent">
+          相談する
+        </Link>
       </div>
     );
   }

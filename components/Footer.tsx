@@ -9,6 +9,7 @@ const PRO_FOOTER_LINKS = [
     { label: '映像・写真', href: '/pro/visual' },
     { label: 'システム開発', href: '/pro/systems' },
     { label: '補助金', href: '/pro/hojokin' },
+    { label: '相談する', href: '/pro/contact' },
 ];
 
 export default function Footer() {
