@@ -9323,20 +9323,31 @@ body:has(.b-side) .pro-visual-box.has-thumb {
    ============================================ */
 
 body:has(.b-side) {
-  --bg-primary: #101a3a;
-  --bg-secondary: #1a2547;
-  --bg-tertiary: #253158;
-  --text-primary: #f2f4fa;
-  --text-secondary: #b9c1d8;
-  --text-muted: #8791b0;
-  --border: 1px solid #2d3a66;
+  --bg-primary: #294d75;
+  --bg-secondary: #22405f;
+  --bg-tertiary: #3a608c;
+  --text-primary: #f4f7fb;
+  --text-secondary: #cfdae8;
+  --text-muted: #9fb4cc;
+  --border: 1px solid #3f689a;
   --accent-orange: #ff7a45;
   --b-amber: #ffb08a;
-  --b-blue: #9fb0e8;
-  --b-cream: rgba(255, 122, 69, 0.14);
-  --b-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.3);
-  /* 上部はわずかに明るい藍 → 深い藍へ */
-  background: linear-gradient(180deg, #1a2854 0px, #101a3a 760px) #101a3a;
+  --b-blue: #aac4e4;
+  --b-cream: rgba(255, 122, 69, 0.16);
+  --b-shadow: 0 2px 6px rgba(10, 24, 40, 0.25), 0 12px 32px rgba(10, 24, 40, 0.3);
+  /* 上部はわずかに明るく → #294D75 へ */
+  background: linear-gradient(180deg, #33587f 0px, #294d75 760px) #294d75;
+}
+
+/* フィルムグレイン（128px タイル・27KB・1枚だけ読み込み） */
+body:has(.b-side)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('/images/grain.png') repeat;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 2000;
 }
 
 /* 見出し・本文の色を反転 */
@@ -9355,7 +9366,7 @@ body:has(.b-side) .pro-trust,
 body:has(.b-side) .hojokin-summary,
 body:has(.b-side) .visual-reasons,
 body:has(.b-side) .systems-principles {
-  background: #2d3a66;
+  background: #3f689a;
   border: var(--border);
 }
 
@@ -9372,13 +9383,13 @@ body:has(.b-side) .pro-trust dt {
 
 /* 共感セクション：さらに深い藍の帯、カードは紺 */
 body:has(.b-side) .pro-empathy {
-  background: #0b142e;
+  background: #1d3855;
 }
 
 body:has(.b-side) .pro-pain-list li {
-  background: #1a2547;
-  color: #c6cde2;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #294d75;
+  color: #d5dfec;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* カテゴリチップ：藍地にオレンジ */
@@ -9456,8 +9467,8 @@ body:has(.b-side) .pro-cta-button {
 
 /* 補助金カード・フラグの明度調整 */
 body:has(.b-side) .hojokin-flag.is-no {
-  background: #2a3556;
-  color: #aab4d4;
+  background: #3a608c;
+  color: #c2d2e4;
 }
 
 body:has(.b-side) .hojokin-card.is-open {
@@ -9466,7 +9477,7 @@ body:has(.b-side) .hojokin-card.is-open {
 
 /* プロフィール */
 body:has(.b-side) .pro-profile-photo {
-  border-color: #2d3a66;
+  border-color: #3f689a;
 }
 
 body:has(.b-side) .pro-profile-title {
@@ -9475,20 +9486,20 @@ body:has(.b-side) .pro-profile-title {
 
 body:has(.b-side) .pro-profile-tags li {
   background: transparent;
-  border: 1px solid #2d3a66;
+  border: 1px solid #3f689a;
   color: var(--text-secondary);
 }
 
 /* B面マーク（月アイコン）を夜向きに */
 body:has(.b-side) .b-side-mark::before {
-  background: linear-gradient(90deg, #f2f4fa 50%, #101a3a 50%);
-  border-color: #f2f4fa;
+  background: linear-gradient(90deg, #f4f7fb 50%, #294d75 50%);
+  border-color: #f4f7fb;
 }
 
 /* 最終CTA：夕焼け → 夜に沈む配色のまま（背景の藍と連続させる） */
 body:has(.b-side) .pro-final,
 body:has(.b-side) .approach-cta {
-  background: linear-gradient(165deg, #f0a53c 0%, #e4582b 30%, #a83a68 60%, #101a3a 100%);
+  background: linear-gradient(165deg, #f0a53c 0%, #e4582b 30%, #a84a68 60%, #294d75 100%);
 }
 
 /* 印刷：ライトに戻す（補助金 A4 配布用） */
@@ -9524,5 +9535,9 @@ body:has(.b-side) .approach-cta {
   body:has(.b-side) .hojokin-links a {
     border: none;
     color: #111111;
+  }
+
+  body:has(.b-side)::after {
+    display: none;
   }
 }
