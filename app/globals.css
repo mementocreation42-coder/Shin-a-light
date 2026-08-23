@@ -9053,9 +9053,9 @@ body:has(.b-side) .systems-inline-link:hover {
    ============================================ */
 
 body:has(.b-side) {
-  --grad-sun: linear-gradient(90deg, #f0a53c, #e4582b 38%, #b23a68 68%, #3d4fa1);
-  --grad-dawn: linear-gradient(180deg, #dfeaf4 0%, #fff0d3 40%, #fdf9ee 100%);
-  --grad-dusk: linear-gradient(160deg, #f0a53c 0%, #e4582b 30%, #a83a68 62%, #2f3d7e 100%);
+  --grad-sun: linear-gradient(90deg, #ddb227, #e4582b 38%, #b23a68 68%, #3d4fa1);
+  --grad-dawn: linear-gradient(180deg, #dfeaf4 0%, #f6e6b0 40%, #fdf9ee 100%);
+  --grad-dusk: linear-gradient(160deg, #ddb227 0%, #e4582b 30%, #a83a68 62%, #2f3d7e 100%);
   --b-blue: #3d4fa1;
   /* 朝の空：最上部に淡い空色 → 朝焼けの金 → 生成りへ */
   background: linear-gradient(180deg, #dfeaf4 0px, #fff0d3 340px, #fdf9ee 860px) var(--bg-primary);
@@ -9331,16 +9331,18 @@ body:has(.b-side) {
   --text-muted: #9fb4cc;
   --border: 1px solid #3f689a;
   --accent-orange: #ff7a45;
-  --b-amber: #ffb08a;
+  --accent-yellow: #ddb227;
+  --b-amber: #ddb227;
   --b-blue: #aac4e4;
-  --b-cream: rgba(255, 122, 69, 0.16);
+  --b-cream: rgba(221, 178, 39, 0.14);
   --b-shadow: 0 2px 6px rgba(10, 24, 40, 0.25), 0 12px 32px rgba(10, 24, 40, 0.3);
   /* 上部はわずかに明るく → #294D75 へ */
   background: linear-gradient(180deg, #33587f 0px, #294d75 760px) #294d75;
 }
 
-/* フィルムグレイン（128px タイル・27KB・1枚だけ読み込み） */
-body:has(.b-side)::after {
+/* フィルムグレイン（128px タイル・27KB・1枚だけ読み込み）
+   A面・B面ともサイト全体に薄く乗せる */
+body::after {
   content: '';
   position: fixed;
   inset: 0;
@@ -9348,6 +9350,12 @@ body:has(.b-side)::after {
   opacity: 0.5;
   pointer-events: none;
   z-index: 2000;
+}
+
+@media print {
+  body::after {
+    display: none;
+  }
 }
 
 /* 見出し・本文の色を反転 */
@@ -9448,8 +9456,8 @@ body:has(.b-side) .hojokin-links a:hover {
 /* 文中チップ */
 body:has(.b-side) .pro-faq-link,
 body:has(.b-side) .systems-inline-link {
-  background: rgba(255, 122, 69, 0.12);
-  border: 1px solid rgba(255, 122, 69, 0.4);
+  background: rgba(221, 178, 39, 0.12);
+  border: 1px solid rgba(221, 178, 39, 0.45);
   color: var(--b-amber);
 }
 
@@ -9499,7 +9507,7 @@ body:has(.b-side) .b-side-mark::before {
 /* 最終CTA：夕焼け → 夜に沈む配色のまま（背景の藍と連続させる） */
 body:has(.b-side) .pro-final,
 body:has(.b-side) .approach-cta {
-  background: linear-gradient(165deg, #f0a53c 0%, #e4582b 30%, #a84a68 60%, #294d75 100%);
+  background: linear-gradient(165deg, #ddb227 0%, #e4582b 30%, #a84a68 60%, #294d75 100%);
 }
 
 /* 印刷：ライトに戻す（補助金 A4 配布用） */

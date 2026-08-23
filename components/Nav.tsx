@@ -19,7 +19,7 @@ const LINKS: NavLink[] = [
     { label: 'Podcast', href: '/podcast' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
-    { label: 'Pro', href: '/pro', className: 'nav-pro-tag' },
+    { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
 /** /pro 配下（B面）ではナビを Pro のカテゴリに切り替える */
@@ -29,7 +29,7 @@ const PRO_LINKS: NavLink[] = [
     { label: '補助金', href: '/pro/hojokin' },
     { label: '考え方', href: '/pro/approach' },
     { label: '相談する', href: '/?c=produce#contact', className: 'nav-letter-tag' },
-    { label: 'Pro', href: '/pro', className: 'nav-pro-tag' },
+    { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
 export default function Nav() {
