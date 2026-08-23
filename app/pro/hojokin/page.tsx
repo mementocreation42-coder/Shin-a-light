@@ -220,7 +220,7 @@ export default function HojokinPage() {
                         相談する（無料）
                     </Link>
                     <p className="pro-inline-link">
-                        <Link href="/pro">引き受ける範囲と費用を見る →</Link>
+                        <Link href="/pro">引き受ける範囲と費用を見る →</Link>
                     </p>
                     <p className="pro-final-note">小林大介 / Shine a Light｜徳島県牟岐町</p>
                 </div>
@@ -280,11 +280,20 @@ function HojokinCard({ h, today }: { h: Hojokin; today: Date }) {
                 <div>
                     <dt>受付</dt>
                     <dd>
-                        {h.windowOpens && h.deadline
-                            ? `${formatDate(h.windowOpens)} 〜 ${formatDate(h.deadline)}`
-                            : h.deadline
-                              ? `〜 ${formatDate(h.deadline)}`
-                              : '—'}
+                        {h.windowOpens && h.deadline ? (
+                            <>
+                                <span className="hojokin-date">{formatDate(h.windowOpens)}</span>
+                                {' 〜 '}
+                                <span className="hojokin-date">{formatDate(h.deadline)}</span>
+                            </>
+                        ) : h.deadline ? (
+                            <>
+                                {'〜 '}
+                                <span className="hojokin-date">{formatDate(h.deadline)}</span>
+                            </>
+                        ) : (
+                            '—'
+                        )}
                     </dd>
                 </div>
                 {cutoff && cutoff.date !== h.deadline && (

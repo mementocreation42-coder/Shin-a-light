@@ -80,7 +80,7 @@ export default function VisualPage() {
                     <span className="pro-hero-note">まず一本から始めて、年間に移ることもできます。</span>
                 </div>
                 <p className="pro-hero-secondary">
-                    <Link href="/pro/approach">この考え方の背景 — 受け皿から逆算する企画の考え方 →</Link>
+                    <Link href="/pro/approach">この考え方の背景 — 受け皿から逆算する企画の考え方 →</Link>
                 </p>
             </header>
 
@@ -175,7 +175,7 @@ export default function VisualPage() {
                         })}
                     </ul>
                     <p className="pro-work-more">
-                        <Link href="/#works">すべての実績を見る →</Link>
+                        <Link href="/#works">すべての実績を見る →</Link>
                     </p>
                 </div>
             </section>

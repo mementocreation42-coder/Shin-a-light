@@ -65,7 +65,7 @@ export default function SystemsPage() {
                     <span className="pro-hero-note">「何を頼めばいいか分からない」段階で構いません。</span>
                 </div>
                 <p className="pro-hero-secondary">
-                    <Link href="/pro">企画・映像・Web を含めた全体の引き受け範囲はこちら →</Link>
+                    <Link href="/pro">企画・映像・Web を含めた全体の引き受け範囲はこちら →</Link>
                 </p>
             </header>
 
@@ -226,7 +226,7 @@ export default function SystemsPage() {
                                         <>
                                             {' '}
                                             <Link href="/pro/hojokin" className="systems-inline-link">
-                                                海部郡で使える補助金一覧 →
+                                                海部郡で使える補助金一覧 →
                                             </Link>
                                         </>
                                     )}

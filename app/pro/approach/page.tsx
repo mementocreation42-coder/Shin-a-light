@@ -162,8 +162,8 @@ export default function ApproachPage() {
                         入口と受け皿を同じ手で、同じ時間軸で持ち続けたから、この形になりました。
                     </p>
                     <p className="approach-links">
-                        <Link href="/works/mugi-promotion-video">牟岐町プロモーション映像の詳細 →</Link>
-                        <Link href="/works/mugizine-media">MUGIZINE の詳細 →</Link>
+                        <Link href="/works/mugi-promotion-video">牟岐町プロモーション映像の詳細 →</Link>
+                        <Link href="/works/mugizine-media">MUGIZINE の詳細 →</Link>
                     </p>
                 </section>
 

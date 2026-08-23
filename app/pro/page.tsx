@@ -54,6 +54,21 @@ function continuingYears(year: string | undefined, now: number): number {
     return m ? Math.max(1, now - Number(m[1]) + 1) : 1;
 }
 
+
+/** FAQ 本文中の「/pro/...」をリンクにする（データ側はプレーンテキストのまま） */
+function linkifyProPaths(text: string): React.ReactNode {
+    const parts = text.split(/(\/pro\/[a-z-]+)/g);
+    return parts.map((part, i) =>
+        /^\/pro\/[a-z-]+$/.test(part) ? (
+            <Link key={i} href={part} className="pro-faq-link">
+                {part}
+            </Link>
+        ) : (
+            part
+        ),
+    );
+}
+
 export default function ProPage() {
     const today = new Date();
     const mugiYears = continuingYears(works.find((w) => w.slug === 'mugi-promotion-video')?.year, today.getFullYear());
@@ -87,7 +102,7 @@ export default function ProPage() {
                 {/* 今すぐ相談しない人の出口。CTAとは階層を変え、行動を競合させない */}
                 <p className="pro-hero-secondary">
                     <Link href="/pro/approach">
-                        まずは考え方を読む — 企画書をそのまま公開しています →
+                        まずは考え方を読む — 企画書をそのまま公開しています →
                     </Link>
                 </p>
 
@@ -211,7 +226,7 @@ export default function ProPage() {
                         </ul>
                     </div>
                     <p className="pro-inline-link">
-                        <Link href="/pro/visual">ビジュアル戦略の詳細（考え方・範囲・実例・費用）→</Link>
+                        <Link href="/pro/visual">ビジュアル戦略の詳細（考え方・範囲・実例・費用） →</Link>
                     </p>
                 </div>
             </section>
@@ -239,7 +254,7 @@ export default function ProPage() {
                         </div>
                     </div>
                     <p className="pro-inline-link">
-                        <Link href="/pro/systems">システム開発の詳細（つくるもの・実例・進め方・費用）→</Link>
+                        <Link href="/pro/systems">システム開発の詳細（つくるもの・実例・進め方・費用） →</Link>
                     </p>
                 </div>
             </section>
@@ -262,7 +277,7 @@ export default function ProPage() {
                     </ol>
                     <p className="pro-inline-link">
                         <Link href="/pro/approach">
-                            この進め方の背景にある考え方を、企画書のかたちで公開しています →
+                            この進め方の背景にある考え方を、企画書のかたちで公開しています →
                         </Link>
                     </p>
                 </div>
@@ -299,7 +314,7 @@ export default function ProPage() {
                         ))}
                     </ul>
                     <p className="pro-work-more">
-                        <Link href="/#works">すべての実績を見る →</Link>
+                        <Link href="/#works">すべての実績を見る →</Link>
                     </p>
                 </div>
             </section>
@@ -362,7 +377,7 @@ export default function ProPage() {
                                 一次資料で確認した制度を締切・補助率・上限・窓口つきで一覧にしています。
                             </p>
                             <Link href="/pro/hojokin" className="pro-hojokin-link">
-                                海部郡で動画・Webに使える補助金を見る →
+                                海部郡で動画・Webに使える補助金を見る →
                             </Link>
                         </div>
                     </div>
@@ -377,7 +392,7 @@ export default function ProPage() {
                         {PRO_FAQS.map((faq) => (
                             <div key={faq.q} className="pro-faq-item">
                                 <dt>{faq.q}</dt>
-                                <dd>{faq.a}</dd>
+                                <dd>{linkifyProPaths(faq.a)}</dd>
                             </div>
                         ))}
                     </dl>

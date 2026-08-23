@@ -6557,6 +6557,26 @@ body:has(.b-side) .hojokin-card.is-closed {
   letter-spacing: 0.01em;
 }
 
+@media (max-width: 560px) {
+  .pro-trust > div {
+    flex-basis: 100%;
+  }
+}
+
+/* FAQ 本文内のページリンク */
+.pro-faq-link {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--accent-orange);
+}
+
+.pro-faq-link:hover {
+  color: var(--accent-orange);
+}
+
 /* --- 細分化の索引 --- */
 
 .pro-index-section {
@@ -7710,6 +7730,10 @@ body:has(.b-side) .hojokin-card.is-closed {
 
 .hojokin-fact-wide {
   grid-column: 1 / -1;
+}
+
+.hojokin-date {
+  white-space: nowrap;
 }
 
 .hojokin-fact-cutoff dd {
