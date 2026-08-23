@@ -9,6 +9,7 @@ import {
     PRO_FAQS,
     PRO_WORK_SLUGS,
 } from '@/data/pro';
+import { effectiveStatus, publishedHojokin } from '@/data/hojokin';
 
 const TITLE = '企画から発信まで、通しで引き受ける — Shine a Light';
 const DESCRIPTION =
@@ -40,15 +41,31 @@ export const metadata: Metadata = {
 /** CTAはこの1本だけ。Contactのカテゴリを企画・プロデュースに寄せて着地させる */
 const CTA_HREF = '/?c=produce#contact';
 
+/** 補助金一覧の「公募中」件数。締切を過ぎた行を落とすため日次で再生成する */
+export const revalidate = 86400;
+
 const proWorks = PRO_WORK_SLUGS.map((slug) => works.find((w) => w.slug === slug)).filter(
     (w): w is NonNullable<typeof w> => Boolean(w),
 );
 
+/** '2018-' のような継続表記から「◯年目」 */
+function continuingYears(year: string | undefined, now: number): number {
+    const m = year?.match(/^(\d{4})\s*[-–]\s*$/);
+    return m ? Math.max(1, now - Number(m[1]) + 1) : 1;
+}
+
 export default function ProPage() {
+    const today = new Date();
+    const mugiYears = continuingYears(works.find((w) => w.slug === 'mugi-promotion-video')?.year, today.getFullYear());
+    const hojokinRows = publishedHojokin(today);
+    const hojokinOpen = hojokinRows.filter((h) => effectiveStatus(h, today) === '公募中').length;
+    const hojokinUpcoming = hojokinRows.filter((h) => effectiveStatus(h, today) === '予告').length;
+
     return (
         <div className="pro-page">
             {/* 1. ヒーロー — 変化の一文 */}
             <header className="pro-hero">
+                <p className="b-side-mark">B-side of Shine a Light</p>
                 <p className="pro-eyebrow">For clients — 企画・プロデュース</p>
                 <h1 className="pro-hero-title">
                     まだ光の当たっていないものを、
@@ -57,7 +74,7 @@ export default function ProPage() {
                 </h1>
                 <p className="pro-hero-lead">
                     どこに頼めばいいか分からない、を終わらせます。
-                    企画・映像・写真・Web・執筆・運営まで、分業に預けず一人の作り手が通して引き受けます。
+                    企画・映像・写真・Web・執筆・システム開発・運営まで、分業に預けず一人の作り手が通して引き受けます。
                     徳島・牟岐町を拠点に、打ち合わせはオンラインで全国どこでも。
                 </p>
                 <div className="pro-hero-actions">
@@ -73,7 +90,60 @@ export default function ProPage() {
                         まずは考え方を読む — 企画書をそのまま公開しています →
                     </Link>
                 </p>
+
+                {/* 任せて大丈夫、の根拠を3点だけ。数字は works.ts から */}
+                <dl className="pro-trust">
+                    <div>
+                        <dt>牟岐町と</dt>
+                        <dd>{mugiYears}年目</dd>
+                    </div>
+                    <div>
+                        <dt>引き受けてきた相手</dt>
+                        <dd>自治体・企業・個人事業</dd>
+                    </div>
+                    <div>
+                        <dt>体制</dt>
+                        <dd>企画から運用まで、一人で通す</dd>
+                    </div>
+                </dl>
             </header>
+
+            {/* 1.5 細分化の索引 — LP の中を掘れることを最初に見せる */}
+            <section className="pro-section pro-index-section">
+                <div className="pro-inner">
+                    <p className="pro-index-lead">詳しく見たい方向から、どうぞ。</p>
+                    <ul className="pro-index">
+                        <li>
+                            <Link href="/pro/visual" className="pro-index-card">
+                                <span className="pro-index-label">映像・写真</span>
+                                <span className="pro-index-title">続けて撮る、ビジュアル戦略</span>
+                                <span className="pro-index-sub">年間で見え方をつくる</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/pro/systems" className="pro-index-card">
+                                <span className="pro-index-label">システム</span>
+                                <span className="pro-index-title">仕事に合わせた、小さな開発</span>
+                                <span className="pro-index-sub">自動化・通知・AI・立ち上げ</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/pro/hojokin" className="pro-index-card">
+                                <span className="pro-index-label">補助金</span>
+                                <span className="pro-index-title">制作費に使える制度の一覧</span>
+                                <span className="pro-index-sub">海部郡向け・一次資料で確認</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="/pro/approach" className="pro-index-card">
+                                <span className="pro-index-label">考え方</span>
+                                <span className="pro-index-title">企画書を、そのまま公開</span>
+                                <span className="pro-index-sub">受け皿から逆算する</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            </section>
 
             {/* 2. 共感 — 部族の現状 */}
             <section className="pro-section pro-empathy">
@@ -117,6 +187,60 @@ export default function ProPage() {
                             </div>
                         ))}
                     </div>
+                </div>
+            </section>
+
+            {/* 3.3 ビジュアル戦略 — 単発ではなく続ける映像・写真。詳細は /pro/visual */}
+            <section className="pro-section pro-visual">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">映像と写真は、続けてこそ効く</h2>
+                    <p className="pro-sub">
+                        一本の映像は「その時点」を映すだけで、事業は動き続けます。
+                        年間を通して映像と写真を積み上げ、事業の見え方そのものを設計・運用する、ビジュアルコミュニケーション戦略として引き受けます。
+                    </p>
+                    <div className="pro-visual-box">
+                        <p>
+                            牟岐町とは 2018 年から撮り続けています。同じ土地と人を同じ人間が撮ることで、
+                            映像も写真も「その町らしさ」として積み上がり、サイト・SNS・印刷物のどこで見ても同じ顔になります。
+                        </p>
+                        <ul className="pro-visual-points">
+                            <li>年間の視覚設計（トーン・被写体・出す場所）</li>
+                            <li>月次・季節ごとの定期撮影と映像のシリーズ化</li>
+                            <li>探せる写真アーカイブと、媒体ごとの仕上げ</li>
+                            <li>四半期の振り返りと翌期の設計</li>
+                        </ul>
+                    </div>
+                    <p className="pro-inline-link">
+                        <Link href="/pro/visual">ビジュアル戦略の詳細（考え方・範囲・実例・費用）→</Link>
+                    </p>
+                </div>
+            </section>
+
+            {/* 3.5 システム開発 — 制作と同じ人間が、業務の仕組みまで組む。詳細は /pro/systems */}
+            <section className="pro-section pro-systems">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">各社に合わせた、システム開発も</h2>
+                    <p className="pro-sub">
+                        映像や Web と同じ人間が、業務の裏側も組みます。既製のクラウドサービスに仕事を合わせるのではなく、
+                        御社の仕事の流れに合わせて小さくつくる。話を聞いた人がそのまま設計・実装・運用するので、伝言で薄まりません。
+                    </p>
+                    <div className="pro-systems-grid">
+                        <div className="pro-systems-card">
+                            <p className="pro-systems-label">自動化</p>
+                            <p>問い合わせ → 見積 → 請求のような手作業の連鎖を一本に。スプレッドシートや Notion はそのまま使えます。</p>
+                        </div>
+                        <div className="pro-systems-card">
+                            <p className="pro-systems-label">巡回・通知</p>
+                            <p>役所の募集、取引先の更新、競合の価格。見に行く仕事を、変わったときだけ届く仕事に変えます。</p>
+                        </div>
+                        <div className="pro-systems-card">
+                            <p className="pro-systems-label">発信の裏側と AI</p>
+                            <p>CMS・メルマガ基盤・記事下書きの自動生成・社内 FAQ。自分の事業で先に使っているものから提案します。</p>
+                        </div>
+                    </div>
+                    <p className="pro-inline-link">
+                        <Link href="/pro/systems">システム開発の詳細（つくるもの・実例・進め方・費用）→</Link>
+                    </p>
                 </div>
             </section>
 
@@ -209,6 +333,39 @@ export default function ProPage() {
                     <p className="pro-plan-foot">
                         表示はすべて税別・交通費および宿泊費は別途です。予算の上限が決まっている場合は、その範囲で組み直します。
                     </p>
+                </div>
+            </section>
+
+            {/* 6.5 補助金 — 費用の不安を下げる。詳細は /pro/hojokin に逃がす */}
+            <section className="pro-section pro-hojokin">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">制作費に、補助金を使う</h2>
+                    <p className="pro-sub">
+                        海部郡（牟岐町・美波町・海陽町）の事業者なら、動画・ホームページ・チラシの制作費に
+                        国・県・町の補助金が使えることがあります。制度の整理から、申請に必要な企画書・見積の作成、
+                        交付決定後の制作、実績報告用の資料づくりまで対応します。
+                    </p>
+                    <div className="pro-hojokin-box">
+                        <dl className="pro-hojokin-stats">
+                            <div>
+                                <dt>公募中</dt>
+                                <dd>{hojokinOpen}件</dd>
+                            </div>
+                            <div>
+                                <dt>受付予定</dt>
+                                <dd>{hojokinUpcoming}件</dd>
+                            </div>
+                        </dl>
+                        <div className="pro-hojokin-body">
+                            <p>
+                                持続化補助金（国）、採用活動支援補助金（県）、創業促進補助金（牟岐町）など、
+                                一次資料で確認した制度を締切・補助率・上限・窓口つきで一覧にしています。
+                            </p>
+                            <Link href="/pro/hojokin" className="pro-hojokin-link">
+                                海部郡で動画・Webに使える補助金を見る →
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
 

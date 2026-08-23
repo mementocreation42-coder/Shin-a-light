@@ -34,6 +34,7 @@ export default function ApproachPage() {
     return (
         <article className="approach-page">
             <header className="approach-hero">
+                <p className="b-side-mark">B-side of Shine a Light</p>
                 <p className="pro-eyebrow">企画の考え方</p>
                 <h1 className="approach-title">
                     伝わる形は、
