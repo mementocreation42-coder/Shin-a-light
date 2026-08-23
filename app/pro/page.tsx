@@ -455,7 +455,8 @@ export default function ProPage() {
                             </p>
                             <p className="pro-profile-bio">
                                 愛知からオーストラリアを経て、「釣りがしたいから」で徳島・牟岐町へ。
-                                撮る、書く、つくるを分業に預けず、ひとりで通すのが流儀です。
+                                撮る、書く、つくるを分業に預けないのは、
+                                大事なことを途中で薄れさせないため。
                                 牟岐町の映像とメディアを9年つくり続けています。
                             </p>
                             <ul className="pro-profile-tags">
