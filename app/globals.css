@@ -9330,7 +9330,7 @@ body:has(.b-side) {
   --text-secondary: #cfdae8;
   --text-muted: #9fb4cc;
   --border: 1px solid #3f689a;
-  --accent-orange: #ff7a45;
+  --accent-orange: #ddb227;
   --accent-yellow: #ddb227;
   --b-amber: #ddb227;
   --b-blue: #aac4e4;
@@ -9438,7 +9438,7 @@ body:has(.b-side) .approach-links a:hover,
 body:has(.b-side) .approach-cta-back a:hover {
   background: var(--accent-orange);
   border-color: var(--accent-orange);
-  color: #ffffff !important;
+  color: #1c2c44 !important;
 }
 
 body:has(.b-side) .hojokin-links a {
@@ -9450,7 +9450,7 @@ body:has(.b-side) .hojokin-links a {
 body:has(.b-side) .hojokin-links a:hover {
   background: var(--accent-orange);
   border-color: var(--accent-orange);
-  color: #ffffff;
+  color: #1c2c44;
 }
 
 /* 文中チップ */
@@ -9469,8 +9469,8 @@ body:has(.b-side) .systems-inline-link:hover {
 
 /* CTAボタン：オレンジのまま、影を夜向きに */
 body:has(.b-side) .pro-cta-button {
-  color: #ffffff;
-  box-shadow: 0 8px 24px rgba(255, 122, 69, 0.3);
+  color: #1c2c44;
+  box-shadow: 0 8px 24px rgba(221, 178, 39, 0.28);
 }
 
 /* 補助金カード・フラグの明度調整 */
@@ -9507,7 +9507,47 @@ body:has(.b-side) .b-side-mark::before {
 /* 最終CTA：夕焼け → 夜に沈む配色のまま（背景の藍と連続させる） */
 body:has(.b-side) .pro-final,
 body:has(.b-side) .approach-cta {
-  background: linear-gradient(165deg, #ddb227 0%, #e4582b 30%, #a84a68 60%, #294d75 100%);
+  background: #ddb227;
+  color: #1c2c44;
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  color: #1c2c44;
+}
+
+body:has(.b-side) .pro-final .pro-final-title::after,
+body:has(.b-side) .approach-cta .approach-cta-title::after {
+  background: #1c2c44;
+}
+
+body:has(.b-side) .pro-final-lead,
+body:has(.b-side) .approach-cta p {
+  color: #33415e;
+}
+
+body:has(.b-side) .pro-final-note {
+  color: #4d5a76;
+}
+
+body:has(.b-side) .pro-final .pro-cta-button,
+body:has(.b-side) .approach-cta .pro-cta-button {
+  background: #294d75;
+  color: #ffffff;
+  box-shadow: 0 10px 28px rgba(28, 44, 68, 0.35);
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button),
+body:has(.b-side) .approach-cta-back a {
+  color: #1c2c44;
+  border-color: #1c2c44;
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button):hover,
+body:has(.b-side) .approach-cta-back a:hover {
+  background: #294d75;
+  border-color: #294d75;
+  color: #ffffff !important;
 }
 
 /* 印刷：ライトに戻す（補助金 A4 配布用） */
@@ -9548,4 +9588,32 @@ body:has(.b-side) .approach-cta {
   body:has(.b-side)::after {
     display: none;
   }
+}
+
+
+/* 黄色アクセントの上の文字は紺に統一 */
+body:has(.b-side) .hojokin-status.is-open,
+body:has(.b-side) .pro-plan-badge {
+  color: #1c2c44;
+}
+
+/* /pro のフッターナビ（ヘッダーの Pro カテゴリと同じ並び） */
+.footer-pro-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px 32px;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.footer-pro-nav a {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.footer-pro-nav a:hover {
+  color: var(--accent-yellow, #ddb227);
 }

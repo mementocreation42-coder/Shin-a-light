@@ -1,21 +1,47 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { SKILL_GROUPS } from '@/data/skills';
 
+/** /pro 配下ではヘッダーと同じ Pro カテゴリをフッターにも出す */
+const PRO_FOOTER_LINKS = [
+    { label: 'Pro トップ', href: '/pro' },
+    { label: '映像・写真', href: '/pro/visual' },
+    { label: 'システム開発', href: '/pro/systems' },
+    { label: '補助金', href: '/pro/hojokin' },
+    { label: '考え方', href: '/pro/approach' },
+    { label: '相談する', href: '/?c=produce#contact' },
+];
+
 export default function Footer() {
+    const pathname = usePathname();
+    const isPro = pathname?.startsWith('/pro');
+
     return (
         <footer className="footer">
-            <div className="footer-skills">
-                {SKILL_GROUPS.map((group) => (
-                    <div key={group.label} className="footer-skill-group">
-                        <h3 className="footer-skill-head">{group.label}</h3>
-                        <ul className="footer-skill-list">
-                            {group.items.map((item) => (
-                                <li key={item} className="footer-skill-item">{item}</li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
-            </div>
+            {isPro ? (
+                <nav className="footer-pro-nav" aria-label="Pro ページ内ナビゲーション">
+                    {PRO_FOOTER_LINKS.map((link) => (
+                        <Link key={link.href} href={link.href}>
+                            {link.label}
+                        </Link>
+                    ))}
+                </nav>
+            ) : (
+                <div className="footer-skills">
+                    {SKILL_GROUPS.map((group) => (
+                        <div key={group.label} className="footer-skill-group">
+                            <h3 className="footer-skill-head">{group.label}</h3>
+                            <ul className="footer-skill-list">
+                                {group.items.map((item) => (
+                                    <li key={item} className="footer-skill-item">{item}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className="footer-links" style={{ marginBottom: "1.5rem" }}>
                 <Link href="/terms">利用規約</Link>
