@@ -9732,3 +9732,281 @@ body:has(.b-side) .pro-plan-badge {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   B面 — クリーム×ブルー（黄色なし・最終テーマ）
+   背景：クリーム。ポイントはブルー #294D75 系のみ。
+   ============================================ */
+
+body:has(.b-side) {
+  --bg-primary: #faf6ed;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #ede7da;
+  --text-primary: #22242a;
+  --text-secondary: #4c5261;
+  --text-muted: #7c8294;
+  --border: 1px solid #e2dccc;
+  --accent-orange: #294d75;
+  --accent-yellow: #2f5d8f;
+  --b-amber: #2f5d8f;
+  --b-blue: #294d75;
+  --b-cream: rgba(41, 77, 117, 0.08);
+  --b-shadow: 0 1px 2px rgba(40, 50, 70, 0.05), 0 8px 22px rgba(40, 50, 70, 0.07);
+  background: #faf6ed;
+}
+
+/* 見出し・本文 */
+body:has(.b-side) .pro-hero-title,
+body:has(.b-side) .pro-heading,
+body:has(.b-side) .pro-empathy .pro-heading {
+  color: #1b2436;
+}
+
+body:has(.b-side) .pro-hero-lead {
+  color: #3b4254;
+}
+
+body:has(.b-side) .pro-heading::after {
+  background: #294d75;
+}
+
+/* 帯状タイル */
+body:has(.b-side) .pro-trust,
+body:has(.b-side) .hojokin-summary,
+body:has(.b-side) .visual-reasons,
+body:has(.b-side) .systems-principles {
+  background: #e2dccc;
+  border: var(--border);
+}
+
+body:has(.b-side) .pro-trust > div,
+body:has(.b-side) .hojokin-summary > div,
+body:has(.b-side) .visual-reason,
+body:has(.b-side) .systems-principle {
+  background: #ffffff;
+}
+
+body:has(.b-side) .pro-trust dt {
+  color: #294d75;
+}
+
+/* 共感セクション：淡いブルーグレーの帯 */
+body:has(.b-side) .pro-empathy {
+  background: #e9eef6;
+}
+
+body:has(.b-side) .pro-pain-list li {
+  background: #ffffff;
+  color: #4c5261;
+  border: 1px solid #dde3ef;
+}
+
+/* チップ */
+body:has(.b-side) .pro-index-label,
+body:has(.b-side) .pro-systems-label,
+body:has(.b-side) .systems-type-label,
+body:has(.b-side) .visual-service-label,
+body:has(.b-side) .pro-service-label {
+  background: rgba(41, 77, 117, 0.08);
+  color: #294d75;
+}
+
+/* 主CTA：ブルー塗り */
+body:has(.b-side) .pro-cta-button {
+  background: #294d75;
+  color: #ffffff;
+}
+
+/* 二次ボタン：白地×ブルー枠 → hover でブルー塗り */
+body:has(.b-side) .pro-hero-secondary a,
+body:has(.b-side) .pro-inline-link a,
+body:has(.b-side) .pro-work-more a,
+body:has(.b-side) .pro-hojokin-link,
+body:has(.b-side) .approach-links a,
+body:has(.b-side) .approach-cta-back a {
+  background: #ffffff;
+  border: 1.5px solid #294d75;
+  color: #294d75;
+}
+
+body:has(.b-side) .pro-hero-secondary a:hover,
+body:has(.b-side) .pro-inline-link a:hover,
+body:has(.b-side) .pro-work-more a:hover,
+body:has(.b-side) .pro-hojokin-link:hover,
+body:has(.b-side) .approach-links a:hover,
+body:has(.b-side) .approach-cta-back a:hover {
+  background: #294d75;
+  border-color: #294d75;
+  color: #ffffff !important;
+}
+
+body:has(.b-side) .hojokin-links a {
+  background: #ffffff;
+  border: 1px solid #294d75;
+  color: #294d75;
+}
+
+body:has(.b-side) .hojokin-links a:hover {
+  background: #294d75;
+  border-color: #294d75;
+  color: #ffffff;
+}
+
+/* 文中チップ */
+body:has(.b-side) .pro-faq-link,
+body:has(.b-side) .systems-inline-link {
+  background: rgba(41, 77, 117, 0.06);
+  border: 1px solid rgba(41, 77, 117, 0.35);
+  color: #294d75;
+}
+
+body:has(.b-side) .pro-faq-link:hover,
+body:has(.b-side) .systems-inline-link:hover {
+  border-color: #294d75;
+  color: #1b2436;
+}
+
+/* 最終CTA：ブルーの帯×白文字、ボタンは白 */
+body:has(.b-side) .pro-final,
+body:has(.b-side) .approach-cta {
+  background: #294d75;
+  color: #eef2f8;
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-final .pro-final-title::after,
+body:has(.b-side) .approach-cta .approach-cta-title::after {
+  background: rgba(255, 255, 255, 0.85);
+}
+
+body:has(.b-side) .pro-final-lead,
+body:has(.b-side) .approach-cta p {
+  color: #c9d6e8;
+}
+
+body:has(.b-side) .pro-final-note {
+  color: #9db2ca;
+}
+
+body:has(.b-side) .pro-final .pro-cta-button,
+body:has(.b-side) .approach-cta .pro-cta-button {
+  background: #ffffff;
+  color: #294d75;
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button),
+body:has(.b-side) .approach-cta-back a {
+  background: transparent;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button):hover,
+body:has(.b-side) .approach-cta-back a:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: #294d75 !important;
+}
+
+/* ステータス・バッジ・フラグ */
+body:has(.b-side) .hojokin-status.is-open,
+body:has(.b-side) .pro-plan-badge {
+  background: #294d75;
+  color: #ffffff;
+}
+
+body:has(.b-side) .hojokin-status.is-upcoming {
+  border-color: #294d75;
+  color: #294d75;
+}
+
+body:has(.b-side) .hojokin-card.is-open {
+  border-color: rgba(41, 77, 117, 0.5);
+}
+
+body:has(.b-side) .hojokin-flag.is-maybe {
+  background: #dbe4f0;
+  color: #294d75;
+}
+
+body:has(.b-side) .hojokin-flag.is-no {
+  background: #ede7da;
+  color: #7c8294;
+}
+
+/* プロフィール */
+body:has(.b-side) .pro-profile-photo {
+  border-color: #ffffff;
+}
+
+body:has(.b-side) .pro-profile-title {
+  color: #294d75;
+}
+
+body:has(.b-side) .pro-profile-tags li {
+  background: #ffffff;
+  border: 1px solid #e2dccc;
+  color: #4c5261;
+}
+
+/* B面マーク */
+body:has(.b-side) .b-side-mark::before {
+  background: linear-gradient(90deg, #294d75 50%, #faf6ed 50%);
+  border-color: #294d75;
+}
+
+/* フォーム（ライト） */
+body:has(.b-side) .pro-form input,
+body:has(.b-side) .pro-form select,
+body:has(.b-side) .pro-form textarea {
+  background: #ffffff;
+  border: 1px solid #d9d3c4;
+  color: #22242a;
+}
+
+body:has(.b-side) .pro-form input::placeholder,
+body:has(.b-side) .pro-form textarea::placeholder {
+  color: #a4aab8;
+}
+
+body:has(.b-side) .pro-form input:focus,
+body:has(.b-side) .pro-form select:focus,
+body:has(.b-side) .pro-form textarea:focus {
+  border-color: #294d75;
+  background: #ffffff;
+}
+
+body:has(.b-side) .pro-form-label {
+  color: #294d75;
+}
+
+body:has(.b-side) .pro-form-status.is-success {
+  background: rgba(63, 158, 70, 0.1);
+  border-color: rgba(63, 158, 70, 0.4);
+  color: #2c6e31;
+}
+
+body:has(.b-side) .pro-form-status.is-error {
+  background: rgba(200, 60, 40, 0.08);
+  border-color: rgba(200, 60, 40, 0.4);
+  color: #a03a28;
+}
+
+/* Pro フッター列：見出し・項目をリンクに（色は既存のスキル列と同じ流儀） */
+.footer-skill-head a {
+  color: inherit;
+}
+
+.footer-skill-item a {
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+body:has(.b-side) .footer-skill-item a:hover,
+body:has(.b-side) .footer-skill-head a:hover {
+  color: #294d75;
+}
