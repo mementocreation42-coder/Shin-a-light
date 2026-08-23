@@ -8430,3 +8430,174 @@ body:has(.b-side) .hojokin-card.is-closed {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   B面 — コントラスト層
+   白ベタで平坦だったため、①地を紙色にしてカードを白で浮かせる
+   ②共感・最終CTA を墨の帯にして明暗のリズムをつける
+   ③文字・罫線を一段濃くする
+   ============================================ */
+
+body:has(.b-side) {
+  --bg-primary: #f3f0e8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e4dfd3;
+  --text-secondary: #454545;
+  --text-muted: #75716a;
+  --border: 1px solid #d5d0c4;
+  --b-ink: #151412;
+  --b-ink-soft: #22201d;
+  --b-ink-text: #f4f1ea;
+  --b-ink-muted: #a9a49a;
+  --b-shadow: 0 1px 2px rgba(30, 24, 10, 0.04), 0 8px 24px rgba(30, 24, 10, 0.06);
+}
+
+/* --- カードを白で浮かせる --- */
+body:has(.b-side) .pro-index-card,
+body:has(.b-side) .pro-service-card,
+body:has(.b-side) .pro-plan-card,
+body:has(.b-side) .pro-work-card,
+body:has(.b-side) .pro-systems-card,
+body:has(.b-side) .pro-hojokin-box,
+body:has(.b-side) .pro-visual-box,
+body:has(.b-side) .hojokin-card,
+body:has(.b-side) .hojokin-legend,
+body:has(.b-side) .systems-type-card,
+body:has(.b-side) .visual-service-card {
+  box-shadow: var(--b-shadow);
+}
+
+body:has(.b-side) .pro-index-card:hover {
+  box-shadow: 0 2px 4px rgba(30, 24, 10, 0.05), 0 14px 32px rgba(30, 24, 10, 0.1);
+}
+
+body:has(.b-side) .pro-plan-card.is-recommended {
+  box-shadow: 0 0 0 1px var(--accent-orange), var(--b-shadow);
+}
+
+body:has(.b-side) .hojokin-card.is-open {
+  border-color: var(--accent-orange);
+}
+
+/* 帯状タイル（信頼の3点・補助金サマリー・前提3点・約束）は白＋濃い目の仕切り */
+body:has(.b-side) .hojokin-summary {
+  display: inline-flex;
+}
+
+body:has(.b-side) .pro-trust,
+body:has(.b-side) .hojokin-summary,
+body:has(.b-side) .visual-reasons,
+body:has(.b-side) .systems-principles {
+  gap: 1px;
+  background: #d5d0c4;
+  border: var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+body:has(.b-side) .pro-trust > div,
+body:has(.b-side) .hojokin-summary > div,
+body:has(.b-side) .visual-reason,
+body:has(.b-side) .systems-principle {
+  background: #ffffff;
+}
+
+/* --- 文字を締める --- */
+body:has(.b-side) .pro-hero-title,
+body:has(.b-side) .pro-heading,
+body:has(.b-side) .pro-final-title {
+  font-weight: 700;
+  color: #0f0e0c;
+}
+
+body:has(.b-side) .pro-hero-lead {
+  color: #2e2d2a;
+}
+
+body:has(.b-side) .pro-pain-list li::before,
+body:has(.b-side) .systems-unfit li::before {
+  color: var(--accent-orange);
+}
+
+/* --- 墨の帯：共感セクション --- */
+body:has(.b-side) .pro-empathy {
+  background: var(--b-ink);
+  color: var(--b-ink-text);
+  border-bottom: none;
+}
+
+body:has(.b-side) .pro-empathy .pro-heading {
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-pain-list {
+  gap: 1px;
+}
+
+body:has(.b-side) .pro-pain-list li {
+  background: var(--b-ink-soft);
+  color: #dcd8cf;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body:has(.b-side) .pro-empathy-close {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* --- 墨の帯：最終CTA --- */
+body:has(.b-side) .pro-final,
+body:has(.b-side) .approach-cta {
+  background: var(--b-ink);
+  color: var(--b-ink-text);
+  max-width: none;
+  border-top: none;
+}
+
+body:has(.b-side) .approach-cta > * {
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-final-lead,
+body:has(.b-side) .approach-cta p {
+  color: var(--b-ink-muted);
+}
+
+body:has(.b-side) .pro-final-note {
+  color: #7d786f;
+}
+
+body:has(.b-side) .pro-final .pro-inline-link a,
+body:has(.b-side) .approach-cta a:not(.pro-cta-button) {
+  color: #ffffff;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+}
+
+body:has(.b-side) .pro-final .pro-inline-link a:hover,
+body:has(.b-side) .approach-cta a:not(.pro-cta-button):hover {
+  color: var(--accent-orange);
+  text-decoration-color: var(--accent-orange);
+}
+
+/* 墨の帯の上にある橙ボタンは少し明るく */
+body:has(.b-side) .pro-final .pro-cta-button,
+body:has(.b-side) .approach-cta .pro-cta-button {
+  background: #ff6a3d;
+  box-shadow: 0 8px 24px rgba(255, 106, 61, 0.3);
+}
+
+/* 印刷では帯を使わない */
+@media print {
+  body:has(.b-side) .pro-empathy,
+  body:has(.b-side) .pro-final {
+    background: #fff;
+    color: #111;
+  }
+}
