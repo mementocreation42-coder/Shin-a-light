@@ -47,7 +47,7 @@ html {
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans-jp), 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif;
   font-size: 14px;
   line-height: 1.6;
   overflow-x: hidden;
@@ -9313,5 +9313,216 @@ body:has(.b-side) .pro-visual-box.has-thumb {
 
   .pro-profile-photo {
     width: 180px;
+  }
+}
+
+/* ============================================
+   B面 — ディープブルーテーマ（最終レイヤー）
+   背景：深い藍。ポイントでオレンジ。
+   グラデーションは最終CTAの夕焼けなど要所のみ。
+   ============================================ */
+
+body:has(.b-side) {
+  --bg-primary: #101a3a;
+  --bg-secondary: #1a2547;
+  --bg-tertiary: #253158;
+  --text-primary: #f2f4fa;
+  --text-secondary: #b9c1d8;
+  --text-muted: #8791b0;
+  --border: 1px solid #2d3a66;
+  --accent-orange: #ff7a45;
+  --b-amber: #ffb08a;
+  --b-blue: #9fb0e8;
+  --b-cream: rgba(255, 122, 69, 0.14);
+  --b-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), 0 12px 32px rgba(0, 0, 0, 0.3);
+  /* 上部はわずかに明るい藍 → 深い藍へ */
+  background: linear-gradient(180deg, #1a2854 0px, #101a3a 760px) #101a3a;
+}
+
+/* 見出し・本文の色を反転 */
+body:has(.b-side) .pro-hero-title,
+body:has(.b-side) .pro-heading,
+body:has(.b-side) .pro-empathy .pro-heading {
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-hero-lead {
+  color: #d6dcf0;
+}
+
+/* 帯状タイル・白カードの上書き */
+body:has(.b-side) .pro-trust,
+body:has(.b-side) .hojokin-summary,
+body:has(.b-side) .visual-reasons,
+body:has(.b-side) .systems-principles {
+  background: #2d3a66;
+  border: var(--border);
+}
+
+body:has(.b-side) .pro-trust > div,
+body:has(.b-side) .hojokin-summary > div,
+body:has(.b-side) .visual-reason,
+body:has(.b-side) .systems-principle {
+  background: var(--bg-secondary);
+}
+
+body:has(.b-side) .pro-trust dt {
+  color: var(--b-blue);
+}
+
+/* 共感セクション：さらに深い藍の帯、カードは紺 */
+body:has(.b-side) .pro-empathy {
+  background: #0b142e;
+}
+
+body:has(.b-side) .pro-pain-list li {
+  background: #1a2547;
+  color: #c6cde2;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* カテゴリチップ：藍地にオレンジ */
+body:has(.b-side) .pro-index-label,
+body:has(.b-side) .pro-systems-label,
+body:has(.b-side) .systems-type-label,
+body:has(.b-side) .visual-service-label,
+body:has(.b-side) .pro-service-label {
+  background: var(--b-cream);
+  color: var(--b-amber);
+}
+
+/* 数字・ステップ番号：ポイントのオレンジ */
+body:has(.b-side) .pro-hojokin-stats dd,
+body:has(.b-side) .hojokin-summary dd,
+body:has(.b-side) .pro-plan-price,
+body:has(.b-side) .pro-step-no {
+  color: var(--accent-orange);
+}
+
+/* 二次ボタン：透明地×淡い枠、hover でオレンジ */
+body:has(.b-side) .pro-hero-secondary a,
+body:has(.b-side) .pro-inline-link a,
+body:has(.b-side) .pro-work-more a,
+body:has(.b-side) .pro-hojokin-link,
+body:has(.b-side) .approach-links a,
+body:has(.b-side) .approach-cta-back a {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  color: #eef1fb;
+}
+
+body:has(.b-side) .pro-hero-secondary a:hover,
+body:has(.b-side) .pro-inline-link a:hover,
+body:has(.b-side) .pro-work-more a:hover,
+body:has(.b-side) .pro-hojokin-link:hover,
+body:has(.b-side) .approach-links a:hover,
+body:has(.b-side) .approach-cta-back a:hover {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: #ffffff !important;
+}
+
+body:has(.b-side) .hojokin-links a {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #eef1fb;
+}
+
+body:has(.b-side) .hojokin-links a:hover {
+  background: var(--accent-orange);
+  border-color: var(--accent-orange);
+  color: #ffffff;
+}
+
+/* 文中チップ */
+body:has(.b-side) .pro-faq-link,
+body:has(.b-side) .systems-inline-link {
+  background: rgba(255, 122, 69, 0.12);
+  border: 1px solid rgba(255, 122, 69, 0.4);
+  color: var(--b-amber);
+}
+
+body:has(.b-side) .pro-faq-link:hover,
+body:has(.b-side) .systems-inline-link:hover {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+}
+
+/* CTAボタン：オレンジのまま、影を夜向きに */
+body:has(.b-side) .pro-cta-button {
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(255, 122, 69, 0.3);
+}
+
+/* 補助金カード・フラグの明度調整 */
+body:has(.b-side) .hojokin-flag.is-no {
+  background: #2a3556;
+  color: #aab4d4;
+}
+
+body:has(.b-side) .hojokin-card.is-open {
+  border-color: rgba(255, 122, 69, 0.6);
+}
+
+/* プロフィール */
+body:has(.b-side) .pro-profile-photo {
+  border-color: #2d3a66;
+}
+
+body:has(.b-side) .pro-profile-title {
+  color: var(--b-amber);
+}
+
+body:has(.b-side) .pro-profile-tags li {
+  background: transparent;
+  border: 1px solid #2d3a66;
+  color: var(--text-secondary);
+}
+
+/* B面マーク（月アイコン）を夜向きに */
+body:has(.b-side) .b-side-mark::before {
+  background: linear-gradient(90deg, #f2f4fa 50%, #101a3a 50%);
+  border-color: #f2f4fa;
+}
+
+/* 最終CTA：夕焼け → 夜に沈む配色のまま（背景の藍と連続させる） */
+body:has(.b-side) .pro-final,
+body:has(.b-side) .approach-cta {
+  background: linear-gradient(165deg, #f0a53c 0%, #e4582b 30%, #a83a68 60%, #101a3a 100%);
+}
+
+/* 印刷：ライトに戻す（補助金 A4 配布用） */
+@media print {
+  body:has(.b-side) {
+    --bg-primary: #ffffff;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #eeeeee;
+    --text-primary: #111111;
+    --text-secondary: #333333;
+    --text-muted: #666666;
+    --border: 1px solid #cccccc;
+    background: #ffffff;
+  }
+
+  body:has(.b-side) .pro-trust > div,
+  body:has(.b-side) .hojokin-summary > div,
+  body:has(.b-side) .pro-pain-list li {
+    background: #ffffff;
+    color: #333333;
+  }
+
+  body:has(.b-side) .pro-hero-title,
+  body:has(.b-side) .pro-heading {
+    color: #111111;
+  }
+
+  body:has(.b-side) .pro-hojokin-stats dd,
+  body:has(.b-side) .hojokin-summary dd {
+    color: #111111;
+  }
+
+  body:has(.b-side) .hojokin-links a {
+    border: none;
+    color: #111111;
   }
 }
