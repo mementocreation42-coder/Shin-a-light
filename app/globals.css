@@ -9045,3 +9045,199 @@ body:has(.b-side) .systems-inline-link:hover {
     display: none;
   }
 }
+
+/* ============================================
+   B面 — 朝日と夕日のグラデーションテーマ
+   ページ冒頭＝朝の光、末尾のCTA＝夕焼け。
+   スクロールで一日が暮れていく構成。
+   ============================================ */
+
+body:has(.b-side) {
+  --grad-sun: linear-gradient(90deg, #f0a53c, #e4582b 55%, #c04170);
+  --grad-dawn: linear-gradient(180deg, #fff0d3 0%, #fdf9ee 100%);
+  --grad-dusk: linear-gradient(155deg, #f0a53c 0%, #e4582b 48%, #a83a68 100%);
+  /* 朝の光：ページ上部にだけ暖色のグラデーションを敷く */
+  background: linear-gradient(180deg, #fff0d3 0px, #fdf9ee 760px) var(--bg-primary);
+}
+
+/* h2 下線・共感の帯・数字を朝焼け〜夕焼けのグラデに */
+body:has(.b-side) .pro-heading::after,
+body:has(.b-side) .pro-final .pro-final-title::after,
+body:has(.b-side) .approach-cta .approach-cta-title::after {
+  background: var(--grad-sun);
+  opacity: 1;
+}
+
+body:has(.b-side) .pro-empathy {
+  background: linear-gradient(180deg, #fdeecb, #fbe3b2);
+}
+
+body:has(.b-side) .pro-hojokin-stats dd,
+body:has(.b-side) .hojokin-summary dd,
+body:has(.b-side) .pro-plan-price,
+body:has(.b-side) .pro-step-no {
+  background: var(--grad-sun);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 夕焼けの最終CTA */
+body:has(.b-side) .pro-final,
+body:has(.b-side) .approach-cta {
+  background: var(--grad-dusk);
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  color: #ffffff;
+}
+
+body:has(.b-side) .pro-final .pro-final-title::after,
+body:has(.b-side) .approach-cta .approach-cta-title::after {
+  background: rgba(255, 244, 214, 0.9);
+}
+
+body:has(.b-side) .pro-final-lead,
+body:has(.b-side) .approach-cta p {
+  color: rgba(255, 245, 230, 0.92);
+}
+
+body:has(.b-side) .pro-final-note {
+  color: rgba(255, 240, 220, 0.7);
+}
+
+body:has(.b-side) .pro-final .pro-cta-button,
+body:has(.b-side) .approach-cta .pro-cta-button {
+  background: #ffffff;
+  color: #cf4a22;
+  box-shadow: 0 10px 30px rgba(90, 20, 30, 0.25);
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button),
+body:has(.b-side) .approach-cta-back a {
+  color: #ffffff;
+  border-color: #ffffff;
+  background: transparent;
+}
+
+body:has(.b-side) .approach-cta a:not(.pro-cta-button):hover,
+body:has(.b-side) .approach-cta-back a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+}
+
+/* ============================================
+   B面 — サムネイルとアイコン
+   ============================================ */
+
+/* 索引タイルのサムネ（カード上部いっぱい） */
+body:has(.b-side) .pro-index-card {
+  padding-top: 0;
+  overflow: hidden;
+}
+
+.pro-index-thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  margin: 0 -18px 10px;
+  overflow: hidden;
+}
+
+.pro-index-card:hover .pro-index-thumb img {
+  transform: scale(1.04);
+}
+
+.pro-index-thumb img {
+  transition: transform 0.35s ease;
+}
+
+/* ラベル・チップ内のアイコン整列 */
+body:has(.b-side) .pro-index-label,
+body:has(.b-side) .pro-systems-label,
+body:has(.b-side) .systems-type-label,
+body:has(.b-side) .visual-service-label,
+body:has(.b-side) .pro-service-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body:has(.b-side) .pro-trust dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--b-amber);
+}
+
+/* 牟岐町ボックスの写真 */
+body:has(.b-side) .pro-visual-box.has-thumb {
+  grid-template-columns: 260px 1.1fr 1fr;
+  align-items: center;
+}
+
+.pro-visualbox-thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  body:has(.b-side) .pro-visual-box.has-thumb {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* /pro/visual の写真帯 */
+.visual-strip-section {
+  padding: 0 0 8px;
+}
+
+.visual-strip {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0 32px;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.visual-strip li {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (max-width: 560px) {
+  .visual-strip {
+    padding: 0 24px;
+    gap: 8px;
+  }
+}
+
+/* 印刷：グラデ帯・写真は使わない */
+@media print {
+  body:has(.b-side) {
+    background: #fff;
+  }
+
+  body:has(.b-side) .pro-empathy,
+  body:has(.b-side) .pro-final {
+    background: #fff;
+    color: #111;
+  }
+
+  body:has(.b-side) .pro-hojokin-stats dd,
+  body:has(.b-side) .hojokin-summary dd {
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: #111;
+  }
+}

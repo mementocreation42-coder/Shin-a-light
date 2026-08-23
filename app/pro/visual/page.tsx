@@ -84,6 +84,15 @@ export default function VisualPage() {
                 </p>
             </header>
 
+            {/* 1.5 写真帯 — 撮ってきたもの */}
+            <section className="visual-strip-section">
+                <ul className="visual-strip">
+                    <li><Image src="/images/photos/DSC00161.jpg" alt="森で撮影した子どもの写真" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                    <li><Image src="/images/photos/DJI_0007.jpg" alt="海岸線の空撮" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                    <li><Image src="/images/photos/DSC00104.jpg" alt="商店街のスナップ" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                </ul>
+            </section>
+
             {/* 2. 共感 */}
             <section className="pro-section pro-empathy">
                 <div className="pro-inner">

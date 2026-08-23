@@ -22,11 +22,22 @@ const LINKS: NavLink[] = [
     { label: 'Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
+/** /pro 配下（B面）ではナビを Pro のカテゴリに切り替える */
+const PRO_LINKS: NavLink[] = [
+    { label: '映像・写真', href: '/pro/visual' },
+    { label: 'システム開発', href: '/pro/systems' },
+    { label: '補助金', href: '/pro/hojokin' },
+    { label: '考え方', href: '/pro/approach' },
+    { label: '相談する', href: '/?c=produce#contact', className: 'nav-letter-tag' },
+    { label: 'Pro', href: '/pro', className: 'nav-pro-tag' },
+];
+
 export default function Nav() {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
     const close = () => setIsOpen(false);
+    const links = pathname?.startsWith('/pro') ? PRO_LINKS : LINKS;
 
     // On the home page, scroll to the section directly so anchor links keep
     // working even when the URL hash already matches the target (Next.js Link
@@ -51,7 +62,7 @@ export default function Nav() {
 
             {/* Desktop links */}
             <ul className="nav-links">
-                {LINKS.map((link) => (
+                {links.map((link) => (
                     <li key={link.href}>
                         <Link
                             href={link.href}
@@ -78,7 +89,7 @@ export default function Nav() {
             {/* Mobile menu */}
             <div className={`nav-mobile ${isOpen ? 'is-open' : ''}`}>
                 <ul className="nav-mobile-links">
-                    {LINKS.map((link) => (
+                    {links.map((link) => (
                         <li key={link.href}>
                             <Link
                                 href={link.href}

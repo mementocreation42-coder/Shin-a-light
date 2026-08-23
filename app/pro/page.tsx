@@ -10,6 +10,21 @@ import {
     PRO_WORK_SLUGS,
 } from '@/data/pro';
 import { effectiveStatus, publishedHojokin } from '@/data/hojokin';
+import {
+    IconCamera,
+    IconGear,
+    IconYen,
+    IconCompass,
+    IconCalendar,
+    IconUsers,
+    IconHand,
+    IconZap,
+    IconBell,
+    IconSparkles,
+    IconPencil,
+    IconHammer,
+    IconRocket,
+} from './icons';
 
 const TITLE = '企画から発信まで、通しで引き受ける — Shine a Light';
 const DESCRIPTION =
@@ -40,6 +55,12 @@ export const metadata: Metadata = {
 
 /** CTAはこの1本だけ。Contactのカテゴリを企画・プロデュースに寄せて着地させる */
 const CTA_HREF = '/?c=produce#contact';
+
+const SERVICE_ICONS: Record<string, React.ReactNode> = {
+    構想する: <IconPencil />,
+    つくる: <IconHammer />,
+    走らせる: <IconRocket />,
+};
 
 /** 補助金一覧の「公募中」件数。締切を過ぎた行を落とすため日次で再生成する */
 export const revalidate = 86400;
@@ -108,15 +129,15 @@ export default function ProPage() {
                 {/* 任せて大丈夫、の根拠を3点だけ。数字は works.ts から */}
                 <dl className="pro-trust">
                     <div>
-                        <dt>牟岐町と</dt>
+                        <dt><IconCalendar />牟岐町と</dt>
                         <dd>{mugiYears}年目</dd>
                     </div>
                     <div>
-                        <dt>引き受けてきた相手</dt>
+                        <dt><IconUsers />引き受けてきた相手</dt>
                         <dd>自治体・企業・個人事業</dd>
                     </div>
                     <div>
-                        <dt>体制</dt>
+                        <dt><IconHand />体制</dt>
                         <dd>企画から運用まで、一人で通す</dd>
                     </div>
                 </dl>
@@ -129,28 +150,40 @@ export default function ProPage() {
                     <ul className="pro-index">
                         <li>
                             <Link href="/pro/visual" className="pro-index-card">
-                                <span className="pro-index-label">映像・写真</span>
+                                <span className="pro-index-thumb">
+                                    <Image src="/images/photos/DSC00161.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                </span>
+                                <span className="pro-index-label"><IconCamera />映像・写真</span>
                                 <span className="pro-index-title">続けて撮る映像・写真</span>
                                 <span className="pro-index-sub">年間で見え方をつくる</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/pro/systems" className="pro-index-card">
-                                <span className="pro-index-label">システム</span>
+                                <span className="pro-index-thumb">
+                                    <Image src="/images/photos/DSC00066.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                </span>
+                                <span className="pro-index-label"><IconGear />システム</span>
                                 <span className="pro-index-title">小さなシステム開発</span>
                                 <span className="pro-index-sub">自動化・通知・AI・立ち上げ</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/pro/hojokin" className="pro-index-card">
-                                <span className="pro-index-label">補助金</span>
+                                <span className="pro-index-thumb">
+                                    <Image src="/images/photos/DJI_0005.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                </span>
+                                <span className="pro-index-label"><IconYen />補助金</span>
                                 <span className="pro-index-title">使える補助金の一覧</span>
                                 <span className="pro-index-sub">海部郡向け・一次資料で確認</span>
                             </Link>
                         </li>
                         <li>
                             <Link href="/pro/approach" className="pro-index-card">
-                                <span className="pro-index-label">考え方</span>
+                                <span className="pro-index-thumb">
+                                    <Image src="/images/photos/DJI_0017.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                </span>
+                                <span className="pro-index-label"><IconCompass />考え方</span>
                                 <span className="pro-index-title">企画書を、そのまま公開</span>
                                 <span className="pro-index-sub">受け皿から逆算する</span>
                             </Link>
@@ -191,7 +224,10 @@ export default function ProPage() {
                     <div className="pro-service-grid">
                         {PRO_SERVICES.map((group) => (
                             <div key={group.label} className="pro-service-card">
-                                <h3 className="pro-service-label">{group.label}</h3>
+                                <h3 className="pro-service-label">
+                                    {SERVICE_ICONS[group.label] ?? null}
+                                    {group.label}
+                                </h3>
                                 <ul className="pro-service-items">
                                     {group.items.map((item) => (
                                         <li key={item}>{item}</li>
@@ -210,7 +246,10 @@ export default function ProPage() {
                     <p className="pro-sub">
                         一本つくって終わり、にしない。年間で「見え方」を育てます。
                     </p>
-                    <div className="pro-visual-box">
+                    <div className="pro-visual-box has-thumb">
+                        <span className="pro-visualbox-thumb">
+                            <Image src="/images/photos/DJI_0012.jpg" alt="牟岐町の海岸の空撮" fill sizes="(max-width: 900px) 100vw, 260px" style={{ objectFit: 'cover' }} />
+                        </span>
                         <p>
                             牟岐町は 2018 年から撮り続けて9年目。
                             サイトでも SNS でも印刷物でも、どこで見ても「その町らしさ」がある状態をつくってきました。
@@ -237,15 +276,15 @@ export default function ProPage() {
                     </p>
                     <div className="pro-systems-grid">
                         <div className="pro-systems-card">
-                            <p className="pro-systems-label">自動化</p>
+                            <p className="pro-systems-label"><IconZap />自動化</p>
                             <p>問い合わせ → 見積 → 請求。手作業の連鎖を、一本につなげます。</p>
                         </div>
                         <div className="pro-systems-card">
-                            <p className="pro-systems-label">巡回・通知</p>
+                            <p className="pro-systems-label"><IconBell />巡回・通知</p>
                             <p>役所の募集や取引先の更新。変わったときだけ、通知が届くように。</p>
                         </div>
                         <div className="pro-systems-card">
-                            <p className="pro-systems-label">発信の裏側と AI</p>
+                            <p className="pro-systems-label"><IconSparkles />発信の裏側と AI</p>
                             <p>CMS・メルマガ・AI下書き。自分の事業で使っているものから提案します。</p>
                         </div>
                     </div>
