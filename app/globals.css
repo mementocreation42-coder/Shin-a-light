@@ -8774,3 +8774,27 @@ body:has(.b-side) .visual-service-title,
 body:has(.b-side) .visual-reason-title {
   text-wrap: balance;
 }
+
+/* ヘッダー右端の Pro（B面への入口。塗りのピルで Newsletter の線ピルと対にする） */
+.nav-pro-tag {
+  background: var(--text-primary) !important;
+  color: var(--bg-primary) !important;
+  border: 1px solid var(--text-primary) !important;
+  padding: 3px 12px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+}
+
+.nav-pro-tag:hover {
+  background: var(--accent-orange) !important;
+  border-color: var(--accent-orange) !important;
+  color: #ffffff !important;
+}
+
+.nav-mobile-links .nav-pro-tag {
+  font-size: 22px !important;
+  background: transparent !important;
+  border: none !important;
+  color: var(--accent-orange) !important;
+  padding: 0 !important;
+}

@@ -19,6 +19,7 @@ const LINKS: NavLink[] = [
     { label: 'Podcast', href: '/podcast' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
+    { label: 'Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
 export default function Nav() {
