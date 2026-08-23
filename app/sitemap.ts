@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '',
         '/pro',
         '/pro/approach',
+        '/pro/contact',
         '/pro/hojokin',
         '/pro/systems',
         '/pro/visual',

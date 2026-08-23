@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     },
 };
 
-const CTA_HREF = '/?c=produce#contact';
+const CTA_HREF = '/pro/contact';
 
 const LEVEL_LABEL: Record<Hojokin['level'], string> = {
     国: '国の補助金',

@@ -8590,7 +8590,7 @@ body:has(.b-side) .approach-cta a:not(.pro-cta-button):hover {
 body:has(.b-side) .pro-final .pro-cta-button,
 body:has(.b-side) .approach-cta .pro-cta-button {
   background: #ff6a3d;
-  box-shadow: 0 8px 24px rgba(255, 106, 61, 0.3);
+  box-shadow: none;
 }
 
 /* 印刷では帯を使わない */
@@ -9470,7 +9470,7 @@ body:has(.b-side) .systems-inline-link:hover {
 /* CTAボタン：オレンジのまま、影を夜向きに */
 body:has(.b-side) .pro-cta-button {
   color: #1c2c44;
-  box-shadow: 0 8px 24px rgba(221, 178, 39, 0.28);
+  box-shadow: none;
 }
 
 /* 補助金カード・フラグの明度調整 */
@@ -9534,7 +9534,7 @@ body:has(.b-side) .pro-final .pro-cta-button,
 body:has(.b-side) .approach-cta .pro-cta-button {
   background: #294d75;
   color: #ffffff;
-  box-shadow: 0 10px 28px rgba(28, 44, 68, 0.35);
+  box-shadow: none;
 }
 
 body:has(.b-side) .approach-cta a:not(.pro-cta-button),
@@ -9616,4 +9616,119 @@ body:has(.b-side) .pro-plan-badge {
 
 .footer-pro-nav a:hover {
   color: var(--accent-yellow, #ddb227);
+}
+
+/* --- /pro/contact フォーム --- */
+.pro-contact-hero {
+  padding-bottom: 40px;
+}
+
+.pro-contact-section {
+  border-bottom: none;
+  padding-top: 40px;
+}
+
+.pro-form {
+  max-width: 640px;
+  display: grid;
+  gap: 22px;
+}
+
+.pro-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+.pro-form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.pro-form-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--b-blue);
+}
+
+.pro-form input,
+.pro-form select,
+.pro-form textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: #22405f;
+  border: 1px solid #3f689a;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.pro-form textarea {
+  resize: vertical;
+  line-height: 1.9;
+}
+
+.pro-form input::placeholder,
+.pro-form textarea::placeholder {
+  color: #7d94b3;
+}
+
+.pro-form input:focus,
+.pro-form select:focus,
+.pro-form textarea:focus {
+  outline: none;
+  border-color: var(--accent-yellow, #ddb227);
+  background: #26466a;
+}
+
+.pro-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.pro-form-actions .pro-cta-button {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pro-form-actions .pro-cta-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+  transform: none;
+}
+
+.pro-form-note {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.pro-form-status {
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.pro-form-status.is-success {
+  background: rgba(63, 158, 70, 0.18);
+  border: 1px solid rgba(63, 158, 70, 0.5);
+  color: #b8e6bb;
+}
+
+.pro-form-status.is-error {
+  background: rgba(221, 82, 60, 0.15);
+  border: 1px solid rgba(221, 82, 60, 0.5);
+  color: #f3c0b6;
+}
+
+@media (max-width: 560px) {
+  .pro-form-row {
+    grid-template-columns: 1fr;
+  }
 }

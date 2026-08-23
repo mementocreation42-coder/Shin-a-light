@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 /** CTA は /pro と同じ1本。Contact のカテゴリを企画・プロデュースに寄せる */
-const CTA_HREF = '/?c=produce#contact';
+const CTA_HREF = '/pro/contact';
 
 export default function SystemsPage() {
     return (

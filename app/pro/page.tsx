@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 };
 
 /** CTAはこの1本だけ。Contactのカテゴリを企画・プロデュースに寄せて着地させる */
-const CTA_HREF = '/?c=produce#contact';
+const CTA_HREF = '/pro/contact';
 
 const SERVICE_ICONS: Record<string, React.ReactNode> = {
     構想する: <IconPencil />,

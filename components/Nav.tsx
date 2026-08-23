@@ -28,7 +28,7 @@ const PRO_LINKS: NavLink[] = [
     { label: 'システム開発', href: '/pro/systems' },
     { label: '補助金', href: '/pro/hojokin' },
     { label: '考え方', href: '/pro/approach' },
-    { label: '相談する', href: '/?c=produce#contact', className: 'nav-letter-tag' },
+    { label: '相談する', href: '/pro/contact', className: 'nav-letter-tag' },
     { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 

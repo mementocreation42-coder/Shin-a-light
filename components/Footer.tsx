@@ -11,7 +11,7 @@ const PRO_FOOTER_LINKS = [
     { label: 'システム開発', href: '/pro/systems' },
     { label: '補助金', href: '/pro/hojokin' },
     { label: '考え方', href: '/pro/approach' },
-    { label: '相談する', href: '/?c=produce#contact' },
+    { label: '相談する', href: '/pro/contact' },
 ];
 
 export default function Footer() {
