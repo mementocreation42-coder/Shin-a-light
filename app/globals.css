@@ -8916,26 +8916,45 @@ body:has(.b-side) .pro-empathy-close {
    B面 — リンクのボタン化 ＆ h2 のアクセント
    ============================================ */
 
-/* --- h2：橙→黄のショートバーを上に敷いて、見出しを一目で分かるように --- */
-body:has(.b-side) .pro-heading::before {
-  content: '';
-  display: block;
-  width: 36px;
-  height: 5px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent-orange), #f2c14e);
-  margin-bottom: 16px;
+/* --- h2：本文と同じ幅のマーカー下線。飾りを浮かせず、テキストに紐づける --- */
+body:has(.b-side) .pro-heading {
+  position: relative;
+  width: fit-content;
+  padding-bottom: 14px;
 }
 
-body:has(.b-side) .pro-final .pro-final-title::before,
-body:has(.b-side) .approach-cta .approach-cta-title::before {
+body:has(.b-side) .pro-heading::after {
   content: '';
-  display: block;
-  width: 36px;
-  height: 5px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--accent-orange), #f2c14e);
-  margin: 0 auto 18px;
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 6px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent-orange);
+  opacity: 0.9;
+}
+
+body:has(.b-side) .pro-final .pro-final-title,
+body:has(.b-side) .approach-cta .approach-cta-title {
+  position: relative;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 16px;
+}
+
+body:has(.b-side) .pro-final .pro-final-title::after,
+body:has(.b-side) .approach-cta .approach-cta-title::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 6px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent-orange);
+  opacity: 0.9;
 }
 
 /* --- 単独のテキストリンク → 枠のボタンに --- */
@@ -9021,7 +9040,8 @@ body:has(.b-side) .systems-inline-link:hover {
     background: none;
   }
 
-  body:has(.b-side) .pro-heading::before {
+  body:has(.b-side) .pro-heading::after,
+  body:has(.b-side) .pro-final .pro-final-title::after {
     display: none;
   }
 }
