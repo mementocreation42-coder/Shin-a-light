@@ -431,6 +431,46 @@ export default function ProPage() {
                 </div>
             </section>
 
+            {/* 7.5 つくる人 */}
+            <section className="pro-section">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">つくる人</h2>
+                    <div className="pro-profile">
+                        <span className="pro-profile-photo">
+                            <Image
+                                src="/images/profile.jpg"
+                                alt="小林大介のポートレート"
+                                fill
+                                sizes="(max-width: 900px) 60vw, 220px"
+                                style={{ objectFit: 'cover' }}
+                            />
+                        </span>
+                        <div className="pro-profile-body">
+                            <p className="pro-profile-name">
+                                小林 大介
+                                <span className="pro-profile-name-en">DAISUKE KOBAYASHI</span>
+                            </p>
+                            <p className="pro-profile-title">
+                                ビデオグラファー／Webエンジニア・徳島県牟岐町
+                            </p>
+                            <p className="pro-profile-bio">
+                                愛知からオーストラリアを経て、「釣りがしたいから」で徳島・牟岐町へ。
+                                撮る、書く、つくるを分業に預けず、ひとりで通すのが流儀です。
+                                牟岐町の映像とメディアを9年つくり続けています。
+                            </p>
+                            <ul className="pro-profile-tags">
+                                <li>映像</li>
+                                <li>写真</li>
+                                <li>執筆</li>
+                                <li>Web</li>
+                                <li>システム</li>
+                                <li>AI活用</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* 8. CTA — 行動は1種類 */}
             <section className="pro-section pro-final">
                 <div className="pro-inner">
