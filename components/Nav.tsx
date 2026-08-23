@@ -29,7 +29,7 @@ const PRO_LINKS: NavLink[] = [
     { label: '補助金', href: '/pro/hojokin' },
     { label: '考え方', href: '/pro/approach' },
     { label: '相談する', href: '/pro/contact', className: 'nav-letter-tag' },
-    { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
+    { label: 'for Personal', href: '/', className: 'nav-pro-tag' },
 ];
 
 export default function Nav() {
