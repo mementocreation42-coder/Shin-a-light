@@ -8,11 +8,13 @@ export const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 30;
 // パスワード通過から TOTP 入力までの猶予
 export const PENDING_MAX_AGE_SEC = 5 * 60;
 
-interface TokenPayload {
+export interface TokenPayload {
   /** 用途。セッションと 2FA 待ちのトークンを取り違えないための識別子 */
   kind: 'session' | 'pending';
   /** 失効時刻（UNIX 秒） */
   exp: number;
+  /** pending のみ：TOTP の失敗回数（ブルートフォース抑止） */
+  attempts?: number;
 }
 
 // ===== base64url =====
@@ -33,16 +35,23 @@ function fromBase64Url(s: string): Uint8Array {
 // ===== 署名鍵 =====
 // 専用のシークレットがなければパスワードから導出する。
 // 導出した場合はパスワード変更で全セッションが失効する（望ましい挙動）。
-function secretMaterial(): string {
+// どちらも未設定なら null ＝ 署名も検証も不能（fail closed）。
+// 既知の固定文字列にフォールバックすると、環境変数の設定漏れがそのまま
+// 「誰でもトークンを偽造できる」状態になるため、絶対にしない。
+function secretMaterial(): string | null {
   const explicit = process.env.ADMIN_SESSION_SECRET;
   if (explicit) return explicit;
-  return `derived:${process.env.ADMIN_PASSWORD || 'changeme'}`;
+  const pw = process.env.ADMIN_PASSWORD;
+  if (pw) return `derived:${pw}`;
+  return null;
 }
 
 async function hmacKey(): Promise<CryptoKey> {
+  const material = secretMaterial();
+  if (!material) throw new Error('ADMIN_SESSION_SECRET / ADMIN_PASSWORD が未設定です');
   return crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(secretMaterial()),
+    new TextEncoder().encode(material),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']
@@ -57,12 +66,45 @@ function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
   return diff === 0;
 }
 
-/** `<payload>.<signature>` 形式の署名付きトークンを作る */
-export async function signToken(kind: TokenPayload['kind'], maxAgeSec: number): Promise<string> {
-  const payload: TokenPayload = { kind, exp: Math.floor(Date.now() / 1000) + maxAgeSec };
+/** payload をそのまま署名する（attempts 更新時の再発行にも使う） */
+export async function signPayload(payload: TokenPayload): Promise<string> {
   const body = toBase64Url(new TextEncoder().encode(JSON.stringify(payload)));
   const sig = await crypto.subtle.sign('HMAC', await hmacKey(), new TextEncoder().encode(body));
   return `${body}.${toBase64Url(new Uint8Array(sig))}`;
+}
+
+/** `<payload>.<signature>` 形式の署名付きトークンを作る */
+export async function signToken(kind: TokenPayload['kind'], maxAgeSec: number): Promise<string> {
+  return signPayload({ kind, exp: Math.floor(Date.now() / 1000) + maxAgeSec });
+}
+
+/**
+ * 署名と有効期限を検証し、通れば payload を返す。
+ * 用途が一致しない・改ざん・期限切れ・鍵未設定はすべて null（fail closed）。
+ */
+export async function readToken(
+  token: string | undefined,
+  kind: TokenPayload['kind']
+): Promise<TokenPayload | null> {
+  if (!token) return null;
+  const dot = token.lastIndexOf('.');
+  if (dot < 1) return null;
+
+  try {
+    const body = token.slice(0, dot);
+    const providedSig = fromBase64Url(token.slice(dot + 1));
+    const expectedSig = new Uint8Array(
+      await crypto.subtle.sign('HMAC', await hmacKey(), new TextEncoder().encode(body))
+    );
+    if (!timingSafeEqual(providedSig, expectedSig)) return null;
+
+    const payload = JSON.parse(new TextDecoder().decode(fromBase64Url(body))) as TokenPayload;
+    if (payload.kind !== kind) return null;
+    if (payload.exp <= Math.floor(Date.now() / 1000)) return null;
+    return payload;
+  } catch {
+    return null;
+  }
 }
 
 /** 署名と有効期限を検証する。用途が一致しないトークンは拒否する */
@@ -70,26 +112,22 @@ export async function verifyToken(
   token: string | undefined,
   kind: TokenPayload['kind']
 ): Promise<boolean> {
-  if (!token) return false;
-  const dot = token.lastIndexOf('.');
-  if (dot < 1) return false;
+  return (await readToken(token, kind)) !== null;
+}
 
-  const body = token.slice(0, dot);
-  let providedSig: Uint8Array;
-  try { providedSig = fromBase64Url(token.slice(dot + 1)); } catch { return false; }
-
-  const expectedSig = new Uint8Array(
-    await crypto.subtle.sign('HMAC', await hmacKey(), new TextEncoder().encode(body))
-  );
-  if (!timingSafeEqual(providedSig, expectedSig)) return false;
-
-  try {
-    const payload = JSON.parse(new TextDecoder().decode(fromBase64Url(body))) as TokenPayload;
-    if (payload.kind !== kind) return false;
-    return payload.exp > Math.floor(Date.now() / 1000);
-  } catch {
-    return false;
-  }
+/**
+ * 管理パスワードの照合。未設定なら常に false（fail closed）。
+ * SHA-256 を挟むことで長さを揃え、比較時間から文字数・内容が漏れないようにする。
+ */
+export async function verifyPassword(input: string): Promise<boolean> {
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) return false;
+  const enc = new TextEncoder();
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest('SHA-256', enc.encode(input)),
+    crypto.subtle.digest('SHA-256', enc.encode(expected)),
+  ]);
+  return timingSafeEqual(new Uint8Array(a), new Uint8Array(b));
 }
 
 /**
