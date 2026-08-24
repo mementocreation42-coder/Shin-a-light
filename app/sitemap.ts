@@ -3,6 +3,7 @@ import { getPosts } from '@/lib/wordpress';
 import { works } from '@/data/works';
 import { products } from '@/data/products';
 import { labProjects } from '@/app/lab/data';
+import { tools } from '@/data/tools';
 
 // Sitemap is regenerated at most once per day.
 // Without this, every crawler request (Google, Bing, etc.) triggers a fresh
@@ -28,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/lab',
         '/newsletter',
         '/podcast',
+        '/tools',
     ];
 
     const routes = staticRoutes.map((route) => ({
@@ -76,5 +78,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
     }));
 
-    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes];
+    // 6. Tools (Dynamic from local data)
+    const toolRoutes = tools.map((tool) => ({
+        url: `${BASE_URL}/tools/${tool.slot}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+    }));
+
+    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes, ...toolRoutes];
 }
