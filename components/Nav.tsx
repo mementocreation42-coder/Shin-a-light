@@ -19,7 +19,6 @@ const LINKS: NavLink[] = [
     { label: 'Podcast', href: '/podcast' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
-    { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
 /** /pro 配下（B面）ではナビを Pro のカテゴリに切り替える */
