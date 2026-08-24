@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { JetBrains_Mono, Noto_Sans_JP, Permanent_Marker, Orbitron, Righteous, Caveat } from "next/font/google";
+import { JetBrains_Mono, IBM_Plex_Sans_JP, Permanent_Marker, Orbitron, Righteous, Caveat } from "next/font/google";
 import { headers } from "next/headers";
 import "./globals.css";
 import Nav from "@/components/Nav";
@@ -44,7 +44,7 @@ const caveat = Caveat({
   preload: false,
 });
 
-const notoSansJP = Noto_Sans_JP({
+const ibmPlexSansJP = IBM_Plex_Sans_JP({
   variable: "--font-sans-jp",
   weight: ["400", "500", "700"],
   subsets: ["latin"],
@@ -107,7 +107,7 @@ export default async function RootLayout({
       <head>
         <link rel="preload" href="/images/hero_poster.jpg" as="image" />
       </head>
-      <body className={`${jetbrainsMono.variable} ${notoSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
+      <body className={`${jetbrainsMono.variable} ${ibmPlexSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
         {!isAdmin && !isChromeless && <Nav />}
         <main>{children}</main>
         {!isAdmin && !isChromeless && !isChronicle && <Footer />}
