@@ -159,7 +159,7 @@ function LoginForm() {
       alignItems: 'center',
       justifyContent: 'center',
       background: '#1e1e1e',
-      fontFamily: 'var(--font-mono), monospace',
+      fontFamily: "var(--font-sans-jp), 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', sans-serif",
     }}>
       <div style={{
         width: '100%',
