@@ -60,9 +60,20 @@ function PasswordStep({ from, onAdvance }: { from: string; onAdvance: (s: LoginS
   return (
     <form action={formAction}>
       <input type="hidden" name="from" value={from} />
+      {/* パスワードマネージャーが資格情報を識別するためのユーザー名欄。
+          視覚的には隠すが DOM には残す（display:none だと無視されるため） */}
+      <input
+        name="username"
+        type="text"
+        autoComplete="username"
+        defaultValue="admin"
+        aria-hidden="true"
+        tabIndex={-1}
+        style={{ position: 'absolute', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }}
+      />
       <div style={{ marginBottom: '16px' }}>
         <label style={labelStyle}>パスワード</label>
-        <input name="password" type="password" required autoFocus placeholder="••••••••" style={inputStyle} />
+        <input name="password" type="password" autoComplete="current-password" required autoFocus placeholder="••••••••" style={inputStyle} />
       </div>
 
       {state.error && <p style={{ color: '#e74c3c', fontSize: '13px', marginBottom: '16px' }}>{state.error}</p>}
