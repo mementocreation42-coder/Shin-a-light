@@ -36,7 +36,7 @@ export function autoGrow(ta: HTMLTextAreaElement | null) {
 // 差し替えるだけで済み、保存形式・WordPress側は一切変わらない。
 export type BodySeg =
   | { kind: 'text'; start: number; end: number; virtual?: 'head' | 'mid' | 'tail' | 'insert' | 'between'; styled?: boolean }
-  | { kind: 'media'; mtype: 'image' | 'product' | 'url'; idx: number; start: number; end: number };
+  | { kind: 'media'; mtype: 'image' | 'product' | 'url' | 'mdimage'; idx: number; start: number; end: number };
 
 export const BODY_TOKEN_RE = /^\[(image|product):(\d+)\]$/;
 
@@ -56,17 +56,31 @@ export function isStyledPart(text: string): boolean {
 // 同じ文字列なら結果も同じなので、直前の1件だけ覚えておいて使い回す。
 // 返す配列は呼び出し側で書き換えない前提（変える側は必ずコピーしてから触る）。
 let segCacheBody: string | null = null;
+let segCacheMdImages = false;
 let segCacheSegs: BodySeg[] = [];
 
-export function parseBodySegments(body: string): BodySeg[] {
-  if (segCacheBody !== body) {
-    segCacheSegs = computeBodySegments(body);
+/** 単独行の Markdown 画像記法。ニュースレター本文でのみ画像ブロックとして扱う */
+export const MD_IMAGE_RE = /^!\[([^\]]*)\]\(([^)\s]+)\)$/;
+
+export interface ParseOptions {
+  /**
+   * `![alt](url)` だけの段落を画像ブロックとして切り出す。
+   * 記事本文は [image:N] トークン方式なので、ニュースレターだけ true にする。
+   */
+  mdImages?: boolean;
+}
+
+export function parseBodySegments(body: string, opts?: ParseOptions): BodySeg[] {
+  const mdImages = opts?.mdImages ?? false;
+  if (segCacheBody !== body || segCacheMdImages !== mdImages) {
+    segCacheSegs = computeBodySegments(body, mdImages);
     segCacheBody = body;
+    segCacheMdImages = mdImages;
   }
   return segCacheSegs;
 }
 
-function computeBodySegments(body: string): BodySeg[] {
+function computeBodySegments(body: string, mdImages = false): BodySeg[] {
   // 空行区切りで分割しつつ、各パートの body 上の位置を保持する
   // textEnd は3個以上ある改行のうち、ユーザーが追加した分だけを含む。
   // 末尾2個はメディアとの構造上の区切りとして textarea の外に残す。
@@ -122,6 +136,11 @@ function computeBodySegments(body: string): BodySeg[] {
         partStart += leadingBreaks.length;
         partText = remainder;
       }
+    }
+
+    if (mdImages && MD_IMAGE_RE.test(partText.trim())) {
+      segs.push({ kind: 'media', mtype: 'mdimage', idx: -1, start: partStart, end: p.end });
+      continue;
     }
 
     if (isStandaloneUrl(partText.trim())) {

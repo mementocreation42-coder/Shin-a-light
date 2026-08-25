@@ -7,11 +7,14 @@ import {
   autoGrow,
   editorTextToRaw,
   insertBlockAt,
+  MD_IMAGE_RE,
   parseBodySegments,
   projectTextForEditor,
+  removeSegFromBody,
   spliceSeg,
   type BodySeg,
 } from '@/components/admin/bodyBlocks';
+import MediaPicker from '@/components/admin/MediaPicker';
 import styles from '@/app/admin/admin.module.css';
 import nl from '@/app/admin/newsletter/newsletter.module.css';
 
@@ -46,7 +49,11 @@ const SLASH_COMMANDS = [
   { label: '小見出し', icon: 'H3', insert: '### ' },
   { label: '箇条書き', icon: 'UL', insert: '- ' },
   { label: '引用',     icon: '❝',  insert: '> ' },
+  // 差し込む文字が決まらないものは action で分岐する（メディアを選んでから確定）
+  { label: '画像',     icon: 'IMG', action: 'image' },
 ] as const;
+
+type SlashCommand = (typeof SLASH_COMMANDS)[number];
 
 interface SlashMenuState {
   /** どのブロックで開いているか */
@@ -58,7 +65,7 @@ interface SlashMenuState {
   end: number;
 }
 
-function filterCommands(query: string) {
+function filterCommands(query: string): readonly SlashCommand[] {
   if (!query) return SLASH_COMMANDS.slice();
   return SLASH_COMMANDS.filter(
     (c) => c.label.includes(query) || c.icon.toLowerCase().includes(query)
@@ -92,11 +99,21 @@ export default function NewsletterEditor({
   const [testMsg, setTestMsg] = useState('');
 
   // 本文はブロックごとに textarea を持つ。キャレットは本文全体での位置で扱う
-  const bodySegs = useMemo(() => parseBodySegments(body), [body]);
+  const bodySegs = useMemo(() => parseBodySegments(body, { mdImages: true }), [body]);
   const taRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const composingRef = useRef(false);
   // 差し替え後にカーソルを戻す位置（本文全体での位置）
   const pendingCaretRef = useRef<number | null>(null);
+
+  // 画像。メディアから選ぶ / ファイルを落とす の2経路がある
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  /** 画像を差し込む本文上の位置。null なら末尾 */
+  const imagePosRef = useRef<number | null>(null);
+  /** 非同期処理から最新の本文を読むための同期用 */
+  const bodyRef = useRef(body);
+  bodyRef.current = body;
 
   const [slashMenu, setSlashMenu] = useState<SlashMenuState | null>(null);
   const [slashIndex, setSlashIndex] = useState(0);
@@ -181,16 +198,24 @@ export default function NewsletterEditor({
   }
 
   /** メニューから選ばれた書式を当てる。打った「/xxx」は消す */
-  function applySlashCommand(cmd: (typeof SLASH_COMMANDS)[number]) {
+  function applySlashCommand(cmd: SlashCommand) {
     if (!slashMenu) return;
     const { start, end } = slashMenu;
     setSlashMenu(null);
 
     const cleaned = body.slice(0, start) + body.slice(end);
 
+    // 画像は差し込む文字が未定。「/画像」の字だけ消して、選び終えてから確定する
+    if ('action' in cmd) {
+      updateBody(cleaned, start);
+      imagePosRef.current = start;
+      setPickerOpen(true);
+      return;
+    }
+
     // いま居るブロックが空になるなら、そのブロック自体を書式に変える。
     // 空の段落を残したまま下に足すと、送信時によけいな余白になる
-    const target = parseBodySegments(cleaned).find(
+    const target = parseBodySegments(cleaned, { mdImages: true }).find(
       (s) => s.kind === 'text' && !s.virtual && start >= s.start && start <= s.end
     );
     if (target && cleaned.slice(target.start, target.end).trim() === '') {
@@ -201,6 +226,48 @@ export default function NewsletterEditor({
 
     const inserted = insertBlockAt(cleaned, start, cmd.insert);
     updateBody(inserted.body, inserted.end);
+  }
+
+  // ===== 画像 =====
+
+  /** いま編集中のブロックの直後。どこも触っていなければ本文の末尾 */
+  function imageInsertPos(): number {
+    if (imagePosRef.current !== null) return Math.min(imagePosRef.current, bodyRef.current.length);
+    const idx = taRefs.current.findIndex((ta) => ta && ta === document.activeElement);
+    const seg = idx >= 0 ? bodySegs[idx] : null;
+    return seg ? seg.end : bodyRef.current.length;
+  }
+
+  /** Markdown の画像記法で1ブロック差し込む。メール側はこの記法をそのまま描画する */
+  function insertImage(url: string, alt = '') {
+    const pos = imageInsertPos();
+    imagePosRef.current = null;
+    const inserted = insertBlockAt(bodyRef.current, pos, `![${alt}](${url})`);
+    updateBody(inserted.body, inserted.blockEnd);
+  }
+
+  async function uploadAndInsert(file: File) {
+    if (!editable) return;
+    setUploading(true);
+    setError('');
+    try {
+      const fd = new FormData();
+      fd.append('image', file, file.name);
+      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'アップロードに失敗しました');
+      insertImage(data.url);
+    } catch (err) {
+      imagePosRef.current = null;
+      setError(err instanceof Error ? err.message : 'アップロードに失敗しました');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function removeImage(seg: BodySeg) {
+    const next = removeSegFromBody(bodyRef.current, seg);
+    updateBody(next, Math.min(seg.start, next.length));
   }
 
   /** ブロックの編集。表示上の文字を Markdown 記号つきに戻してから本文へ差し込む */
@@ -498,7 +565,25 @@ export default function NewsletterEditor({
             />
 
             <div
-              className={nl.mailBody}
+              className={`${nl.mailBody} ${dragOver ? nl.mailBodyDrop : ''}`}
+              onDragOver={(e) => {
+                // ファイル以外（文字の選択など）は素通しする
+                if (!editable || !e.dataTransfer.types.includes('Files')) return;
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={(e) => {
+                if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+                setDragOver(false);
+              }}
+              onDrop={(e) => {
+                if (!editable) return;
+                const file = Array.from(e.dataTransfer.files).find((f) => f.type.startsWith('image/'));
+                if (!file) return;
+                e.preventDefault();
+                setDragOver(false);
+                void uploadAndInsert(file);
+              }}
               onMouseDown={(e) => {
                 // 余白を押したら末尾のブロックにカーソルを置く
                 if (e.target !== e.currentTarget) return;
@@ -510,6 +595,27 @@ export default function NewsletterEditor({
               }}
             >
               {bodySegs.map((seg, i) => {
+                // 画像は入力欄ではなく、届く形そのままの絵として置く
+                if (seg.kind === 'media' && seg.mtype === 'mdimage') {
+                  const m = MD_IMAGE_RE.exec(body.slice(seg.start, seg.end).trim());
+                  return (
+                    <div key={`img-${seg.start}`} className={nl.mailImageBlock}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={m?.[2] ?? ''} alt={m?.[1] ?? ''} className={nl.mailImage} />
+                      {editable && (
+                        <button
+                          type="button"
+                          onClick={() => removeImage(seg)}
+                          className={nl.mailImageRemove}
+                          aria-label="画像を削除"
+                        >
+                          削除
+                        </button>
+                      )}
+                    </div>
+                  );
+                }
+
                 const raw = seg.kind === 'text' && !seg.virtual ? body.slice(seg.start, seg.end) : '';
                 const { format, value } = projectTextForEditor(raw);
                 const Wrapper = ({ plain: 'div', h2: 'h2', h3: 'h3', quote: 'blockquote', list: 'ul' } as const)[format];
@@ -618,6 +724,22 @@ export default function NewsletterEditor({
           </p>
         </div>
       </div>
+
+      {uploading && <p className={nl.uploadingNote}>画像をアップロード中…</p>}
+
+      {pickerOpen && (
+        <MediaPicker
+          title="画像を選ぶ"
+          onSelect={(item) => {
+            setPickerOpen(false);
+            insertImage(item.source_url, item.alt_text || '');
+          }}
+          onClose={() => {
+            imagePosRef.current = null;
+            setPickerOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

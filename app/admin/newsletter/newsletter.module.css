@@ -669,3 +669,58 @@
   overflow-x: auto;
   white-space: pre;
 }
+
+/* ===== 本文中の画像 ===== */
+
+/* ファイルを持ってきている間の受け皿 */
+.mailBodyDrop {
+  outline: 2px dashed #ff764d;
+  outline-offset: 8px;
+  border-radius: 4px;
+}
+
+.mailImageBlock {
+  position: relative;
+  margin: 0 0 18px;
+}
+
+/* 実際に届くメールと同じ見え方にする（max-width 536px / 角丸 8px） */
+.mailImage {
+  display: block;
+  width: 100%;
+  max-width: 536px;
+  height: auto;
+  border: 0;
+  border-radius: 8px;
+}
+
+.mailImageRemove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.mailImageBlock:hover .mailImageRemove,
+.mailImageRemove:focus-visible {
+  opacity: 1;
+}
+
+.mailImageRemove:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.uploadingNote {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: #a0a0a0;
+}
