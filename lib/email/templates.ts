@@ -139,3 +139,47 @@ Shine a Light のニュースレターにご登録ありがとうございます
   // 確認メールはまだ購読が成立していないので解除リンクは出さない
   return { html: layout({ preheader: '登録の確認をお願いします', content }), text };
 }
+
+/** 登録完了直後に送るお礼＋プレゼント（selpico3）メール */
+export function renderWelcomeEmail(p: { presetUrl: string; unsubUrl: string }): { html: string; text: string } {
+  const content = `
+<h1 style="margin:0 0 20px;font-size:22px;line-height:1.5;font-weight:700;color:${palette.text};">ご登録ありがとうございます</h1>
+<p style="margin:0 0 24px;font-size:16px;line-height:1.85;color:${palette.text};">
+Shine a Light のニュースレターへようこそ。<br />
+映像・写真・AI・釣り・健康——暮らしを軽くするヒントを、不定期でお届けします。
+</p>
+
+<p style="margin:0 0 12px;font-size:16px;line-height:1.85;color:${palette.text};">
+お礼に、SAL謹製の写真現像プリセット<strong>「selpico3」</strong>をお贈りします。<br />
+下のボタンからダウンロードしてください。
+</p>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;">
+<tr><td align="center" bgcolor="${palette.accent}" style="border-radius:6px;">
+  <a href="${p.presetUrl}" style="display:inline-block;padding:14px 32px;font-family:${FONT};font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;">selpico3 をダウンロード</a>
+</td></tr>
+</table>
+
+<p style="margin:0 0 24px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
+Lightroom の現像画面 → プリセットパネルの「＋」→「プリセットを読み込み」で、<br />
+ダウンロードした .xmp ファイルを選ぶと使えるようになります。<br />
+うまく開けない場合は、次のURLをブラウザに貼り付けてください。<br />
+<a href="${p.presetUrl}" style="color:${palette.accent};word-break:break-all;">${escapeHtml(p.presetUrl)}</a>
+</p>
+
+<p style="margin:0;font-size:14px;line-height:1.85;color:${palette.text};">
+それでは、次の便でお会いしましょう。
+</p>`;
+
+  const text =
+    `ご登録ありがとうございます\n\n` +
+    `Shine a Light のニュースレターへようこそ。\n` +
+    `映像・写真・AI・釣り・健康——暮らしを軽くするヒントを、不定期でお届けします。\n\n` +
+    `お礼に、写真現像プリセット「selpico3」をお贈りします。\n` +
+    `ダウンロード: ${p.presetUrl}\n\n` +
+    `Lightroom の現像画面 → プリセットパネルの「＋」→「プリセットを読み込み」で\n` +
+    `.xmp ファイルを選ぶと使えるようになります。\n\n` +
+    `解除はこちら: ${p.unsubUrl}\n`;
+
+  return { html: layout({ preheader: 'ようこそ。プレゼントの selpico3 をどうぞ', content, unsubUrl: p.unsubUrl }), text };
+}

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { isDbConfigured } from '@/lib/db';
 import { confirmSubscriber } from '@/lib/newsletter';
+import { renderWelcomeEmail } from '@/lib/email/templates';
+import { sendEmail } from '@/lib/email/mailer';
 
 export const metadata: Metadata = {
     title: '登録の確認',
@@ -20,7 +22,28 @@ export default async function ConfirmPage({
     let result: 'confirmed' | 'already_active' | 'invalid' = 'invalid';
     if (token && isDbConfigured()) {
         try {
-            result = await confirmSubscriber(token);
+            const outcome = await confirmSubscriber(token);
+            result = outcome.result;
+
+            // 登録が成立した瞬間に、お礼＋プレゼント（selpico3）を届ける。
+            // 送信失敗で登録完了画面を壊さない（ログだけ残す）。
+            if (outcome.result === 'confirmed' && outcome.email && outcome.unsubToken) {
+                const origin = process.env.SITE_URL ?? 'https://www.shinealight.jp';
+                const mail = renderWelcomeEmail({
+                    presetUrl: `${origin}/presets/selpico3.xmp`,
+                    unsubUrl: `${origin}/newsletter/unsubscribe?token=${encodeURIComponent(outcome.unsubToken)}`,
+                });
+                try {
+                    await sendEmail({
+                        to: outcome.email,
+                        subject: '【Shine a Light】ようこそ。プレゼントの selpico3 をどうぞ',
+                        html: mail.html,
+                        text: mail.text,
+                    });
+                } catch (error) {
+                    console.error('[Newsletter] welcome mail failed:', error);
+                }
+            }
         } catch (error) {
             console.error('[Newsletter] confirm failed:', error);
         }

@@ -48,10 +48,10 @@ check('登録直後は pending', (await countByStatus()).pending === 1);
 const r1b = await registerSubscriber({ email: 'alice@example.com' });
 check('5分以内の再送信はトークンを返さない（連打・爆撃対策）', r1b.confirmToken === null);
 
-check('でたらめなトークンは invalid', (await confirmSubscriber('nope')) === 'invalid');
-check('正しいトークンで confirmed', (await confirmSubscriber(r1.confirmToken!)) === 'confirmed');
+check('でたらめなトークンは invalid', (await confirmSubscriber('nope')).result === 'invalid');
+check('正しいトークンで confirmed', (await confirmSubscriber(r1.confirmToken!)).result === 'confirmed');
 check('確認後は active', (await countByStatus()).active === 1);
-check('同じリンクを二度踏むと already_active', (await confirmSubscriber(r1.confirmToken!)) === 'already_active');
+check('同じリンクを二度踏むと already_active', (await confirmSubscriber(r1.confirmToken!)).result === 'already_active');
 check('active への再登録は何も送らない', (await registerSubscriber({ email: 'alice@example.com' })).confirmToken === null);
 
 console.log('\n--- 解除 → 再登録 ---');
@@ -64,7 +64,7 @@ check('でたらめな解除トークンは invalid', (await unsubscribeByToken(
 const r2 = await registerSubscriber({ email: 'alice@example.com' });
 check('解除後の再登録は確認メールからやり直し（トークンが返る）', Boolean(r2.confirmToken));
 check('再登録直後は pending に戻る', (await countByStatus()).pending === 1);
-check('古い確認トークンでは復活しない', (await confirmSubscriber(r1.confirmToken!)) === 'invalid');
+check('古い確認トークンでは復活しない', (await confirmSubscriber(r1.confirmToken!)).result === 'invalid');
 await confirmSubscriber(r2.confirmToken!);
 
 console.log('\n--- 手動登録・一覧 ---');

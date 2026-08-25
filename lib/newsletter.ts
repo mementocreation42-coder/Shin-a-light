@@ -143,26 +143,36 @@ export type ConfirmResult = 'confirmed' | 'already_active' | 'invalid';
  * 正規の利用者にエラーを見せることになる。
  * 状態が pending のときしか効かないので、残しておいても再利用はされない。
  */
-export async function confirmSubscriber(token: string): Promise<ConfirmResult> {
-  const sql = getSql();
-  if (!token) return 'invalid';
+export interface ConfirmOutcome {
+  result: ConfirmResult;
+  /** result が 'confirmed' のときだけ入る。ウェルカムメールの宛先 */
+  email?: string;
+  /** 同上。ウェルカムメールに載せる解除リンク用 */
+  unsubToken?: string;
+}
 
-  const rows = await sql<{ id: string }>`
+export async function confirmSubscriber(token: string): Promise<ConfirmOutcome> {
+  const sql = getSql();
+  if (!token) return { result: 'invalid' };
+
+  const rows = await sql<{ id: string; email: string; unsub_token: string }>`
     update subscribers
        set status = 'active',
            consented_at = now(),
            updated_at = now()
      where confirm_token = ${token} and status = 'pending'
-     returning id
+     returning id, email, unsub_token
   `;
-  if (rows.length > 0) return 'confirmed';
+  if (rows.length > 0) {
+    return { result: 'confirmed', email: rows[0].email, unsubToken: rows[0].unsub_token };
+  }
 
   const found = await sql<{ status: SubscriberStatus }>`
     select status from subscribers where confirm_token = ${token}
   `;
 
   // 解除済み・不達のアドレスを古いリンクで復活させない
-  return found[0]?.status === 'active' ? 'already_active' : 'invalid';
+  return { result: found[0]?.status === 'active' ? 'already_active' : 'invalid' };
 }
 
 export type UnsubscribeResult = 'unsubscribed' | 'already_off' | 'invalid';
