@@ -76,6 +76,25 @@ function PasswordStep({ from, onAdvance }: { from: string; onAdvance: (s: LoginS
         <input name="password" type="password" autoComplete="current-password" required autoFocus placeholder="••••••••" style={inputStyle} />
       </div>
 
+      <label style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '16px',
+        fontSize: '13px',
+        color: '#a0a0a0',
+        cursor: 'pointer',
+        userSelect: 'none',
+      }}>
+        <input
+          name="remember"
+          type="checkbox"
+          defaultChecked
+          style={{ width: 16, height: 16, accentColor: '#ff764d', cursor: 'pointer' }}
+        />
+        ログインしたままにする（30日）
+      </label>
+
       {state.error && <p style={{ color: '#e74c3c', fontSize: '13px', marginBottom: '16px' }}>{state.error}</p>}
 
       <button type="submit" disabled={isPending} style={submitStyle(isPending)}>

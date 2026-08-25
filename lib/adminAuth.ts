@@ -5,6 +5,8 @@ export const SESSION_COOKIE = 'sal_admin_session';
 export const PENDING_COOKIE = 'sal_admin_pending';
 
 export const SESSION_MAX_AGE_SEC = 60 * 60 * 24 * 30;
+// 「ログインしたままにする」を外した場合の有効期限（Cookie はブラウザ終了で消える）
+export const SESSION_SHORT_MAX_AGE_SEC = 60 * 60 * 24;
 // パスワード通過から TOTP 入力までの猶予
 export const PENDING_MAX_AGE_SEC = 5 * 60;
 
@@ -15,6 +17,8 @@ export interface TokenPayload {
   exp: number;
   /** pending のみ：TOTP の失敗回数（ブルートフォース抑止） */
   attempts?: number;
+  /** pending のみ：「ログインしたままにする」の選択を TOTP 段階まで引き継ぐ */
+  remember?: boolean;
 }
 
 // ===== base64url =====

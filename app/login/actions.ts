@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import {
   SESSION_COOKIE, PENDING_COOKIE,
-  SESSION_MAX_AGE_SEC, PENDING_MAX_AGE_SEC,
+  SESSION_MAX_AGE_SEC, SESSION_SHORT_MAX_AGE_SEC, PENDING_MAX_AGE_SEC,
   signToken, signPayload, readToken, verifyTotp, verifyPassword, isTotpEnabled,
 } from '@/lib/adminAuth';
 
@@ -39,11 +39,14 @@ const cookieBase = {
   path: '/',
 };
 
-async function startSession() {
+async function startSession(remember: boolean) {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, await signToken('session', SESSION_MAX_AGE_SEC), {
+  const maxAge = remember ? SESSION_MAX_AGE_SEC : SESSION_SHORT_MAX_AGE_SEC;
+  cookieStore.set(SESSION_COOKIE, await signToken('session', maxAge), {
     ...cookieBase,
-    maxAge: SESSION_MAX_AGE_SEC,
+    // remember を外した場合は maxAge を付けない＝ブラウザ終了で消えるセッション Cookie。
+    // トークン自体の exp（24h）が上限として残る。
+    ...(remember ? { maxAge } : {}),
   });
   cookieStore.delete(PENDING_COOKIE);
 }
@@ -52,6 +55,7 @@ async function startSession() {
 export async function login(prevState: LoginState, formData: FormData): Promise<LoginState> {
   const password = (formData.get('password') as string) || '';
   const from = safeInternalPath(formData.get('from'));
+  const remember = formData.get('remember') === 'on';
 
   // 未設定なら verifyPassword が常に false ＝ ログイン不能（fail closed）
   if (!(await verifyPassword(password))) {
@@ -61,12 +65,13 @@ export async function login(prevState: LoginState, formData: FormData): Promise<
 
   // 認証アプリが未設定の環境ではパスワードのみで通す（設定前にロックアウトさせない）
   if (!isTotpEnabled()) {
-    await startSession();
+    await startSession(remember);
     redirect(from);
   }
 
   const cookieStore = await cookies();
-  cookieStore.set(PENDING_COOKIE, await signToken('pending', PENDING_MAX_AGE_SEC), {
+  const exp = Math.floor(Date.now() / 1000) + PENDING_MAX_AGE_SEC;
+  cookieStore.set(PENDING_COOKIE, await signPayload({ kind: 'pending', exp, remember }), {
     ...cookieBase,
     maxAge: PENDING_MAX_AGE_SEC,
   });
@@ -106,7 +111,7 @@ export async function verifyCode(prevState: LoginState, formData: FormData): Pro
     return { error: `認証コードが違います（あと${MAX_TOTP_ATTEMPTS - attempts}回）`, stage: 'totp' };
   }
 
-  await startSession();
+  await startSession(pending.remember ?? true);
   redirect(from);
 }
 
