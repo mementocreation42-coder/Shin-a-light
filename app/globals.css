@@ -1773,8 +1773,8 @@ select:disabled {
 
 .journal-card {
   display: block;
-  background-color: #EDEDED;
-  border: 1px solid rgba(237, 237, 237, 0.5);
+  background-color: #F6F5F1;
+  border: 1px solid rgba(246, 245, 241, 0.5);
   border-radius: 16px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
@@ -1787,14 +1787,14 @@ select:disabled {
 .journal-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  border-color: rgba(237, 237, 237, 0.7);
+  border-color: rgba(246, 245, 241, 0.7);
 }
 
 .journal-card-image {
   aspect-ratio: 16 / 9;
   background-size: cover;
   background-position: center;
-  background-color: #EDEDED;
+  background-color: #F6F5F1;
 }
 
 .journal-card-content {
@@ -1843,8 +1843,8 @@ select:disabled {
 }
 
 .journal-article-body {
-  background-color: #EDEDED;
-  border: 1px solid rgba(237, 237, 237, 0.5);
+  background-color: #F6F5F1;
+  border: 1px solid rgba(246, 245, 241, 0.5);
   border-radius: 16px;
   overflow: clip;
   padding: 32px;
