@@ -1,10 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { JetBrains_Mono, IBM_Plex_Sans_JP, Permanent_Marker, Orbitron, Righteous, Caveat } from "next/font/google";
-import { headers } from "next/headers";
 import "./globals.css";
-import Nav from "@/components/Nav";
-import Footer from "@/components/Footer";
-import FloatingNav from "@/components/FloatingNav";
+import { SiteNav, SiteFooter } from "@/components/SiteChrome";
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -94,24 +91,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = await headers();
-  const pathname = headersList.get('x-pathname') || '';
-  const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
-  const isChromeless = false;
-  // Chronicle is a fullscreen immersive page with a fixed dashboard panel;
-  // the global footer and floating nav would be covered by / overlap the panel.
-  const isChronicle = pathname.startsWith('/chronicle');
-
   return (
     <html lang="ja">
       <head>
         <link rel="preload" href="/images/hero_poster.jpg" as="image" />
       </head>
       <body className={`${jetbrainsMono.variable} ${ibmPlexSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
-        {!isAdmin && !isChromeless && <Nav />}
+        {/* クロームの出し分けはクライアント側（SiteChrome）で行う。
+            サーバー側でヘッダ判定するとクライアント遷移に追従できない */}
+        <SiteNav />
         <main>{children}</main>
-        {!isAdmin && !isChromeless && !isChronicle && <Footer />}
-        {!isAdmin && !isChromeless && !isChronicle && <FloatingNav />}
+        <SiteFooter />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
