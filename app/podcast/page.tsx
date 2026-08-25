@@ -1,3 +1,4 @@
+import NewsletterCta from '@/components/NewsletterCta';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { getPodcast, SPOTIFY_SHOW_ID, SPOTIFY_SHOW_URL } from '@/lib/podcast';
@@ -163,6 +164,8 @@ export default async function PodcastPage({ searchParams }: PodcastPageProps) {
                     />
                 </div>
             )}
+
+            <NewsletterCta lede="番組の裏側や補足はメールでも。映像・写真・AI・釣り・暮らしの話を不定期で届けています。" />
         </div>
     );
 }

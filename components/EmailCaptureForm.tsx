@@ -30,10 +30,11 @@ export default function EmailCaptureForm({ productId, downloadPath }: EmailCaptu
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, productId }),
                 }),
+                // 登録元ページは API 側がリクエストヘッダの referer から取る
                 fetch('/api/newsletter', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, referer: `store/${productId}` }),
+                    body: JSON.stringify({ email }),
                 }),
             ]);
 
@@ -85,7 +86,7 @@ export default function EmailCaptureForm({ productId, downloadPath }: EmailCaptu
             <p className="email-capture-desc">
                 メールアドレスをご登録いただくと、そのままダウンロードが開始されます。
                 <br /><br />
-                <span style={{ color: '#999', fontSize: '12px' }}>🍖 スパムは送りません。<br />💌 SAL LETTERを不定期でお届けします。</span>
+                <span style={{ color: '#999', fontSize: '12px' }}>💌 ダウンロードとあわせて、ニュースレター「SAL LETTER」にも登録されます（いつでも解除できます）。<br />🍖 スパムは送りません。</span>
             </p>
 
             <div className="email-input-group">

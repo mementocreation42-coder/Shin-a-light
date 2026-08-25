@@ -42,6 +42,7 @@ export default function Footer() {
             )}
 
             <div className="footer-links" style={{ marginBottom: "1.5rem" }}>
+                <Link href="/newsletter">ニュースレター</Link>
                 <Link href="/terms">利用規約</Link>
                 <Link href="/privacy">プライバシーポリシー</Link>
                 <Link href="/legal">特定商取引法に基づく表記</Link>

@@ -4,6 +4,7 @@ import Philosophy from "@/components/Philosophy";
 import About from "@/components/About";
 import Works from "@/components/Works";
 import Contact from "@/components/Contact";
+import NewsletterCta from "@/components/NewsletterCta";
 
 export const metadata: Metadata = {
   alternates: {
@@ -19,6 +20,7 @@ export default function Home() {
       <About />
       <Works />
       <Contact />
+      <NewsletterCta />
     </>
   );
 }

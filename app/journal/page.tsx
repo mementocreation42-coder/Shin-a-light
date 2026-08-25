@@ -1,3 +1,4 @@
+import NewsletterCta from '@/components/NewsletterCta';
 import React from 'react';
 import type { Metadata } from 'next';
 import { getPosts, getCategories, GALLERY_CATEGORY_SLUG } from '@/lib/wordpress';
@@ -64,6 +65,7 @@ export default async function JournalPage({ searchParams }: PageProps) {
                     selectedCategory={categoryId ?? null}
                 />
             </div>
+            <NewsletterCta lede="記事の続きはメールでも。映像・写真・AI・暮らしのヒントを不定期で届けています。" />
         </main>
     );
 }
