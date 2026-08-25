@@ -63,12 +63,17 @@ export default async function NewsletterPage({
   return (
     <NewsletterShell
       actions={
-        <form action={newIssue}>
-          <button type="submit" className={styles.primaryBtn}>
-            <span className={styles.btnIcon}>＋</span>
-            <span className={styles.btnText}>新しい号</span>
-          </button>
-        </form>
+        <>
+          <Link href="/admin/newsletter/templates" className={styles.ghostBtn}>
+            自動送信メール
+          </Link>
+          <form action={newIssue}>
+            <button type="submit" className={styles.primaryBtn}>
+              <span className={styles.btnIcon}>＋</span>
+              <span className={styles.btnText}>新しい号</span>
+            </button>
+          </form>
+        </>
       }
     >
       {fileMode && (
