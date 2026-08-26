@@ -8938,11 +8938,12 @@ body:has(.b-side) .approach-cta-title {
   font-weight: 700;
 }
 
-/* 共感の締めは一言のパンチラインとして大きく */
+/* 共感の締め：本文と同じ調子で、少しだけ重みを持たせる */
 body:has(.b-side) .pro-empathy-close {
-  font-size: clamp(18px, 2.2vw, 24px);
-  font-weight: 700;
-  line-height: 1.7;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 2;
+  max-width: 46em;
 }
 
 /* ============================================
