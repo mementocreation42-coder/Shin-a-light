@@ -19,6 +19,8 @@ export interface SendParams {
   text: string;
   /** List-Unsubscribe など。Gmail の一括送信者要件で必要になる */
   headers?: Record<string, string>;
+  /** 返信先。問い合わせフォームで、返信が送信者本人に届くようにする */
+  replyTo?: string;
 }
 
 export interface SendResult {
@@ -58,6 +60,7 @@ async function sendViaResend(params: SendParams): Promise<SendResult> {
     body: JSON.stringify({
       from: `${from.name} <${from.email}>`,
       to: [params.to],
+      ...(params.replyTo ? { reply_to: [params.replyTo] } : {}),
       subject: params.subject,
       html: params.html,
       text: params.text,
@@ -87,6 +90,7 @@ async function sendViaBrevo(params: SendParams): Promise<SendResult> {
     body: JSON.stringify({
       sender: { email: from.email, name: from.name },
       to: [{ email: params.to }],
+      ...(params.replyTo ? { replyTo: { email: params.replyTo } } : {}),
       subject: params.subject,
       htmlContent: params.html,
       textContent: params.text,
@@ -118,6 +122,7 @@ async function sendViaOutbox(params: SendParams): Promise<SendResult> {
   await writeFile(
     join(dir, `${id}-${safeTo}.txt`),
     `To: ${params.to}\nSubject: ${params.subject}\n` +
+      (params.replyTo ? `Reply-To: ${params.replyTo}\n` : '') +
       Object.entries(params.headers ?? {}).map(([k, v]) => `${k}: ${v}`).join('\n') +
       `\n\n${params.text}\n`,
     'utf8'
