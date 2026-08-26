@@ -6612,7 +6612,7 @@ body:has(.b-side) .hojokin-card.is-closed {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 12px;
 }
 
@@ -9874,6 +9874,13 @@ body:has(.b-side) .pro-trust dt {
 .hojokin-matrix .hojokin-status { font-size: 10.5px; }
 .hojokin-matrix .hojokin-flag { font-size: 11px; }
 
+/* /pro/ai 教えることカードの見出し */
+.ai-topic-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
 .hojokin-matrix-note {
   margin-top: 10px;
   font-size: 11.5px;
@@ -10160,6 +10167,14 @@ body:has(.b-side .approach-page) {
   background: #e3d7ea;
 }
 
+body:has(.b-side .ai-page) {
+  background: #f7ddd0;
+}
+
+body:has(.b-side) .ai-page .pro-empathy {
+  background: transparent;
+}
+
 /* ページ色の上では、独自の帯を持つセクションを透過させて一色に保つ */
 body:has(.b-side) .visual-page .pro-empathy,
 body:has(.b-side) .systems-page .pro-empathy {
@@ -10171,11 +10186,13 @@ body:has(.b-side) .pro-index-card.is-visual { background: #cfe5d0; }
 body:has(.b-side) .pro-index-card.is-systems { background: #c9dcf2; }
 body:has(.b-side) .pro-index-card.is-hojokin { background: #f5e4b8; }
 body:has(.b-side) .pro-index-card.is-approach { background: #e3d7ea; }
+body:has(.b-side) .pro-index-card.is-ai { background: #f7ddd0; }
 
 body:has(.b-side) .pro-index-card.is-visual .pro-index-label,
 body:has(.b-side) .pro-index-card.is-systems .pro-index-label,
 body:has(.b-side) .pro-index-card.is-hojokin .pro-index-label,
-body:has(.b-side) .pro-index-card.is-approach .pro-index-label {
+body:has(.b-side) .pro-index-card.is-approach .pro-index-label,
+body:has(.b-side) .pro-index-card.is-ai .pro-index-label {
   background: rgba(255, 255, 255, 0.75);
 }
 
@@ -10183,3 +10200,4 @@ body:has(.b-side) .pro-index-card.is-visual:hover { background: #c0dcc2; }
 body:has(.b-side) .pro-index-card.is-systems:hover { background: #b8d2ef; }
 body:has(.b-side) .pro-index-card.is-hojokin:hover { background: #f1dca3; }
 body:has(.b-side) .pro-index-card.is-approach:hover { background: #d9c9e3; }
+body:has(.b-side) .pro-index-card.is-ai:hover { background: #f3d0bf; }

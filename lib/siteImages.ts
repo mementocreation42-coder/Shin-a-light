@@ -20,6 +20,7 @@ export const SITE_IMAGE_SLOTS: SiteImageSlot[] = [
     { slot: 'pro-index-systems', label: '索引カード：システム', note: '/pro の4枚カード（青）', defaultUrl: '/images/photos/DSC00066.jpg' },
     { slot: 'pro-index-hojokin', label: '索引カード：補助金', note: '/pro の4枚カード（黄）', defaultUrl: '/images/photos/DJI_0005.jpg' },
     { slot: 'pro-index-approach', label: '索引カード：考え方', note: '/pro の4枚カード（紫）', defaultUrl: '/images/photos/DJI_0017.jpg' },
+    { slot: 'pro-index-ai', label: '索引カード：AI教室', note: '/pro の索引カード（コーラル）', defaultUrl: '/images/photos/DSC00109.jpg' },
     // /pro 映像と写真は、続けてこそ効く
     { slot: 'pro-visual-box', label: 'ビジュアル戦略ボックス', note: '/pro「映像と写真は、続けてこそ効く」の写真', defaultUrl: '/images/photos/DJI_0012.jpg' },
     // /pro 進め方 5ステップ
