@@ -153,10 +153,8 @@ export default async function RootLayout({
               ],
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "Mugi Kaifu",
+                "addressLocality": "Mugi, Kaifu District",
                 "addressRegion": "Tokushima",
-                "postalCode": "775-0001",
-                "streetAddress": "1465 Kouchi",
                 "addressCountry": "JP"
               },
               "worksFor": {
@@ -166,10 +164,8 @@ export default async function RootLayout({
                 "areaServed": "JP",
                 "address": {
                   "@type": "PostalAddress",
-                  "addressLocality": "Mugi Kaifu",
+                  "addressLocality": "Mugi, Kaifu District",
                   "addressRegion": "Tokushima",
-                  "postalCode": "775-0001",
-                  "streetAddress": "1465 Kochi",
                   "addressCountry": "JP"
                 }
               }
@@ -201,10 +197,8 @@ export default async function RootLayout({
               ],
               "address": {
                 "@type": "PostalAddress",
-                "addressLocality": "牟岐町",
+                "addressLocality": "海部郡牟岐町",
                 "addressRegion": "徳島県",
-                "postalCode": "775-0001",
-                "streetAddress": "河内1465",
                 "addressCountry": "JP"
               },
               "geo": {
