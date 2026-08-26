@@ -49,7 +49,7 @@ export default function Footer() {
             </div>
 
             <div className="footer-info" style={{ marginBottom: "1rem", fontSize: "0.85rem", opacity: 0.8 }} itemScope itemType="https://schema.org/LocalBusiness">
-                <p itemProp="name" style={{ fontWeight: "bold", marginBottom: "0.5rem" }}>Shine a Light</p>
+                <p itemProp="name" className="footer-logo">Shine a Light</p>
                 <address itemProp="address" itemScope itemType="https://schema.org/PostalAddress" style={{ fontStyle: "normal", lineHeight: 1.6 }}>
                     <span itemProp="postalCode">〒775-0001</span><br />
                     <span itemProp="streetAddress">1465 Kochi</span>&nbsp;

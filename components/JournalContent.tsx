@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { WPPost, WPCategory, getFeaturedImageUrl, stripHtml, formatDate } from '@/lib/wordpress';
+import { WPPost, WPCategory, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
 
 interface JournalContentProps {
     posts: WPPost[];
@@ -140,9 +140,6 @@ export default function JournalContent({
                                                 ))}
                                             </div>
                                         )}
-                                        <p className="journal-card-excerpt">
-                                            {stripHtml(post.excerpt.rendered).slice(0, 100)}...
-                                        </p>
                                     </div>
                                 </Link>
                             </li>

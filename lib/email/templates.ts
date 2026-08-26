@@ -160,10 +160,21 @@ Shine a Light のニュースレターへようこそ。<br />
 </td></tr>
 </table>
 
+<p style="margin:0 0 8px;font-size:14px;line-height:1.8;color:${palette.text};"><strong>使い方（PC の Lightroom）</strong></p>
+<p style="margin:0 0 16px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
+1. 上のボタンから selpico3.xmp を保存<br />
+2. 編集（現像）画面で「プリセット」パネルを開き、「＋」→「プリセットを読み込み」<br />
+3. 保存した selpico3.xmp を選ぶと、一覧に「selpico3」が追加されます<br />
+4. 写真を開いて selpico3 をタップ。最後に露出だけ好みに合わせれば完成です
+</p>
+
+<p style="margin:0 0 8px;font-size:14px;line-height:1.8;color:${palette.text};"><strong>スマホの場合（Lightroom モバイル・無料版でOK）</strong></p>
+<p style="margin:0 0 16px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
+写真を開く → 下部の「プリセット」→ 右上の「…」→「プリセットを読み込み」→ 保存した selpico3.xmp を選択。
+</p>
+
 <p style="margin:0 0 24px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
-Lightroom の現像画面 → プリセットパネルの「＋」→「プリセットを読み込み」で、<br />
-ダウンロードした .xmp ファイルを選ぶと使えるようになります。<br />
-うまく開けない場合は、次のURLをブラウザに貼り付けてください。<br />
+ボタンからうまく保存できない場合は、次のURLをブラウザに貼り付けてください。<br />
 <a href="${p.presetUrl}" style="color:${palette.accent};word-break:break-all;">${escapeHtml(p.presetUrl)}</a>
 </p>
 
@@ -177,8 +188,14 @@ Lightroom の現像画面 → プリセットパネルの「＋」→「プリ�
     `映像・写真・AI・釣り・健康——暮らしを軽くするヒントを、不定期でお届けします。\n\n` +
     `お礼に、写真現像プリセット「selpico3」をお贈りします。\n` +
     `ダウンロード: ${p.presetUrl}\n\n` +
-    `Lightroom の現像画面 → プリセットパネルの「＋」→「プリセットを読み込み」で\n` +
-    `.xmp ファイルを選ぶと使えるようになります。\n\n` +
+    `【使い方（PC の Lightroom）】\n` +
+    `1. 上のURLから selpico3.xmp を保存\n` +
+    `2. 編集（現像）画面で「プリセット」パネルを開き、「＋」→「プリセットを読み込み」\n` +
+    `3. 保存した selpico3.xmp を選ぶと、一覧に「selpico3」が追加されます\n` +
+    `4. 写真を開いて selpico3 をタップ。最後に露出だけ好みに合わせれば完成です\n\n` +
+    `【スマホの場合（Lightroom モバイル・無料版でOK）】\n` +
+    `写真を開く → 下部の「プリセット」→ 右上の「…」→「プリセットを読み込み」\n` +
+    `→ 保存した selpico3.xmp を選択。\n\n` +
     `解除はこちら: ${p.unsubUrl}\n`;
 
   return { html: layout({ preheader: 'ようこそ。プレゼントの selpico3 をどうぞ', content, unsubUrl: p.unsubUrl }), text };
