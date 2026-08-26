@@ -212,8 +212,7 @@ export default async function ProPage() {
             {/* 3. 提供内容 */}
             <section className="pro-section">
                 <div className="pro-inner">
-                    <h2 className="pro-heading">引き受ける範囲</h2>
-                    <p className="pro-sub">考える、つくる、届ける。すべてを引き受けます。</p>
+                    <h2 className="pro-heading">考える、つくる、届ける。すべてを引き受けます。</h2>
                     <div className="pro-service-grid">
                         {PRO_SERVICES.map((group) => (
                             <div key={group.label} className="pro-service-card">

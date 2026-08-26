@@ -6458,7 +6458,7 @@ body:has(.b-side) .hojokin-card.is-closed {
 }
 
 .pro-inner {
-  max-width: 1000px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 0 32px;
 }
@@ -6494,7 +6494,7 @@ body:has(.b-side) .hojokin-card.is-closed {
 /* --- ヒーロー --- */
 
 .pro-hero {
-  max-width: 1000px;
+  max-width: 880px;
   margin: 0 auto;
   padding: 140px 32px 40px;
 }
@@ -6612,7 +6612,7 @@ body:has(.b-side) .hojokin-card.is-closed {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
 }
 
@@ -9825,7 +9825,7 @@ body:has(.b-side) .pro-trust dt {
 }
 
 /* /pro/hojokin 早見表（インフォグラフィック） */
-.hojokin-matrix-section .pro-inner { max-width: 1100px; }
+.hojokin-matrix-section .pro-inner { max-width: 960px; }
 
 .hojokin-matrix-scroll {
   overflow-x: auto;
