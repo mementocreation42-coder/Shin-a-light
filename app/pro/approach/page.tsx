@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const TITLE = '伝わる形は、つくる前に決まっている — 企画の考え方';
 const DESCRIPTION =
-    'つくったのに伝わらない、はなぜ起きるのか。受け皿から逆算するコミュニケーション設計の考え方と、徳島県牟岐町で2018年から続けている実例。';
+    'つくったのに伝わらない、はなぜ起きるのか。受け皿から逆算するコミュニケーション設計の考え方と、徳島県南部の町で2018年から続けている実例。';
 
 export const metadata: Metadata = {
     title: TITLE,
@@ -47,7 +47,7 @@ export default function ApproachPage() {
                     社内で共有していただいて構いません。
                 </p>
                 <p className="approach-meta">
-                    Shine a Light / 小林大介 — 徳島県牟岐町
+                    Shine a Light / 小林大介 — 徳島
                 </p>
             </header>
 
@@ -123,7 +123,7 @@ export default function ApproachPage() {
                 {/* 03 */}
                 <section className="approach-section">
                     <p className="approach-no">03</p>
-                    <h2 className="approach-h2">実例：徳島県牟岐町（2018年〜）</h2>
+                    <h2 className="approach-h2">実例：徳島県南部の町（2018年〜）</h2>
                     <p>
                         徳島県南部の、海と山に囲まれた小さな町です。
                         「町外へ魅力を発信したい」——最初の相談は、よくある一言から始まりました。

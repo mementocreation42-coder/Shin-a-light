@@ -2,7 +2,7 @@
  * /pro/systems（各社に合わせたシステム開発）のコンテンツ定義。
  *
  * ⚠️ 公開前に必ず実数値へ差し替えること。
- *    `price` の「◯◯万円〜」はプレースホルダで、値決めは未確定（/pro と同じ扱い）。
+ *    `price` は 2026-08 に決定した実数値（税別・目安）。
  *    実例（SYSTEMS_PROOF）は自分で作って自分で使っているものだけ。稼働状況は正直に書く。
  */
 
@@ -174,7 +174,6 @@ export const SYSTEMS_PRINCIPLES: SystemsPrinciple[] = [
 export interface SystemsPlan {
     name: string;
     tagline: string;
-    /** ⚠️ プレースホルダ。公開前に実数値へ */
     price: string;
     priceNote: string;
     includes: string[];
@@ -185,14 +184,14 @@ export const SYSTEMS_PLANS: SystemsPlan[] = [
     {
         name: 'プロトタイプ',
         tagline: 'まず2週間、動くものを',
-        price: '◯◯万円〜',
+        price: '無料〜',
         priceNote: '約2週間／本開発に進む場合は費用に充当',
         includes: ['業務の流れのヒアリング', '実データで動く試作', '本開発の範囲と見積の提示', '進めない判断も含めて相談'],
     },
     {
         name: '構築',
         tagline: '一つの業務を、一本の仕組みに',
-        price: '◯◯万円〜',
+        price: '10万円〜',
         priceNote: '規模・連携先・期間により変動',
         includes: ['設計・実装・テスト', '既存ツールとの連携', '説明書と引き継ぎ資料', '公開後1ヶ月の修正'],
         recommended: true,
@@ -200,7 +199,7 @@ export const SYSTEMS_PLANS: SystemsPlan[] = [
     {
         name: '保守・改善',
         tagline: '業務の変化に合わせて育てる',
-        price: '月額 ◯◯万円〜',
+        price: '月額 1万円〜',
         priceNote: '構築後の継続契約／単月から',
         includes: ['監視と障害対応', '小さな改善の都度実装', '月次の利用状況の報告', '次に自動化する箇所の提案'],
     },
@@ -242,6 +241,6 @@ export const SYSTEMS_FAQS: SystemsFaq[] = [
     },
     {
         q: '補助金は使えますか。',
-        a: '小規模事業者持続化補助金の「ウェブサイト関連費」には、業務効率化のためのシステム開発やソフトウェアが含まれます（上限30万円・単独申請不可）。海部郡で使える制度は一覧にまとめています。',
+        a: '小規模事業者持続化補助金の「ウェブサイト関連費」には、業務効率化のためのシステム開発やソフトウェアが含まれます（上限30万円・単独申請不可）。徳島県内で使える制度は一覧にまとめています。',
     },
 ];

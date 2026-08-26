@@ -226,7 +226,7 @@ export default function SystemsPage() {
                                         <>
                                             {' '}
                                             <Link href="/pro/hojokin" className="systems-inline-link">
-                                                海部郡で使える補助金一覧 →
+                                                徳島で使える補助金一覧 →
                                             </Link>
                                         </>
                                     )}
@@ -248,7 +248,7 @@ export default function SystemsPage() {
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島県牟岐町</p>
+                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島</p>
                 </div>
             </section>
         </div>

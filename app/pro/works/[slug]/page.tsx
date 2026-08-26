@@ -1,0 +1,329 @@
+// /pro/works/[slug] — 事業向け（B面）の実績詳細。
+// 内容は A面の /works/[slug] と同じだが、ナビ・テーマ・前後送りを Pro の文脈に閉じる。
+import Link from 'next/link';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import { getWorkBySlug } from '@/data/works';
+import { PRO_WORK_SLUGS } from '@/data/pro';
+
+interface PageProps {
+    params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+    return PRO_WORK_SLUGS.map((slug) => ({ slug }));
+}
+
+/** 前後送りは Pro に載せている実績の中だけで回す */
+function getAdjacentProWorks(slug: string) {
+    const i = PRO_WORK_SLUGS.indexOf(slug);
+    return {
+        prev: i > 0 ? getWorkBySlug(PRO_WORK_SLUGS[i - 1]) : null,
+        next: i >= 0 && i < PRO_WORK_SLUGS.length - 1 ? getWorkBySlug(PRO_WORK_SLUGS[i + 1]) : null,
+    };
+}
+
+export async function generateMetadata({ params }: PageProps) {
+    const { slug } = await params;
+    const work = PRO_WORK_SLUGS.includes(slug) ? getWorkBySlug(slug) : undefined;
+    if (!work) return { title: 'Work Not Found' };
+    return {
+        title: work.title,
+        description: work.overview,
+        alternates: {
+            canonical: `/pro/works/${slug}`,
+        },
+        openGraph: {
+            title: `${work.title} - Shine a Light`,
+            description: work.overview,
+            url: `/pro/works/${slug}`,
+            siteName: 'Shine a Light',
+            locale: 'ja_JP',
+            type: 'article',
+            images: [
+                {
+                    url: work.image,
+                    width: 1200,
+                    height: 630,
+                    alt: work.title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${work.title} - Shine a Light`,
+            description: work.overview,
+            images: [work.image],
+        },
+    };
+}
+
+export default async function ProWorkDetailPage({ params }: PageProps) {
+    const { slug } = await params;
+    const work = PRO_WORK_SLUGS.includes(slug) ? getWorkBySlug(slug) : undefined;
+
+    if (!work) {
+        notFound();
+    }
+
+    const { prev, next } = getAdjacentProWorks(slug);
+
+    return (
+        <div className="work-detail">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "CreativeWork",
+                        "name": work.title,
+                        "headline": work.title,
+                        "image": [work.image],
+                        "datePublished": work.year.toString(),
+                        "author": {
+                            "@type": "Person",
+                            "name": "DAISUKE KOBAYASHI",
+                            "url": "https://www.shinealight.jp"
+                        },
+                        "description": work.overview,
+                        "genre": work.category
+                    })
+                }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.shinealight.jp" },
+                            { "@type": "ListItem", "position": 2, "name": "For clients", "item": "https://www.shinealight.jp/pro" },
+                            { "@type": "ListItem", "position": 3, "name": work.title }
+                        ]
+                    })
+                }}
+            />
+            {/* Hero */}
+            <header className="work-hero">
+                <div className="work-hero-inner">
+                    <Link href="/pro" className="back-link">
+                        ← 一覧に戻る
+                    </Link>
+                    <p className="work-category">{work.category}</p>
+                    <h1 className="work-detail-title">{work.title}</h1>
+                    <p className="work-year">{work.year}</p>
+                </div>
+            </header>
+
+            {/* Main Visual */}
+            <section className="work-visual">
+                {work.vimeoId ? (
+                    <div className="video-container">
+                        <iframe
+                            src={`https://player.vimeo.com/video/${work.vimeoId}?autoplay=0&loop=1&background=0`}
+                            frameBorder="0"
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                ) : work.youtubeId ? (
+                    <div className="video-container">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${work.youtubeId}`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                ) : (
+                    <div className={`work-main-image ${work.color}`}>
+                        <Image
+                            src={work.image}
+                            alt={work.title}
+                            width={1600}
+                            height={900}
+                            priority
+                            sizes="(max-width: 768px) 100vw, 1200px"
+                            style={{ width: '100%', height: 'auto' }}
+                        />
+                    </div>
+                )}
+            </section>
+
+            {/* Content */}
+            <section className="work-content">
+                <div className="content-grid">
+                    {/* Info Column */}
+                    <aside className="work-meta">
+                        <div className="meta-block">
+                            <p className="meta-label">Client</p>
+                            <p className="meta-value">{work.client}</p>
+                        </div>
+                        <div className="meta-block">
+                            <p className="meta-label">Role</p>
+                            <p className="meta-value">{work.role}</p>
+                        </div>
+                        <div className="meta-block">
+                            <p className="meta-label">Year</p>
+                            <p className="meta-value">{work.year}</p>
+                        </div>
+                        {work.produce && (
+                            <div className="meta-block">
+                                <p className="meta-label">Produce</p>
+                                <p className="meta-value">
+                                    {work.produceLink ? (
+                                        <a
+                                            href={work.produceLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ textDecoration: 'underline' }}
+                                        >
+                                            {work.produce}
+                                        </a>
+                                    ) : (
+                                        work.produce
+                                    )}
+                                </p>
+                            </div>
+                        )}
+                        <div className="meta-block">
+                            <p className="meta-label">{work.toolsLabel || 'Tools'}</p>
+                            <p className="meta-value">{work.tools}</p>
+                        </div>
+                        {work.link && (
+                            <div className="meta-block">
+                                <p className="meta-label">{work.linkLabel || 'Link'}</p>
+                                <a
+                                    href={work.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="work-link-button"
+                                >
+                                    {work.linkButtonText || 'View Site'}
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '6px' }}>
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                </a>
+                            </div>
+                        )}
+                    </aside>
+
+                    {/* Description Column */}
+                    <article className="work-description">
+                        <h2>Overview</h2>
+                        <p>{work.overview}</p>
+
+                        <h2>Process</h2>
+                        <p>{work.process}</p>
+
+                        <h2>Result</h2>
+                        <p>{work.result}</p>
+                    </article>
+                </div>
+            </section>
+
+            {/* Videos */}
+            {work.videos && work.videos.length > 0 && (
+                <section className="work-videos">
+                    <div className="section-inner">
+                        <h2 className="section-title">Other Films</h2>
+                        <div className="videos-grid">
+                            {work.videos.map((video) => (
+                                <div key={video.id} className="video-item">
+                                    <div className="video-wrapper">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${video.id}`}
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                    <p className="video-title">{video.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* BTS Videos */}
+            {work.btsVideos && work.btsVideos.length > 0 && (
+                <section className="work-videos">
+                    <div className="section-inner">
+                        <h2 className="section-title">Behind The Scenes</h2>
+                        <div className="videos-grid">
+                            {work.btsVideos.map((video) => (
+                                <div key={video.id} className="video-item">
+                                    <div className="video-wrapper">
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${video.id}`}
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                        />
+                                    </div>
+                                    <p className="video-title">{video.title}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
+
+            {/* Gallery */}
+            {work.gallery && work.gallery.length > 0 && (
+                <section className="work-gallery">
+                    <h2 className="gallery-title">Gallery</h2>
+                    <div className="gallery-grid">
+                        {work.gallery.map((image, index) => (
+                            <div key={index} className="gallery-item">
+                                <Image
+                                    src={image}
+                                    alt={`${work.title} gallery ${index + 1}`}
+                                    width={1200}
+                                    height={800}
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                    style={{ width: '100%', height: 'auto' }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    {work.photoBy && (
+                        <p className="photo-credit">
+                            {work.photoByLink ? (
+                                <a
+                                    href={work.photoByLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {work.photoBy}
+                                </a>
+                            ) : (
+                                work.photoBy
+                            )}
+                        </p>
+                    )}
+                </section>
+            )}
+
+            {/* Navigation */}
+            <nav className="work-nav">
+                {prev && (
+                    <Link href={`/pro/works/${prev.slug}`}>
+                        <span className="nav-label">Previous</span>
+                        <span className="nav-title">{prev.title}</span>
+                    </Link>
+                )}
+                {next && (
+                    <Link href={`/pro/works/${next.slug}`}>
+                        <span className="nav-label">Next</span>
+                        <span className="nav-title">{next.title}</span>
+                    </Link>
+                )}
+            </nav>
+        </div>
+    );
+}

@@ -19,6 +19,7 @@ const LINKS: NavLink[] = [
     { label: 'Podcast', href: '/podcast' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
+    { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },
 ];
 
 /** /pro 配下（B面）ではナビを Pro のカテゴリに切り替える */
@@ -36,7 +37,8 @@ export default function Nav() {
     const pathname = usePathname();
 
     const close = () => setIsOpen(false);
-    const links = pathname?.startsWith('/pro') ? PRO_LINKS : LINKS;
+    const isPro = pathname?.startsWith('/pro');
+    const links = isPro ? PRO_LINKS : LINKS;
 
     // On the home page, scroll to the section directly so anchor links keep
     // working even when the URL hash already matches the target (Next.js Link
@@ -55,8 +57,8 @@ export default function Nav() {
 
     return (
         <nav className="nav">
-            <Link href="/" className="nav-logo" onClick={close}>
-                SAL
+            <Link href={isPro ? '/pro' : '/'} className="nav-logo" onClick={close}>
+                SAL{isPro && <span className="nav-logo-sub">for Pro</span>}
             </Link>
 
             {/* Desktop links */}

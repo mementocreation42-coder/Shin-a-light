@@ -4,6 +4,7 @@ import { works } from '@/data/works';
 import { products } from '@/data/products';
 import { labProjects } from '@/app/lab/data';
 import { tools } from '@/data/tools';
+import { PRO_WORK_SLUGS } from '@/data/pro';
 
 // Sitemap is regenerated at most once per day.
 // Without this, every crawler request (Google, Bing, etc.) triggers a fresh
@@ -78,7 +79,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.5,
     }));
 
-    // 6. Tools (Dynamic from local data)
+    // 6. Pro Works (B面の実績詳細)
+    const proWorkRoutes = PRO_WORK_SLUGS.map((slug) => ({
+        url: `${BASE_URL}/pro/works/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: 0.6,
+    }));
+
+    // 7. Tools (Dynamic from local data)
     const toolRoutes = tools.map((tool) => ({
         url: `${BASE_URL}/tools/${tool.slot}`,
         lastModified: new Date(),
@@ -86,5 +95,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
     }));
 
-    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes, ...toolRoutes];
+    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes, ...proWorkRoutes, ...toolRoutes];
 }

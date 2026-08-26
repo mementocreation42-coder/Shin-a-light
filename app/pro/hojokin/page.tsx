@@ -16,9 +16,9 @@ import {
 // 締切を過ぎた行を自動で「終了」に落とすため、1日1回再生成する
 export const revalidate = 86400;
 
-const TITLE = '海部郡で動画・Webに使える補助金 — 徳島県南の事業者向け一覧';
+const TITLE = '徳島で動画・Webに使える補助金 — 徳島県の事業者向け一覧';
 const DESCRIPTION =
-    '徳島県南（牟岐町・美波町・海陽町）の事業者が、動画制作・ホームページ制作・SNS 発信・チラシに使える補助金を、国・県・町の一次資料から要約した一覧。締切・補助率・上限・窓口つき。';
+    '徳島県内の事業者が、動画制作・ホームページ制作・SNS 発信・チラシに使える補助金を、国・県・市町村の一次資料から要約した一覧。締切・補助率・上限・窓口つき。';
 
 export const metadata: Metadata = {
     title: TITLE,
@@ -48,7 +48,7 @@ const CTA_HREF = '/pro/contact';
 const LEVEL_LABEL: Record<Hojokin['level'], string> = {
     国: '国の補助金',
     県: '徳島県の補助金',
-    町: '町の補助金',
+    市町村: '市町村の補助金',
 };
 
 const STATUS_CLASS: Record<WindowStatus, string> = {
@@ -78,13 +78,13 @@ export default function HojokinPage() {
                 <p className="b-side-mark">B-side of Shine a Light</p>
                 <p className="pro-eyebrow">For clients — 補助金対応</p>
                 <h1 className="pro-hero-title">
-                    海部郡で、
+                    徳島で、
                     <br />
                     動画・Webに使える補助金。
                 </h1>
                 <p className="pro-hero-lead">
-                    牟岐町・美波町・海陽町の事業者が、動画制作・ホームページ制作・SNS
-                    発信・チラシに使える補助金を、国・県・町の公募要領から要約しました。
+                    徳島県内の事業者が、動画制作・ホームページ制作・SNS
+                    発信・チラシに使える補助金を、国・県・市町村の公募要領から要約しました。
                     「制作費の半分〜2/3 が戻る」制度は、知っているかどうかで結果が変わります。
                 </p>
                 <dl className="hojokin-summary">
@@ -129,28 +129,95 @@ export default function HojokinPage() {
                         <p className="hojokin-legend-foot">
                             「動画」は映像制作、「Web」はホームページ・EC・LP の制作や改修を指します。
                             持続化補助金と県の補助金は、交付決定（採択の通知）より前に発注したものは対象になりません。
-                            町の制度は要領の定めに従います（注意点に書いています）。
+                            市町村の制度は要領の定めに従います（注意点に書いています）。
                         </p>
                     </div>
                 </div>
             </section>
 
-            {/* 3. 一覧（国 → 県 → 町） */}
-            {LEVEL_ORDER.map((level) => {
+            {/* 3. 早見表 — 全制度を1画面で見渡す。行クリックで下の詳細カードへ */}
+            <section className="pro-section hojokin-matrix-section">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">早見表</h2>
+                    <p className="pro-sub">全{rows.length}制度をひと目で。行をクリックすると詳細に飛びます。</p>
+                    <div className="hojokin-matrix-scroll">
+                        <table className="hojokin-matrix">
+                            <thead>
+                                <tr>
+                                    <th>実施</th>
+                                    <th>制度</th>
+                                    <th>状態</th>
+                                    <th>動画</th>
+                                    <th>Web</th>
+                                    <th>補助率</th>
+                                    <th>上限</th>
+                                    <th>締切</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {rows.map((h) => {
+                                    const status = effectiveStatus(h, today);
+                                    const cutoff = nextCutoff(h);
+                                    return (
+                                        <tr key={h.id} className={STATUS_CLASS[status]}>
+                                            <td className="mx-issuer">{h.issuer.replace('公益財団法人', '').replace(/（.*$/, '')}</td>
+                                            <td className="mx-name">
+                                                <a href={`#${h.id}`}>{h.name}</a>
+                                            </td>
+                                            <td>
+                                                <span className={`hojokin-status ${STATUS_CLASS[status]}`}>{status}</span>
+                                            </td>
+                                            <td><span className={`hojokin-flag ${FLAG_CLASS[h.video]}`}>{h.video === '未確認' ? '?' : h.video}</span></td>
+                                            <td><span className={`hojokin-flag ${FLAG_CLASS[h.web]}`}>{h.web === '未確認' ? '?' : h.web}</span></td>
+                                            <td className="mx-rate">{h.rate.split('（')[0]}</td>
+                                            <td className="mx-cap">{h.cap != null ? formatYen(h.cap) : '—'}</td>
+                                            <td className="mx-deadline">
+                                                {status === '終了' ? '—' : cutoff ? cutoff.date.replace(/^\d{4}-/, '').replace('-', '/') : '随時'}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p className="hojokin-matrix-note">
+                        ？は一次資料で未確認。締切の「随時」は予算がなくなり次第終了する制度です。
+                    </p>
+                </div>
+            </section>
+
+            {/* 4. 一覧（国 → 県 → 市町村。市町村は自治体ごとにセクションを分ける） */}
+            {LEVEL_ORDER.flatMap((level) => {
                 const items = rows.filter((h) => h.level === level);
-                if (items.length === 0) return null;
-                return (
-                    <section key={level} className="pro-section hojokin-level">
+                if (items.length === 0) return [];
+                // 市町村は実施主体（自治体）ごとに分ける。並びは rows の順（公募中が先）を保つ
+                let groups: { key: string; heading: string; list: typeof items }[];
+                if (level === '市町村') {
+                    const byIssuer = new Map<string, typeof items>();
+                    for (const h of items) {
+                        if (!byIssuer.has(h.issuer)) byIssuer.set(h.issuer, []);
+                        byIssuer.get(h.issuer)!.push(h);
+                    }
+                    groups = [...byIssuer.entries()].map(([issuer, list]) => ({
+                        key: `${level}-${issuer}`,
+                        heading: `${issuer}の補助金`,
+                        list,
+                    }));
+                } else {
+                    groups = [{ key: level, heading: LEVEL_LABEL[level], list: items }];
+                }
+                return groups.map(({ key, heading, list }) => (
+                    <section key={key} className="pro-section hojokin-level">
                         <div className="pro-inner">
-                            <h2 className="pro-heading">{LEVEL_LABEL[level]}</h2>
+                            <h2 className="pro-heading">{heading}</h2>
                             <ul className="hojokin-list">
-                                {items.map((h) => (
+                                {list.map((h) => (
                                     <HojokinCard key={h.id} h={h} today={today} />
                                 ))}
                             </ul>
                         </div>
                     </section>
-                );
+                ));
             })}
 
             {/* 4. 使い方 */}
@@ -185,7 +252,7 @@ export default function HojokinPage() {
                                 <h3 className="pro-step-title">商工会・役場に申請する</h3>
                                 <p>
                                     申請の主体は事業者ご自身です。持続化補助金は商工会の「事業支援計画書（様式4）」が申請締切より先に閉まります。
-                                    牟岐町の創業補助金は先着順で、枠（4事業程度）が埋まり次第終わります。
+                                    市町村の創業補助金には先着順のものが多く、枠が埋まり次第終わります。
                                 </p>
                             </div>
                         </li>
@@ -222,7 +289,7 @@ export default function HojokinPage() {
                     <p className="pro-inline-link">
                         <Link href="/pro">引き受ける範囲と費用を見る →</Link>
                     </p>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島県牟岐町</p>
+                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島</p>
                 </div>
             </section>
 
@@ -247,7 +314,7 @@ function HojokinCard({ h, today }: { h: Hojokin; today: Date }) {
     const isClosed = status === '終了';
 
     return (
-        <li className={`hojokin-card ${STATUS_CLASS[status]}`}>
+        <li id={h.id} className={`hojokin-card ${STATUS_CLASS[status]}`}>
             <div className="hojokin-card-head">
                 <span className={`hojokin-status ${STATUS_CLASS[status]}`}>{status}</span>
                 <span className="hojokin-issuer">{h.issuer}</span>

@@ -10,6 +10,7 @@ import {
     PRO_WORK_SLUGS,
 } from '@/data/pro';
 import { effectiveStatus, publishedHojokin } from '@/data/hojokin';
+import { getSiteImages } from '@/lib/siteImages';
 import {
     IconCamera,
     IconGear,
@@ -90,9 +91,11 @@ function linkifyProPaths(text: string): React.ReactNode {
     );
 }
 
-export default function ProPage() {
+export default async function ProPage() {
     const today = new Date();
-    const mugiYears = continuingYears(works.find((w) => w.slug === 'mugi-promotion-video')?.year, today.getFullYear());
+    const img = await getSiteImages();
+    // 『DAISUKE KOBAYASHI』開業 2018（chronicle-milestones の brand-launch）
+    const businessYears = continuingYears('2018-', today.getFullYear());
     const hojokinRows = publishedHojokin(today);
     const hojokinOpen = hojokinRows.filter((h) => effectiveStatus(h, today) === '公募中').length;
     const hojokinUpcoming = hojokinRows.filter((h) => effectiveStatus(h, today) === '予告').length;
@@ -104,33 +107,16 @@ export default function ProPage() {
                 <p className="b-side-mark">B-side of Shine a Light</p>
                 <p className="pro-eyebrow">For clients — 企画・プロデュース</p>
                 <h1 className="pro-hero-title">
-                    まだ光の当たっていないものを、
-                    <br />
-                    最も映える形にして手渡す。
+                    まだ形になっていないモノを。
                 </h1>
                 <p className="pro-hero-lead">
                     映像も、写真も、Webも、システムも。
-                    ぜんぶ、一人で引き受けます。
                 </p>
-                <div className="pro-hero-actions">
-                    <Link href={CTA_HREF} className="pro-cta-button">
-                        相談する（無料）
-                    </Link>
-                    <span className="pro-hero-note">まだ形になっていない段階のご相談で構いません。</span>
-                </div>
-
-                {/* 今すぐ相談しない人の出口。CTAとは階層を変え、行動を競合させない */}
-                <p className="pro-hero-secondary">
-                    <Link href="/pro/approach">
-                        まずは考え方を読む — 企画書をそのまま公開しています →
-                    </Link>
-                </p>
-
                 {/* 任せて大丈夫、の根拠を3点だけ。数字は works.ts から */}
                 <dl className="pro-trust">
                     <div>
-                        <dt><IconCalendar />牟岐町と</dt>
-                        <dd>{mugiYears}年目</dd>
+                        <dt><IconCalendar />事業を始めて</dt>
+                        <dd>{businessYears}年目</dd>
                     </div>
                     <div>
                         <dt><IconUsers />引き受けてきた相手</dt>
@@ -141,17 +127,17 @@ export default function ProPage() {
                         <dd>企画から運用まで、一人で通す</dd>
                     </div>
                 </dl>
+
             </header>
 
             {/* 1.5 細分化の索引 — LP の中を掘れることを最初に見せる */}
             <section className="pro-section pro-index-section">
                 <div className="pro-inner">
-                    <p className="pro-index-lead">詳しく見たい方向から、どうぞ。</p>
                     <ul className="pro-index">
                         <li>
-                            <Link href="/pro/visual" className="pro-index-card">
+                            <Link href="/pro/visual" className="pro-index-card is-visual">
                                 <span className="pro-index-thumb">
-                                    <Image src="/images/photos/DSC00161.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                    <Image src={img['pro-index-visual']} alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
                                 </span>
                                 <span className="pro-index-label"><IconCamera />映像・写真</span>
                                 <span className="pro-index-title">続けて撮る映像・写真</span>
@@ -159,9 +145,9 @@ export default function ProPage() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/pro/systems" className="pro-index-card">
+                            <Link href="/pro/systems" className="pro-index-card is-systems">
                                 <span className="pro-index-thumb">
-                                    <Image src="/images/photos/DSC00066.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                    <Image src={img['pro-index-systems']} alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
                                 </span>
                                 <span className="pro-index-label"><IconGear />システム</span>
                                 <span className="pro-index-title">小さなシステム開発</span>
@@ -169,19 +155,19 @@ export default function ProPage() {
                             </Link>
                         </li>
                         <li>
-                            <Link href="/pro/hojokin" className="pro-index-card">
+                            <Link href="/pro/hojokin" className="pro-index-card is-hojokin">
                                 <span className="pro-index-thumb">
-                                    <Image src="/images/photos/DJI_0005.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                    <Image src={img['pro-index-hojokin']} alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
                                 </span>
                                 <span className="pro-index-label"><IconYen />補助金</span>
                                 <span className="pro-index-title">使える補助金の一覧</span>
-                                <span className="pro-index-sub">海部郡向け・一次資料で確認</span>
+                                <span className="pro-index-sub">徳島県内向け・一次資料で確認</span>
                             </Link>
                         </li>
                         <li>
-                            <Link href="/pro/approach" className="pro-index-card">
+                            <Link href="/pro/approach" className="pro-index-card is-approach">
                                 <span className="pro-index-thumb">
-                                    <Image src="/images/photos/DJI_0017.jpg" alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
+                                    <Image src={img['pro-index-approach']} alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
                                 </span>
                                 <span className="pro-index-label"><IconCompass />考え方</span>
                                 <span className="pro-index-title">企画書を、そのまま公開</span>
@@ -210,9 +196,6 @@ export default function ProPage() {
                             伝えたい良さはある。それを言葉にするところから、誰かに手伝ってほしい。
                         </li>
                     </ul>
-                    <p className="pro-empathy-close">
-                        だから、最初から最後まで、ひとりで通します。
-                    </p>
                 </div>
             </section>
 
@@ -220,7 +203,7 @@ export default function ProPage() {
             <section className="pro-section">
                 <div className="pro-inner">
                     <h2 className="pro-heading">引き受ける範囲</h2>
-                    <p className="pro-sub">考える、つくる、届ける。ぜんぶ。</p>
+                    <p className="pro-sub">考える、つくる、届ける。すべてを引き受けます。</p>
                     <div className="pro-service-grid">
                         {PRO_SERVICES.map((group) => (
                             <div key={group.label} className="pro-service-card">
@@ -248,12 +231,8 @@ export default function ProPage() {
                     </p>
                     <div className="pro-visual-box has-thumb">
                         <span className="pro-visualbox-thumb">
-                            <Image src="/images/photos/DJI_0012.jpg" alt="牟岐町の海岸の空撮" fill sizes="(max-width: 900px) 100vw, 260px" style={{ objectFit: 'cover' }} />
+                            <Image src={img['pro-visual-box']} alt="海岸の空撮" fill sizes="(max-width: 900px) 100vw, 260px" style={{ objectFit: 'cover' }} />
                         </span>
-                        <p>
-                            牟岐町は 2018 年から撮り続けて9年目。
-                            サイトでも SNS でも印刷物でも、どこで見ても「その町らしさ」がある状態をつくってきました。
-                        </p>
                         <ul className="pro-visual-points">
                             <li>年間の視覚設計（トーン・被写体・出す場所）</li>
                             <li>月次・季節ごとの定期撮影と映像のシリーズ化</li>
@@ -261,9 +240,6 @@ export default function ProPage() {
                             <li>四半期の振り返りと翌期の設計</li>
                         </ul>
                     </div>
-                    <p className="pro-inline-link">
-                        <Link href="/pro/visual">ビジュアル戦略の詳細（考え方・範囲・実例・費用） →</Link>
-                    </p>
                 </div>
             </section>
 
@@ -288,9 +264,6 @@ export default function ProPage() {
                             <p>CMS・メルマガ・AI下書き。自分の事業で使っているものから提案します。</p>
                         </div>
                     </div>
-                    <p className="pro-inline-link">
-                        <Link href="/pro/systems">システム開発の詳細（つくるもの・実例・進め方・費用） →</Link>
-                    </p>
                 </div>
             </section>
 
@@ -303,6 +276,11 @@ export default function ProPage() {
                         {PRO_STEPS.map((step) => (
                             <li key={step.no} className="pro-step">
                                 <span className="pro-step-no">{step.no}</span>
+                                {img[`pro-step-${step.no}`] && (
+                                    <span className="pro-step-thumb">
+                                        <Image src={img[`pro-step-${step.no}`]} alt="" fill sizes="(max-width: 768px) 96px, 150px" style={{ objectFit: 'cover' }} />
+                                    </span>
+                                )}
                                 <div className="pro-step-body">
                                     <h3 className="pro-step-title">{step.title}</h3>
                                     <p>{step.body}</p>
@@ -310,11 +288,6 @@ export default function ProPage() {
                             </li>
                         ))}
                     </ol>
-                    <p className="pro-inline-link">
-                        <Link href="/pro/approach">
-                            この進め方の背景にある考え方を、企画書のかたちで公開しています →
-                        </Link>
-                    </p>
                 </div>
             </section>
 
@@ -326,7 +299,7 @@ export default function ProPage() {
                     <ul className="pro-work-grid">
                         {proWorks.map((work) => (
                             <li key={work.slug}>
-                                <Link href={`/works/${work.slug}`} className="pro-work-card">
+                                <Link href={`/pro/works/${work.slug}`} className="pro-work-card">
                                     <div className="pro-work-thumb">
                                         <Image
                                             src={work.image}
@@ -348,9 +321,6 @@ export default function ProPage() {
                             </li>
                         ))}
                     </ul>
-                    <p className="pro-work-more">
-                        <Link href="/#works">すべての実績を見る →</Link>
-                    </p>
                 </div>
             </section>
 
@@ -391,7 +361,7 @@ export default function ProPage() {
                 <div className="pro-inner">
                     <h2 className="pro-heading">制作費に、補助金を使う</h2>
                     <p className="pro-sub">
-                        海部郡の事業者なら、制作費の半分〜2/3が戻ることも。制度探しから実績報告まで手伝います。
+                        徳島県内の事業者なら、制作費の半分〜2/3が戻ることも。制度探しから実績報告まで手伝います。
                     </p>
                     <div className="pro-hojokin-box">
                         <dl className="pro-hojokin-stats">
@@ -406,10 +376,10 @@ export default function ProPage() {
                         </dl>
                         <div className="pro-hojokin-body">
                             <p>
-                                国・県・町の制度を一次資料で確認して、締切・補助率・窓口つきで一覧にしています。
+                                国・県・市町村の制度を一次資料で確認して、締切・補助率・窓口つきで一覧にしています。
                             </p>
                             <Link href="/pro/hojokin" className="pro-hojokin-link">
-                                海部郡で動画・Webに使える補助金を見る →
+                                徳島で動画・Webに使える補助金を見る →
                             </Link>
                         </div>
                     </div>
@@ -438,7 +408,7 @@ export default function ProPage() {
                     <div className="pro-profile">
                         <span className="pro-profile-photo">
                             <Image
-                                src="/images/profile.jpg"
+                                src={img['pro-profile']}
                                 alt="小林大介のポートレート"
                                 fill
                                 sizes="(max-width: 900px) 60vw, 220px"
@@ -451,13 +421,13 @@ export default function ProPage() {
                                 <span className="pro-profile-name-en">DAISUKE KOBAYASHI</span>
                             </p>
                             <p className="pro-profile-title">
-                                ビデオグラファー／Webエンジニア・徳島県牟岐町
+                                ビデオグラファー／Webエンジニア
                             </p>
                             <p className="pro-profile-bio">
-                                愛知からオーストラリアを経て、「釣りがしたいから」で徳島・牟岐町へ。
+                                愛知からオーストラリアを経て、「釣りがしたいから」で徳島県南部の小さな町へ。
                                 撮る、書く、つくるを分業に預けないのは、
                                 大事なことを途中で薄れさせないため。
-                                牟岐町の映像とメディアを9年つくり続けています。
+                                同じ町の映像とメディアを9年つくり続けています。
                             </p>
                             <ul className="pro-profile-tags">
                                 <li>映像</li>
@@ -475,14 +445,14 @@ export default function ProPage() {
             {/* 8. CTA — 行動は1種類 */}
             <section className="pro-section pro-final">
                 <div className="pro-inner">
-                    <h2 className="pro-final-title">まず、話を聞かせてください。</h2>
+                    <h2 className="pro-final-title">お気軽にお問い合わせを。</h2>
                     <p className="pro-final-lead">
                         「こんなことできる？」の段階が、いちばん面白い相談です。
                     </p>
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">数日以内にご返信します ｜ 小林大介 / Shine a Light（徳島県牟岐町）</p>
+                    <p className="pro-final-note">数日以内にご返信します ｜ 小林大介 / Shine a Light（徳島）</p>
                 </div>
             </section>
         </div>

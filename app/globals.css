@@ -85,6 +85,15 @@ a {
   color: #fff;
 }
 
+/* B面のロゴに付く「for Pro」 */
+.nav-logo-sub {
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
 .nav-links {
   display: flex;
   gap: 32px;
@@ -3839,6 +3848,16 @@ select:disabled {
 }
 
 /* コピーライト行に添えるログイン導線。本文の邪魔をしない程度に */
+/* フッターのサイト名ロゴ */
+.footer-logo {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent-orange);
+  margin-bottom: 0.75rem;
+}
+
 .footer-copy {
   display: inline-flex;
   align-items: center;
@@ -6477,8 +6496,7 @@ body:has(.b-side) .hojokin-card.is-closed {
 .pro-hero {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 140px 32px 96px;
-  border-bottom: var(--border);
+  padding: 140px 32px 40px;
 }
 
 .pro-hero-title {
@@ -6580,7 +6598,7 @@ body:has(.b-side) .hojokin-card.is-closed {
 /* --- 細分化の索引 --- */
 
 .pro-index-section {
-  padding: 40px 0;
+  padding: 8px 0 40px;
 }
 
 .pro-index-lead {
@@ -6695,7 +6713,8 @@ body:has(.b-side) .hojokin-card.is-closed {
 
 .pro-service-label {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 18px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--accent-orange);
   margin-bottom: 20px;
@@ -6744,6 +6763,15 @@ body:has(.b-side) .hojokin-card.is-closed {
   color: var(--text-muted);
   padding-top: 4px;
   flex-shrink: 0;
+}
+
+.pro-step-thumb {
+  position: relative;
+  flex-shrink: 0;
+  width: 150px;
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .pro-step-title {
@@ -7005,7 +7033,8 @@ body:has(.b-side) .hojokin-card.is-closed {
 
 .pro-systems-label {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 18px;
+  font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--accent-orange);
   margin-bottom: 12px;
@@ -7139,7 +7168,7 @@ body:has(.b-side) .hojokin-card.is-closed {
   }
 
   .pro-hero {
-    padding: 112px 24px 72px;
+    padding: 112px 24px 32px;
   }
 
   /* 狭い画面では改行位置が崩れるため、自然折り返しに任せる */
@@ -7161,6 +7190,10 @@ body:has(.b-side) .hojokin-card.is-closed {
 
   .pro-step {
     gap: 16px;
+  }
+
+  .pro-step-thumb {
+    width: 96px;
   }
 }
 
@@ -7482,7 +7515,7 @@ body:has(.b-side) .hojokin-card.is-closed {
 }
 
 /* ============================================
-   /pro/hojokin — 海部郡で動画・Webに使える補助金
+   /pro/hojokin — 徳島で動画・Webに使える補助金
    ============================================ */
 
 .hojokin-hero .pro-hero-lead {
@@ -9170,7 +9203,7 @@ body:has(.b-side) .pro-trust dt {
 
 /* 牟岐町ボックスの写真 */
 body:has(.b-side) .pro-visual-box.has-thumb {
-  grid-template-columns: 260px 1.1fr 1fr;
+  grid-template-columns: 260px 1fr;
   align-items: center;
 }
 
@@ -9790,9 +9823,67 @@ body:has(.b-side) .pro-trust dt {
   color: #294d75;
 }
 
-/* 共感セクション：淡いブルーグレーの帯 */
+/* /pro/hojokin 早見表（インフォグラフィック） */
+.hojokin-matrix-section .pro-inner { max-width: 1100px; }
+
+.hojokin-matrix-scroll {
+  overflow-x: auto;
+  border: 1px solid rgba(41, 77, 117, 0.14);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: var(--b-shadow, 0 1px 2px rgba(30, 24, 10, 0.04));
+}
+
+.hojokin-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  line-height: 1.5;
+  min-width: 760px;
+}
+
+.hojokin-matrix th {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: left;
+  color: #7c8294;
+  font-weight: 600;
+  padding: 12px 12px 8px;
+  border-bottom: 2px solid rgba(41, 77, 117, 0.18);
+  white-space: nowrap;
+}
+
+.hojokin-matrix td {
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(41, 77, 117, 0.08);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.hojokin-matrix tbody tr:last-child td { border-bottom: none; }
+.hojokin-matrix tbody tr:hover { background: rgba(41, 77, 117, 0.04); }
+.hojokin-matrix tbody tr.is-closed { opacity: 0.55; }
+
+.hojokin-matrix .mx-issuer { font-weight: 700; color: #294d75; }
+.hojokin-matrix .mx-name { white-space: normal; min-width: 220px; }
+.hojokin-matrix .mx-name a { color: inherit; text-decoration: none; }
+.hojokin-matrix .mx-name a:hover { color: #294d75; text-decoration: underline; }
+.hojokin-matrix .mx-rate, .hojokin-matrix .mx-cap, .hojokin-matrix .mx-deadline {
+  font-variant-numeric: tabular-nums;
+}
+.hojokin-matrix .hojokin-status { font-size: 10.5px; }
+.hojokin-matrix .hojokin-flag { font-size: 11px; }
+
+.hojokin-matrix-note {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: #7c8294;
+}
+
+/* 共感セクション：帯を張らず、ページ地に揃える。区切りは他セクション同様の線で */
 body:has(.b-side) .pro-empathy {
-  background: #e9eef6;
+  background: #faf6ed;
+  border-bottom: var(--border);
 }
 
 body:has(.b-side) .pro-pain-list li {
@@ -9809,6 +9900,10 @@ body:has(.b-side) .visual-service-label,
 body:has(.b-side) .pro-service-label {
   background: rgba(41, 77, 117, 0.08);
   color: #294d75;
+}
+
+body:has(.b-side) .work-link-button {
+  color: #ffffff;
 }
 
 /* 主CTA：ブルー塗り */
@@ -10047,3 +10142,44 @@ body:has(.b-side) .footer-skill-head a:hover {
   color: var(--text-muted);
   line-height: 1.8;
 }
+
+/* B面のページ色分け：映像=緑 / システム=青 / 補助金=サンド / 考え方=グレー */
+body:has(.b-side .visual-page) {
+  background: #cfe5d0;
+}
+
+body:has(.b-side .systems-page) {
+  background: #c9dcf2;
+}
+
+body:has(.b-side .hojokin-page) {
+  background: #f5e4b8;
+}
+
+body:has(.b-side .approach-page) {
+  background: #e3d7ea;
+}
+
+/* ページ色の上では、独自の帯を持つセクションを透過させて一色に保つ */
+body:has(.b-side) .visual-page .pro-empathy,
+body:has(.b-side) .systems-page .pro-empathy {
+  background: transparent;
+}
+
+/* /pro 索引カード：行き先ページと同じパステルで色分け */
+body:has(.b-side) .pro-index-card.is-visual { background: #cfe5d0; }
+body:has(.b-side) .pro-index-card.is-systems { background: #c9dcf2; }
+body:has(.b-side) .pro-index-card.is-hojokin { background: #f5e4b8; }
+body:has(.b-side) .pro-index-card.is-approach { background: #e3d7ea; }
+
+body:has(.b-side) .pro-index-card.is-visual .pro-index-label,
+body:has(.b-side) .pro-index-card.is-systems .pro-index-label,
+body:has(.b-side) .pro-index-card.is-hojokin .pro-index-label,
+body:has(.b-side) .pro-index-card.is-approach .pro-index-label {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+body:has(.b-side) .pro-index-card.is-visual:hover { background: #c0dcc2; }
+body:has(.b-side) .pro-index-card.is-systems:hover { background: #b8d2ef; }
+body:has(.b-side) .pro-index-card.is-hojokin:hover { background: #f1dca3; }
+body:has(.b-side) .pro-index-card.is-approach:hover { background: #d9c9e3; }

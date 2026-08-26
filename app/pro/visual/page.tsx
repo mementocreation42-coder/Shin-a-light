@@ -1,20 +1,21 @@
+// /pro/visual — ビジュアルコミュニケーション戦略の解説ページ。
+// LP（売り込み）ではなく、考え方を伝える読み物として組む。CTAは末尾に控えめに1つだけ。
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { works } from '@/data/works';
+import { getSiteImages } from '@/lib/siteImages';
 import {
     VISUAL_PAINS,
     VISUAL_REASONS,
     VISUAL_SERVICES,
     VISUAL_WORK_SLUGS,
     VISUAL_STEPS,
-    VISUAL_PLANS,
-    VISUAL_FAQS,
 } from '@/data/pro-visual';
 
-const TITLE = '連続的な映像・写真クリエイション — ビジュアルコミュニケーション戦略';
+const TITLE = 'ビジュアルコミュニケーション戦略とは — 連続する映像・写真の考え方';
 const DESCRIPTION =
-    '一本の映像で終わらせず、年間を通して映像と写真を積み上げ、事業の「見え方」を設計・制作・運用する。年間の視覚設計、定期撮影、映像のシリーズ化、写真アーカイブ、媒体ごとの仕上げ、振り返りまで。徳島から全国対応。';
+    '映像や写真を「納品物」ではなく、事業の見え方を決めていく継続的な戦略として扱う考え方の解説。なぜ単発では効かないのか、年間の視覚設計・定期撮影・アーカイブ・振り返りという構成要素、一年のサイクル、続けた実例まで。';
 
 export const metadata: Metadata = {
     title: TITLE,
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
         url: '/pro/visual',
         siteName: 'Shine a Light',
         locale: 'ja_JP',
-        type: 'website',
+        type: 'article',
         images: ['/opengraph-image'],
     },
     twitter: {
@@ -38,9 +39,6 @@ export const metadata: Metadata = {
         images: ['/opengraph-image'],
     },
 };
-
-/** CTA は /pro と同じ1本 */
-const CTA_HREF = '/pro/contact';
 
 const visualWorks = VISUAL_WORK_SLUGS.map((slug) => works.find((w) => w.slug === slug)).filter(
     (w): w is NonNullable<typeof w> => Boolean(w),
@@ -54,49 +52,42 @@ function continuingYears(year: string, now: number): number | null {
     return Math.max(1, now - start + 1);
 }
 
-export default function VisualPage() {
+export default async function VisualPage() {
     const thisYear = new Date().getFullYear();
+    const img = await getSiteImages();
 
     return (
         <div className="pro-page visual-page">
-            {/* 1. ヒーロー */}
+            {/* 1. ヒーロー — 解説ページの入口。CTAは置かない */}
             <header className="pro-hero">
                 <p className="b-side-mark">B-side of Shine a Light</p>
-                <p className="pro-eyebrow">For clients — ビジュアルコミュニケーション戦略</p>
+                <p className="pro-eyebrow">Strategy — ビジュアルコミュニケーション戦略</p>
                 <h1 className="pro-hero-title">
                     一本の映像より、
                     <br />
                     続いていく見え方を。
                 </h1>
                 <p className="pro-hero-lead">
-                    映像や写真を「納品物」ではなく、事業の見え方を決めていく継続的な活動として設計します。
-                    年間の視覚設計、定期の撮影、映像のシリーズ化、写真のアーカイブ、出し先ごとの仕上げまで。
-                    同じ人間が撮り続けるから、色も視点も揃っていきます。
-                </p>
-                <div className="pro-hero-actions">
-                    <Link href={CTA_HREF} className="pro-cta-button">
-                        相談する（無料）
-                    </Link>
-                    <span className="pro-hero-note">まず一本から始めて、年間に移ることもできます。</span>
-                </div>
-                <p className="pro-hero-secondary">
-                    <Link href="/pro/approach">この考え方の背景 — 受け皿から逆算する企画の考え方 →</Link>
+                    ビジュアルコミュニケーション戦略とは、映像や写真を「納品物」ではなく、
+                    事業の見え方を決めていく継続的な活動として設計・運用する考え方です。
+                    このページでは、なぜ単発の制作では効かないのか、何を、どんなサイクルで積み上げるのかを解説します。
                 </p>
             </header>
 
-            {/* 1.5 写真帯 — 撮ってきたもの */}
+            {/* 1.5 写真帯 */}
             <section className="visual-strip-section">
                 <ul className="visual-strip">
-                    <li><Image src="/images/photos/DSC00161.jpg" alt="森で撮影した子どもの写真" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
-                    <li><Image src="/images/photos/DJI_0007.jpg" alt="海岸線の空撮" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
-                    <li><Image src="/images/photos/DSC00104.jpg" alt="商店街のスナップ" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                    <li><Image src={img['visual-strip-1']} alt="森で撮影した子どもの写真" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                    <li><Image src={img['visual-strip-2']} alt="海岸線の空撮" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
+                    <li><Image src={img['visual-strip-3']} alt="商店街のスナップ" fill sizes="33vw" style={{ objectFit: 'cover' }} /></li>
                 </ul>
             </section>
 
-            {/* 2. 共感 */}
+            {/* 2. 課題の構造 */}
             <section className="pro-section pro-empathy">
                 <div className="pro-inner">
-                    <h2 className="pro-heading">こんな相談から始まることが多いです</h2>
+                    <h2 className="pro-heading">単発の制作で起きること</h2>
+                    <p className="pro-sub">多くの事業で、ビジュアルはこういう状態になっています。</p>
                     <ul className="pro-pain-list">
                         {VISUAL_PAINS.map((pain) => (
                             <li key={pain}>{pain}</li>
@@ -104,12 +95,12 @@ export default function VisualPage() {
                     </ul>
                     <p className="pro-empathy-close">
                         単発の制作が悪いのではありません。ただ、一本の映像は「その時点」を映すだけで、事業は動き続けます。
-                        見え方も、動き続けるものとして扱う必要があります。
+                        見え方も、動き続けるものとして扱う必要があります。これがこの戦略の出発点です。
                     </p>
                 </div>
             </section>
 
-            {/* 3. なぜ連続か */}
+            {/* 3. なぜ連続か — 戦略の核 */}
             <section className="pro-section">
                 <div className="pro-inner">
                     <h2 className="pro-heading">なぜ「連続」なのか</h2>
@@ -128,36 +119,55 @@ export default function VisualPage() {
                 </div>
             </section>
 
-            {/* 4. 提供の形 */}
+            {/* 4. 戦略の構成要素 */}
             <section className="pro-section">
                 <div className="pro-inner">
-                    <h2 className="pro-heading">年間で引き受ける範囲</h2>
-                    <p className="pro-sub">設計から振り返りまで。撮影だけを切り出すこともできますが、通すほど効きます。</p>
+                    <h2 className="pro-heading">戦略の構成要素</h2>
+                    <p className="pro-sub">
+                        設計・撮影・映像・写真・仕上げ・振り返り。六つの要素が一つのサイクルとして噛み合います。
+                    </p>
                     <div className="visual-service-grid">
                         {VISUAL_SERVICES.map((s) => (
-                            <div key={s.label} className="visual-service-card">
+                            <div key={s.title} className="visual-service-card">
                                 <p className="visual-service-label">{s.label}</p>
                                 <h3 className="visual-service-title">{s.title}</h3>
-                                <p className="visual-service-body">{s.body}</p>
+                                <p>{s.body}</p>
                             </div>
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* 5. 実例 */}
+            {/* 5. 一年のサイクル */}
             <section className="pro-section">
                 <div className="pro-inner">
-                    <h2 className="pro-heading">続けてきた仕事</h2>
-                    <p className="pro-sub">
-                        牟岐町とは 2018 年から。同じ土地と人を撮り続けることで、映像も写真も「その町らしさ」として積み上がっています。
-                    </p>
+                    <h2 className="pro-heading">一年のサイクル</h2>
+                    <p className="pro-sub">棚卸しから始め、撮って、出して、振り返る。この輪を一年回します。</p>
+                    <ol className="pro-steps">
+                        {VISUAL_STEPS.map((step) => (
+                            <li key={step.no} className="pro-step">
+                                <span className="pro-step-no">{step.no}</span>
+                                <div className="pro-step-body">
+                                    <h3 className="pro-step-title">{step.title}</h3>
+                                    <p>{step.body}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            </section>
+
+            {/* 6. 続けた実例 */}
+            <section className="pro-section">
+                <div className="pro-inner">
+                    <h2 className="pro-heading">続けると、こうなる</h2>
+                    <p className="pro-sub">同じ相手を撮り続けてきた実例です。</p>
                     <ul className="pro-work-grid">
                         {visualWorks.map((work) => {
                             const years = continuingYears(work.year, thisYear);
                             return (
                                 <li key={work.slug}>
-                                    <Link href={`/works/${work.slug}`} className="pro-work-card">
+                                    <Link href={`/pro/works/${work.slug}`} className="pro-work-card">
                                         <div className="pro-work-thumb">
                                             <Image
                                                 src={work.image}
@@ -183,92 +193,22 @@ export default function VisualPage() {
                             );
                         })}
                     </ul>
-                    <p className="pro-work-more">
-                        <Link href="/#works">すべての実績を見る →</Link>
-                    </p>
                 </div>
             </section>
 
-            {/* 6. 進め方 */}
-            <section className="pro-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">進め方</h2>
-                    <p className="pro-sub">棚卸しから始め、撮って、出して、振り返る。この輪を一年回します。</p>
-                    <ol className="pro-steps">
-                        {VISUAL_STEPS.map((step) => (
-                            <li key={step.no} className="pro-step">
-                                <span className="pro-step-no">{step.no}</span>
-                                <div className="pro-step-body">
-                                    <h3 className="pro-step-title">{step.title}</h3>
-                                    <p>{step.body}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
-                </div>
-            </section>
-
-            {/* 7. オファー */}
-            <section className="pro-section pro-plans-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">ご依頼の形と費用</h2>
-                    <p className="pro-sub">判断の目安としての金額です。撮影日数と出し先の数で変わります。</p>
-                    <div className="pro-plan-grid">
-                        {VISUAL_PLANS.map((plan) => (
-                            <div
-                                key={plan.name}
-                                className={`pro-plan-card${plan.recommended ? ' is-recommended' : ''}`}
-                            >
-                                {plan.recommended && <span className="pro-plan-badge">おすすめ</span>}
-                                <h3 className="pro-plan-name">{plan.name}</h3>
-                                <p className="pro-plan-tagline">{plan.tagline}</p>
-                                <p className="pro-plan-price">{plan.price}</p>
-                                <p className="pro-plan-price-note">{plan.priceNote}</p>
-                                <ul className="pro-plan-includes">
-                                    {plan.includes.map((item) => (
-                                        <li key={item}>{item}</li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                    <p className="pro-plan-foot">
-                        表示はすべて税別・交通費および宿泊費は別途です。海部郡の事業者は、制作費に補助金が使える場合があります（
-                        <Link href="/pro/hojokin" className="systems-inline-link">
-                            一覧はこちら
-                        </Link>
-                        ）。
-                    </p>
-                </div>
-            </section>
-
-            {/* 8. FAQ */}
-            <section className="pro-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">よくあるご質問</h2>
-                    <dl className="pro-faq">
-                        {VISUAL_FAQS.map((faq) => (
-                            <div key={faq.q} className="pro-faq-item">
-                                <dt>{faq.q}</dt>
-                                <dd>{faq.a}</dd>
-                            </div>
-                        ))}
-                    </dl>
-                </div>
-            </section>
-
-            {/* 9. CTA — 行動は1種類 */}
+            {/* 7. 結び — 依頼への導線は控えめに1つ */}
             <section className="pro-section pro-final">
                 <div className="pro-inner">
-                    <h2 className="pro-final-title">今の見え方を、一度一緒に見ませんか。</h2>
+                    <h2 className="pro-final-title">今の見え方から、一緒に棚卸しを。</h2>
                     <p className="pro-final-lead">
-                        サイトと SNS の URL をいただければ、最初の棚卸しはこちらで済ませてからお話しします。
-                        数日以内にご返信します。
+                        この考え方で伴走するご依頼も受けています。費用の目安は
+                        <Link href="/pro" className="pro-faq-link">/pro のご依頼の形と費用</Link>
+                        へ。サイトと SNS の URL をいただければ、最初の棚卸しはこちらで済ませてからお話しします。
                     </p>
-                    <Link href={CTA_HREF} className="pro-cta-button">
+                    <Link href="/pro/contact" className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島県牟岐町</p>
+                    <p className="pro-final-note">小林大介 / Shine a Light</p>
                 </div>
             </section>
         </div>
