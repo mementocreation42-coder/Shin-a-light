@@ -286,10 +286,6 @@ export default function HojokinPage() {
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-inline-link">
-                        <Link href="/pro">引き受ける範囲と費用を見る →</Link>
-                    </p>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島</p>
                 </div>
             </section>
 
