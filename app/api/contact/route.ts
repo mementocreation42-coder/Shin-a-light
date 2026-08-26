@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/email/mailer';
+import { getAppSetting } from '@/lib/appSettings';
 
 /**
  * お問い合わせの送信。
  *
- * CONTACT_TO が設定されていれば、ニュースレターと同じ送信サービス
- * （Resend / Brevo。DKIM 済みで到達率が高い）で直接メールを送る。
- * 未設定の場合のみ、従来の WordPress Contact Form 7 に中継する
- * （CF7 は wp_mail 頼みで、届かないことがある）。
+ * 宛先は 環境変数 CONTACT_TO → DB（app_settings の contact_to）の順で探し、
+ * 見つかればニュースレターと同じ送信サービス（Resend / Brevo。DKIM 済みで
+ * 到達率が高い）で直接メールを送る。どちらも無い場合のみ、従来の
+ * WordPress Contact Form 7 に中継する（CF7 は wp_mail 頼みで、届かないことがある）。
  */
 
 // journal.shinealight.jp はパーマリンク形式の /wp-json/ が無効なため、
@@ -84,7 +85,7 @@ export async function POST(req: NextRequest) {
                 ? subject.trim()
                 : 'Message from Shine a Light Portfolio';
 
-        const contactTo = process.env.CONTACT_TO;
+        const contactTo = process.env.CONTACT_TO ?? (await getAppSetting('contact_to'));
         if (contactTo) {
             await sendDirect(contactTo, name, email, cleanSubject, message);
             return NextResponse.json({ status: 'mail_sent' });
