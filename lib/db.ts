@@ -56,13 +56,18 @@ type PgliteDb = {
   query: (sql: string, params?: unknown[]) => Promise<{ rows: unknown[] }>;
 };
 
-let pglitePromise: Promise<PgliteDb> | null = null;
+/**
+ * 同じプロセス内で1つだけ開く。PGlite は同じディレクトリを二重に開けない。
+ * Next の開発サーバーはページと Route Handler でモジュールグラフが分かれ、
+ * モジュール変数のキャッシュでは共有されない（2個目が Aborted() で落ちる）ため、
+ * globalThis に持って本当にプロセスで1つにする。
+ */
+const g = globalThis as typeof globalThis & { __salPglitePromise?: Promise<PgliteDb> };
 
-/** 同じプロセス内で1つだけ開く。PGlite は同じディレクトリを二重に開けない */
 export function getPglite(url: string): Promise<PgliteDb> {
-  if (pglitePromise) return pglitePromise;
+  if (g.__salPglitePromise) return g.__salPglitePromise;
 
-  pglitePromise = (async () => {
+  g.__salPglitePromise = (async () => {
     // 動的 import にして、Neon で動く本番バンドルに WASM を含めない
     const { PGlite } = await import('@electric-sql/pglite');
     const { mkdir } = await import('node:fs/promises');
@@ -72,7 +77,7 @@ export function getPglite(url: string): Promise<PgliteDb> {
     return new PGlite(dir) as unknown as PgliteDb;
   })();
 
-  return pglitePromise;
+  return g.__salPglitePromise;
 }
 
 /**

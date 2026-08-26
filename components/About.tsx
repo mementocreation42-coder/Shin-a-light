@@ -1,6 +1,7 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
-export default function About() {
+export default function About({ profileSrc = '/images/profile.jpg' }: { profileSrc?: string }) {
     return (
         <section id="about" className="section">
             <div className="section-inner narrow">
@@ -13,19 +14,19 @@ export default function About() {
                     <div className="profile-visual">
                         <div className="visual-block-image">
                             <Image
-                                src="/images/profile.jpg"
+                                src={profileSrc}
                                 alt="DAISUKE KOBAYASHI"
                                 fill
                                 style={{ objectFit: 'cover' }}
                             />
                         </div>
                         <div className="profile-actions">
-                            <a href="/journal" className="profile-btn journal">
+                            <Link href="/journal" className="profile-btn journal">
                                 Journal
-                            </a>
-                            <a href="/chronicle" className="profile-btn chronicle">
+                            </Link>
+                            <Link href="/chronicle" className="profile-btn chronicle">
                                 Chronicle
-                            </a>
+                            </Link>
                         </div>
                     </div>
                     <div className="profile-info">

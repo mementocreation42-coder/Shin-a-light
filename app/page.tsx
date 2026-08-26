@@ -5,6 +5,7 @@ import About from "@/components/About";
 import Works from "@/components/Works";
 import Contact from "@/components/Contact";
 import NewsletterCta from "@/components/NewsletterCta";
+import { getSiteImages } from "@/lib/siteImages";
 
 export const metadata: Metadata = {
   alternates: {
@@ -12,12 +13,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Home() {
+export default async function Home() {
+  const img = await getSiteImages();
   return (
     <>
       <Hero />
       <Philosophy />
-      <About />
+      <About profileSrc={img['about-profile']} />
       <Works />
       <Contact />
       <NewsletterCta />
