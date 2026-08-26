@@ -4,7 +4,6 @@ import {
     SYSTEMS_PAINS,
     SYSTEMS_TYPES,
     SYSTEMS_PROOF,
-    SYSTEMS_STEPS,
     SYSTEMS_PRINCIPLES,
     SYSTEMS_PLANS,
     SYSTEMS_UNFIT,
@@ -128,25 +127,6 @@ export default function SystemsPage() {
                             </li>
                         ))}
                     </ul>
-                </div>
-            </section>
-
-            {/* 5. 進め方 */}
-            <section className="pro-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">進め方</h2>
-                    <p className="pro-sub">要件定義書からは始めません。今の仕事を見せてもらうところから。</p>
-                    <ol className="pro-steps">
-                        {SYSTEMS_STEPS.map((step) => (
-                            <li key={step.no} className="pro-step">
-                                <span className="pro-step-no">{step.no}</span>
-                                <div className="pro-step-body">
-                                    <h3 className="pro-step-title">{step.title}</h3>
-                                    <p>{step.body}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
                 </div>
             </section>
 
