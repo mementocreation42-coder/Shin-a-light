@@ -159,8 +159,8 @@ export default async function ProPage() {
                                 <span className="pro-index-thumb">
                                     <Image src={img['pro-index-ai']} alt="" fill sizes="(max-width: 900px) 50vw, 20vw" style={{ objectFit: 'cover' }} />
                                 </span>
-                                <span className="pro-index-label"><IconSparkles />AI教室</span>
-                                <span className="pro-index-title">小さなAI教室</span>
+                                <span className="pro-index-label"><IconSparkles />AI研修・顧問</span>
+                                <span className="pro-index-title">AI研修・顧問</span>
                                 <span className="pro-index-sub">自分の仕事で使えるように</span>
                             </Link>
                         </li>

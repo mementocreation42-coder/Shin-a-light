@@ -26,7 +26,7 @@ const LINKS: NavLink[] = [
 const PRO_LINKS: NavLink[] = [
     { label: '映像・写真', href: '/pro/visual' },
     { label: 'システム開発', href: '/pro/systems' },
-    { label: 'AI教室', href: '/pro/ai' },
+    { label: 'AI研修・顧問', href: '/pro/ai' },
     { label: '補助金', href: '/pro/hojokin' },
     { label: '考え方', href: '/pro/approach' },
     { label: '相談する', href: '/pro/contact', className: 'nav-letter-tag' },

@@ -1,10 +1,10 @@
-// /pro/ai — 小さなAI教室。
+// /pro/ai — AI研修・顧問。
 // 「つくる」（システム開発）に対する「教える」。相手の実際の仕事を教材にする伴走型。
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { AI_PAINS, AI_TOPICS, AI_PLANS, AI_FAQS } from '@/data/pro-ai';
 
-const TITLE = '小さなAI教室 — 自分の仕事で使えるようになる';
+const TITLE = 'AI研修・顧問 — 自分の仕事で使えるようになる';
 const DESCRIPTION =
     '講義ではなく、あなたの実際の仕事を教材に、AIの使いどころと使い方を隣で教えます。単発ワークショップ、月イチ伴走、経営者1on1。徳島から全国対応（オンライン可）。';
 
@@ -39,7 +39,7 @@ export default function AiPage() {
             {/* 1. ヒーロー */}
             <header className="pro-hero">
                 <p className="b-side-mark">B-side of Shine a Light</p>
-                <p className="pro-eyebrow">For clients — 小さなAI教室</p>
+                <p className="pro-eyebrow">For clients — AI研修・顧問</p>
                 <h1 className="pro-hero-title">
                     自分の仕事で、
                     <br />
@@ -68,7 +68,7 @@ export default function AiPage() {
                     </ul>
                     <p className="pro-empathy-close">
                         道具は悪くありません。自分の仕事のどこで使うかが決まっていないだけです。
-                        そこを一緒に決めるのが、この教室の仕事です。
+                        そこを一緒に決めるのが、この研修と顧問の仕事です。
                     </p>
                 </div>
             </section>
