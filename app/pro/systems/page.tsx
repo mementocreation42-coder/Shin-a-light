@@ -57,15 +57,6 @@ export default function SystemsPage() {
                     開発会社に頼むほどの規模ではない。そのあいだにある「毎回面倒なこと」を、
                     御社の仕事の流れに合わせたシステムにします。話を聞いた人間が、そのまま設計し、実装し、運用します。
                 </p>
-                <div className="pro-hero-actions">
-                    <Link href={CTA_HREF} className="pro-cta-button">
-                        相談する（無料）
-                    </Link>
-                    <span className="pro-hero-note">「何を頼めばいいか分からない」段階で構いません。</span>
-                </div>
-                <p className="pro-hero-secondary">
-                    <Link href="/pro">企画・映像・Web を含めた全体の引き受け範囲はこちら →</Link>
-                </p>
             </header>
 
             {/* 2. 共感 */}

@@ -49,12 +49,6 @@ export default function AiPage() {
                     講義ではなく、あなたの実際の仕事を教材にして、AIの使いどころと使い方を隣で教えます。
                     ツールの流行を追いかけるのではなく、明日の仕事がひとつ軽くなるところから。
                 </p>
-                <div className="pro-hero-actions">
-                    <Link href={CTA_HREF} className="pro-cta-button">
-                        相談する（無料）
-                    </Link>
-                    <span className="pro-hero-note">「うちの仕事で使える？」の一言で構いません。</span>
-                </div>
             </header>
 
             {/* 2. 共感 */}
