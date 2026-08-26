@@ -3,14 +3,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { works } from '@/data/works';
 import { getSiteImages } from '@/lib/siteImages';
 import {
     VISUAL_PAINS,
     VISUAL_REASONS,
     VISUAL_SERVICES,
-    VISUAL_WORK_SLUGS,
-    VISUAL_STEPS,
 } from '@/data/pro-visual';
 
 const TITLE = 'ビジュアルコミュニケーション戦略とは — 連続する映像・写真の考え方';
@@ -40,20 +37,7 @@ export const metadata: Metadata = {
     },
 };
 
-const visualWorks = VISUAL_WORK_SLUGS.map((slug) => works.find((w) => w.slug === slug)).filter(
-    (w): w is NonNullable<typeof w> => Boolean(w),
-);
-
-/** '2018-' のような継続表記から「◯年目」を出す。単年なら null */
-function continuingYears(year: string, now: number): number | null {
-    const m = year.match(/^(\d{4})\s*[-–]\s*$/);
-    if (!m) return null;
-    const start = Number(m[1]);
-    return Math.max(1, now - start + 1);
-}
-
 export default async function VisualPage() {
-    const thisYear = new Date().getFullYear();
     const img = await getSiteImages();
 
     return (
@@ -135,64 +119,6 @@ export default async function VisualPage() {
                             </div>
                         ))}
                     </div>
-                </div>
-            </section>
-
-            {/* 5. 一年のサイクル */}
-            <section className="pro-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">一年のサイクル</h2>
-                    <p className="pro-sub">棚卸しから始め、撮って、出して、振り返る。この輪を一年回します。</p>
-                    <ol className="pro-steps">
-                        {VISUAL_STEPS.map((step) => (
-                            <li key={step.no} className="pro-step">
-                                <span className="pro-step-no">{step.no}</span>
-                                <div className="pro-step-body">
-                                    <h3 className="pro-step-title">{step.title}</h3>
-                                    <p>{step.body}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ol>
-                </div>
-            </section>
-
-            {/* 6. 続けた実例 */}
-            <section className="pro-section">
-                <div className="pro-inner">
-                    <h2 className="pro-heading">続けると、こうなる</h2>
-                    <p className="pro-sub">同じ相手を撮り続けてきた実例です。</p>
-                    <ul className="pro-work-grid">
-                        {visualWorks.map((work) => {
-                            const years = continuingYears(work.year, thisYear);
-                            return (
-                                <li key={work.slug}>
-                                    <Link href={`/pro/works/${work.slug}`} className="pro-work-card">
-                                        <div className="pro-work-thumb">
-                                            <Image
-                                                src={work.image}
-                                                alt={work.title}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, 33vw"
-                                                style={{ objectFit: 'cover' }}
-                                            />
-                                            {years && years > 1 && (
-                                                <span className="visual-work-years">{years}年目</span>
-                                            )}
-                                        </div>
-                                        <div className="pro-work-info">
-                                            <p className="pro-work-client">
-                                                {work.client}
-                                                <span className="pro-work-year">{work.year}</span>
-                                            </p>
-                                            <h3 className="pro-work-title">{work.title}</h3>
-                                            <p className="pro-work-role">{work.role}</p>
-                                        </div>
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ul>
                 </div>
             </section>
 
