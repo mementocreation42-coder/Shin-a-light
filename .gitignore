@@ -51,3 +51,7 @@ next-env.d.ts
 
 # newsletter (手元のPGlite)
 /.data/
+
+# claude code (skills)
+.agents/
+skills-lock.json

@@ -134,7 +134,6 @@ export default async function VisualPage() {
                     <Link href="/pro/contact" className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">小林大介 / Shine a Light</p>
                 </div>
             </section>
         </div>

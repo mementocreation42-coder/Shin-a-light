@@ -95,7 +95,7 @@ interface UploadedImage {
 interface Category { id: number; name: string; slug: string; }
 interface InitialData {
   id: string; title: string; date: string; categoryIds: number[];
-  content: string; status: 'publish' | 'draft';
+  content: string; status: 'publish' | 'draft' | 'pending';
   featuredMediaId?: number; featuredImageUrl?: string;
 }
 interface Props { categories: Category[]; initialData?: InitialData; }
@@ -959,7 +959,7 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [body]);
 
-  async function handleSubmit(e: React.FormEvent, postStatus: 'publish' | 'draft' = 'publish') {
+  async function handleSubmit(e: React.FormEvent, postStatus: 'publish' | 'draft' | 'pending' = 'publish') {
     e.preventDefault();
     setErrorMsg('');
     if (!title.trim()) { setErrorMsg('タイトルを入力してください'); return; }
@@ -1000,7 +1000,7 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
       if (!res.ok || !data.success) throw new Error(data.error || `HTTP ${res.status}`);
       setStatus('done');
       clearDraft();
-      setTimeout(() => router.push('/admin'), 1200);
+      setTimeout(() => router.push(postStatus === 'pending' ? '/admin/ideas' : '/admin'), 1200);
     } catch (err: unknown) {
       setStatus('error');
       setErrorMsg(err instanceof Error ? err.message : '不明なエラーが発生しました');
@@ -1363,8 +1363,13 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
         <button type="button" onClick={() => router.push('/admin')} className={styles.cancelBtn} disabled={isSubmitting}>
           キャンセル
         </button>
+        {initialData?.status === 'pending' && (
+          <button type="button" onClick={(e) => handleSubmit(e, 'pending')} disabled={isSubmitting || status === 'done'} className={styles.cancelBtn}>
+            {isSubmitting ? '...' : 'ネタを保存'}
+          </button>
+        )}
         <button type="button" onClick={(e) => handleSubmit(e, 'draft')} disabled={isSubmitting || status === 'done'} className={styles.cancelBtn}>
-          {isSubmitting ? '...' : '下書き保存'}
+          {isSubmitting ? '...' : initialData?.status === 'pending' ? '下書きへ移す' : '下書き保存'}
         </button>
         <button type="submit" form="post-editor-form" disabled={isSubmitting || status === 'done'} className={styles.submitBtn}>
           {isSubmitting ? '送信中...' : initialData ? '更新する' : '投稿する'}

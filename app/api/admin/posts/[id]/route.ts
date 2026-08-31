@@ -92,7 +92,8 @@ export async function PUT(
     const body = formData.get('body') as string || '';
     const categoryIds = formData.getAll('categoryIds').map((v) => parseInt(v as string, 10)).filter(Boolean);
     const products: ProductData[] = JSON.parse(formData.get('products') as string || '[]');
-    const postStatus = (formData.get('postStatus') as string) === 'draft' ? 'draft' : 'publish';
+    const rawStatus = formData.get('postStatus') as string;
+    const postStatus = rawStatus === 'draft' ? 'draft' : rawStatus === 'pending' ? 'pending' : 'publish';
     const imageUrls = formData.getAll('imageUrls') as string[];
     const imageIds = formData.getAll('imageIds').map((v) => parseInt(v as string, 10));
     const uploaded = imageUrls.map((url, i) => ({ url, id: imageIds[i] || 0 }));

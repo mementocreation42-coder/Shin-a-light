@@ -263,7 +263,7 @@ function authHeader(): string {
 }
 
 export interface WPPostAdmin extends WPPost {
-  status: 'publish' | 'draft' | 'future' | 'private';
+  status: 'publish' | 'draft' | 'future' | 'private' | 'pending';
   _embedded?: {
     'wp:featuredmedia'?: WPMedia[];
     'wp:term'?: Array<Array<WPCategory>>;
@@ -273,7 +273,7 @@ export interface WPPostAdmin extends WPPost {
 export async function getAdminPosts(
   page = 1,
   perPage = 20,
-  filters: { search?: string; status?: 'publish' | 'draft' | 'future'; categoryId?: number } = {}
+  filters: { search?: string; status?: 'publish' | 'draft' | 'future' | 'pending'; categoryId?: number } = {}
 ): Promise<{
   posts: WPPostAdmin[];
   totalPages: number;
@@ -315,7 +315,7 @@ export async function createWPPost(data: {
   content: string;
   excerpt?: string;
   date?: string;
-  status: 'publish' | 'draft';
+  status: 'publish' | 'draft' | 'pending';
   categories?: number[];
   tags?: number[];
   featured_media?: number;
@@ -334,7 +334,7 @@ export async function updateWPPost(id: number, data: {
   content?: string;
   excerpt?: string;
   date?: string;
-  status?: 'publish' | 'draft' | 'future';
+  status?: 'publish' | 'draft' | 'future' | 'pending';
   categories?: number[];
   tags?: number[];
   featured_media?: number;
@@ -345,6 +345,21 @@ export async function updateWPPost(id: number, data: {
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error(`Update post failed: ${await res.text()}`);
+  return res.json();
+}
+
+/** 記事ネタ（status=pending の投稿）。投稿管理の一覧には出ない置き場 */
+export interface WPIdeaPost {
+  id: number;
+  date: string;
+  title: { rendered: string };
+  content: { rendered: string };
+}
+
+export async function getIdeaPosts(): Promise<WPIdeaPost[]> {
+  const url = `${WP_REST_BASE}/posts&status=pending&per_page=100&orderby=date&order=asc&_fields=id,date,title,content`;
+  const res = await fetch(url, { headers: { Authorization: authHeader() }, cache: 'no-store' });
+  if (!res.ok) throw new Error(`Fetch idea posts failed: ${await res.text()}`);
   return res.json();
 }
 

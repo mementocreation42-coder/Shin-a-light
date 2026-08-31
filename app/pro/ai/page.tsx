@@ -164,7 +164,6 @@ export default function AiPage() {
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">小林大介 / Shine a Light｜徳島</p>
                 </div>
             </section>
         </div>

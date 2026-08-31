@@ -23,7 +23,8 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
     content: post.content.rendered,
     // 予約(future)は編集上は「公開」として扱う。日付が未来のまま保存すると
     // WordPress 側が自動で予約に戻す（コアの標準動作）
-    status: post.status === 'private' || post.status === 'future' ? 'publish' : post.status,
+    status: (post.status === 'private' || post.status === 'future' ? 'publish' : post.status) as
+        'publish' | 'draft' | 'pending',
     featuredMediaId: post.featured_media ?? 0,
     featuredImageUrl: getFeaturedImageUrl(post) ?? undefined,
   };

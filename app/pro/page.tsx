@@ -15,7 +15,6 @@ import {
     IconCamera,
     IconGear,
     IconYen,
-    IconCompass,
     IconCalendar,
     IconUsers,
     IconHand,
@@ -172,16 +171,6 @@ export default async function ProPage() {
                                 <span className="pro-index-label"><IconYen />補助金</span>
                                 <span className="pro-index-title">使える補助金の一覧</span>
                                 <span className="pro-index-sub">徳島県内向け・一次資料で確認</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/pro/approach" className="pro-index-card is-approach">
-                                <span className="pro-index-thumb">
-                                    <Image src={img['pro-index-approach']} alt="" fill sizes="(max-width: 900px) 50vw, 25vw" style={{ objectFit: 'cover' }} />
-                                </span>
-                                <span className="pro-index-label"><IconCompass />考え方</span>
-                                <span className="pro-index-title">企画書を、そのまま公開</span>
-                                <span className="pro-index-sub">受け皿から逆算する</span>
                             </Link>
                         </li>
                     </ul>
@@ -465,7 +454,6 @@ export default async function ProPage() {
                     <Link href={CTA_HREF} className="pro-cta-button">
                         相談する（無料）
                     </Link>
-                    <p className="pro-final-note">数日以内にご返信します ｜ 小林大介 / Shine a Light（徳島）</p>
                 </div>
             </section>
         </div>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const TITLE = '伝わる形は、つくる前に決まっている — 企画の考え方';
 const DESCRIPTION =
-    'つくったのに伝わらない、はなぜ起きるのか。受け皿から逆算するコミュニケーション設計の考え方と、徳島県南部の町で2018年から続けている実例。';
+    'つくったのに伝わらない、はなぜ起きるのか。受け皿から逆算するコミュニケーション設計の考え方を、企画書のかたちでそのまま公開しています。';
 
 export const metadata: Metadata = {
     title: TITLE,
@@ -45,9 +45,6 @@ export default function ApproachPage() {
                     実際にお渡ししている企画の考え方を、そのまま公開しています。
                     発注を検討する前の、判断材料としてお使いください。
                     社内で共有していただいて構いません。
-                </p>
-                <p className="approach-meta">
-                    Shine a Light / 小林大介 — 徳島
                 </p>
             </header>
 
@@ -123,53 +120,6 @@ export default function ApproachPage() {
                 {/* 03 */}
                 <section className="approach-section">
                     <p className="approach-no">03</p>
-                    <h2 className="approach-h2">実例：徳島県南部の町（2018年〜）</h2>
-                    <p>
-                        徳島県南部の、海と山に囲まれた小さな町です。
-                        「町外へ魅力を発信したい」——最初の相談は、よくある一言から始まりました。
-                    </p>
-                    <p>
-                        つくったのは、二つです。
-                    </p>
-                    <div className="approach-case">
-                        <div className="approach-case-item">
-                            <p className="approach-case-label">入口</p>
-                            <h3>プロモーション映像</h3>
-                            <p>
-                                観光スポットの紹介ではなく、そこに流れる時間の豊かさを撮りました。
-                                夜明け前の静けさ、山に差し込む光、透明度の高い海。
-                                「訪れたい場所」から「戻ってきたい場所」へ、意識をつなぐ構成です。
-                            </p>
-                        </div>
-                        <div className="approach-case-item">
-                            <p className="approach-case-label">受け皿</p>
-                            <h3>町のメディア「MUGIZINE」</h3>
-                            <p>
-                                映像で心が動いた人が、次に開けるドア。
-                                景色ではなく、そこに生きている人にフォーカスしたWeb版ZINEとして企画し、
-                                取材・執筆・運営まで担当しています。
-                            </p>
-                        </div>
-                    </div>
-                    <p>
-                        重要なのは、これが<strong>2018年から現在まで、途切れずに続いている</strong>ことです。
-                        映像は公開後、移住相談窓口でも広く拡散されました。
-                        MUGIZINEは今では町を代表する広報媒体になり、
-                        「更新が楽しみ」という声が町内外から届いています。
-                    </p>
-                    <p>
-                        単発でつくって納品していたら、どちらも起きていません。
-                        入口と受け皿を同じ手で、同じ時間軸で持ち続けたから、この形になりました。
-                    </p>
-                    <p className="approach-links">
-                        <Link href="/works/mugi-promotion-video">牟岐町プロモーション映像の詳細 →</Link>
-                        <Link href="/works/mugizine-media">MUGIZINE の詳細 →</Link>
-                    </p>
-                </section>
-
-                {/* 04 */}
-                <section className="approach-section">
-                    <p className="approach-no">04</p>
                     <h2 className="approach-h2">最初の3ヶ月で、何をするか</h2>
                     <p>
                         実際にご一緒する場合、はじめの3ヶ月はこう進みます。
@@ -203,9 +153,9 @@ export default function ApproachPage() {
                     </dl>
                 </section>
 
-                {/* 05 */}
+                {/* 04 */}
                 <section className="approach-section">
-                    <p className="approach-no">05</p>
+                    <p className="approach-no">04</p>
                     <h2 className="approach-h2">この考え方が向かない場合</h2>
                     <p>正直に書いておきます。次の場合、私に頼むのは最適ではありません。</p>
                     <ul className="approach-unfit">

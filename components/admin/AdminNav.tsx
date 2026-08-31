@@ -6,6 +6,7 @@ import styles from '@/app/admin/admin.module.css';
 
 const TABS = [
   { href: '/admin', label: '投稿管理' },
+  { href: '/admin/ideas', label: '記事ネタ' },
   { href: '/admin/photos', label: 'フォト管理' },
   { href: '/admin/newsletter', label: 'ニュースレター' },
   { href: '/admin/site-images', label: 'サイト画像' },
