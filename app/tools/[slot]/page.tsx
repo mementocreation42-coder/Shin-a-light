@@ -1,10 +1,15 @@
 // /tools/[slot] — アイテム
 // スターター。未検証。Next 15+ なので params は Promise。
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import s from "../tools.module.css";
-import { tools, toolCategories, getTool, getNeighbors } from "@/data/tools";
+import { tools, toolCategories } from "@/data/tools";
+import { getToolMerged, getToolsMerged, neighborsIn, resolveToolPhoto } from "@/lib/toolsStore";
+
+// 本文・写真は管理画面（/admin/tools）で上書きできる。保存時に revalidatePath するが、念のため1時間で作り直す
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ slot: string }> };
 
@@ -14,7 +19,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slot } = await params;
-    const t = getTool(slot);
+    const t = await getToolMerged(slot);
     if (!t) return {};
     return {
         title: `${t.slot} ${t.name} — Tools`,
@@ -24,22 +29,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ToolPage({ params }: Props) {
     const { slot } = await params;
-    const t = getTool(slot);
+    const t = await getToolMerged(slot);
     if (!t) notFound();
     const cat = toolCategories.find((c) => c.key === t.category)!;
-    const { prev, next } = getNeighbors(t.slot);
+    const { prev, next } = neighborsIn(await getToolsMerged(), t.slot);
+    const photo = resolveToolPhoto(t.photo);
+    const photo2 = resolveToolPhoto(t.photo2);
 
     return (
         <main className={`${s.wrap} ${s["c" + t.category]}`}>
             <article className={s.item}>
-                <div className={s.big} data-slot={t.slot}>{/* <img src={t.photo} alt={t.name} /> */}</div>
+                {/* 写真は 2 枚。1 枚目はモノ、2 枚目は使っている場面や別アングル */}
+                <div className={s.photos}>
+                    <div className={`${s.big} ${s.big1}`} data-slot={t.slot}>
+                        {photo && <Image src={photo} alt={t.name} fill sizes="(max-width: 900px) 100vw, 480px" style={{ objectFit: "cover" }} />}
+                    </div>
+                    <div className={`${s.big} ${s.big2}`} data-slot={t.slot}>
+                        {photo2 && <Image src={photo2} alt={`${t.name}（2枚目）`} fill sizes="(max-width: 900px) 100vw, 480px" style={{ objectFit: "cover" }} />}
+                    </div>
+                </div>
                 <div>
                     <div className={s.crumb}>
                         <Link href="/tools">Tools</Link><span>/</span>
-                        <Link href={`/tools#${cat.slug}`}>{cat.label}</Link><span>/</span>
-                        <b>{t.slot}</b><span>/</span>
-                        <span>{t.addedAtAge}歳から</span>
+                        <Link href={`/tools#${cat.slug}`}>{cat.label} <em>{cat.labelJa}</em></Link>
                     </div>
+                    <p className={s.slotno}><b>{t.slot}</b><span>{t.addedAtAge}歳の枠</span></p>
                     <h1 className={s.h1}>{t.name}</h1>
                     {t.oneLine && <p className={s.lede}>{t.oneLine}</p>}
 
@@ -71,13 +85,23 @@ export default async function ToolPage({ params }: Props) {
                         </div>
                     )}
 
-                    <div className={s.neigh}>
-                        {prev ? <Link href={`/tools/${prev.slot}`}>← {prev.slot}<b>{prev.name}</b></Link> : <span />}
-                        {next ? <Link href={`/tools/${next.slot}`}>{next.slot} →<b>{next.name}</b></Link> : <span />}
-                    </div>
-                    <div className={`${s.crumb} ${s.back}`}><Link href="/tools">← Tools 一覧へ</Link></div>
                 </div>
             </article>
+
+            {/* 前後送りと一覧へ。記事の下に横一列 */}
+            <nav className={s.pager} aria-label="前後の枠">
+                {prev ? (
+                    <Link href={`/tools/${prev.slot}`} className={s.pagerPrev}>
+                        <span>← {prev.slot}</span><b>{prev.name}</b>
+                    </Link>
+                ) : <span />}
+                <Link href="/tools" className={s.pagerAll}>Tools 一覧へ</Link>
+                {next ? (
+                    <Link href={`/tools/${next.slot}`} className={s.pagerNext}>
+                        <span>{next.slot} →</span><b>{next.name}</b>
+                    </Link>
+                ) : <span />}
+            </nav>
         </main>
     );
 }

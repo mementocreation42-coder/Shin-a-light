@@ -29,7 +29,8 @@ export interface ToolSlot {
     why: string;             // なぜこれか。300〜600 字
     future: string;          // どこが"ちょっと未来"か。1〜3 文
     spec: ToolSpec;
-    photo: string;           // 現場写真 1 枚。白背景の物撮りはしない。例: "/images/tools/L09.jpg"
+    photo: string;           // 現場写真 1 枚目。白背景の物撮りはしない。例: "/images/tools/L09.jpg"
+    photo2: string;          // 2 枚目（使っている場面・別アングル）。例: "/images/tools/L09-2.jpg"
     links: ToolLinks;
     addedAtAge: number;      // その枠が開いた年齢。初版の 45 枠は全部 45
     status: ToolStatus;
@@ -83,7 +84,7 @@ export const toolCategories: ToolCategoryMeta[] = [
 
 // ---------------------------------------------------------------------
 //  45 スロット（45 歳・初版）
-//  oneLine は仮コピー。why / future は空。photo はパスだけ決めてある。
+//  oneLine は仮コピー。why / future は空。photo / photo2 はパスだけ決めてある（public に置けば出る）。
 // ---------------------------------------------------------------------
 const A = 45; // addedAtAge
 const blank = (slot: string, category: ToolCategory, name: string, oneLine = ""): ToolSlot => ({
@@ -91,6 +92,7 @@ const blank = (slot: string, category: ToolCategory, name: string, oneLine = "")
     why: "", future: "",
     spec: {},
     photo: `/images/tools/${slot}.jpg`,
+    photo2: `/images/tools/${slot}-2.jpg`,
     links: {},
     addedAtAge: A,
     status: "draft",

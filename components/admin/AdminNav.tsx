@@ -10,6 +10,7 @@ const TABS = [
   { href: '/admin/photos', label: 'フォト管理' },
   { href: '/admin/newsletter', label: 'ニュースレター' },
   { href: '/admin/site-images', label: 'サイト画像' },
+  { href: '/admin/tools', label: 'Tools' },
 ] as const;
 
 export default function AdminNav() {
