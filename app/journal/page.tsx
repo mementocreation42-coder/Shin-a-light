@@ -1,7 +1,7 @@
 import NewsletterCta from '@/components/NewsletterCta';
 import React from 'react';
 import type { Metadata } from 'next';
-import { getPosts, getCategories, GALLERY_CATEGORY_SLUG } from '@/lib/wordpress';
+import { getPosts, getCategories, GALLERY_CATEGORY_SLUG, INTERVIEW_CATEGORY_SLUG } from '@/lib/wordpress';
 import JournalContent from '@/components/JournalContent';
 
 export const metadata: Metadata = {
@@ -44,7 +44,7 @@ export default async function JournalPage({ searchParams }: PageProps) {
     ]);
 
     const activeCategories = categories.filter(cat =>
-        cat.count > 0 && cat.slug !== 'journal' && cat.slug !== GALLERY_CATEGORY_SLUG
+        cat.count > 0 && cat.slug !== 'journal' && cat.slug !== GALLERY_CATEGORY_SLUG && cat.slug !== INTERVIEW_CATEGORY_SLUG
     );
 
     return (

@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { escHtml as esc, markdownToGutenberg } from './gutenberg';
 
 /**
  * ポッドキャストの文字起こしを、journal の記事原稿に書き直す。
@@ -118,44 +119,8 @@ export function parseDraft(text: string): ArticleDraft {
 }
 
 // ===== Markdown → WordPress（Gutenberg ブロック）=====
-
-function esc(s: string): string {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function inline(s: string): string {
-  return esc(s)
-    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2">$1</a>');
-}
-
-/**
- * 記事本文の Markdown を Gutenberg のブロック HTML にする。
- * 管理画面の投稿エディタが作るものと同じ形にそろえ、WP 側で普通に編集できるようにする。
- */
-export function markdownToGutenberg(md: string): string {
-  const out: string[] = [];
-  for (const raw of md.replace(/\r\n/g, '\n').split(/\n\s*\n/)) {
-    const block = raw.trim();
-    if (!block) continue;
-    const lines = block.split('\n').map((l) => l.trim());
-
-    if (/^##\s+/.test(block)) {
-      out.push(`<!-- wp:heading {"level":2} -->\n<h2 class="wp-block-heading">${inline(block.replace(/^##\s+/, ''))}</h2>\n<!-- /wp:heading -->`);
-    } else if (/^###\s+/.test(block)) {
-      out.push(`<!-- wp:heading {"level":3} -->\n<h3 class="wp-block-heading">${inline(block.replace(/^###\s+/, ''))}</h3>\n<!-- /wp:heading -->`);
-    } else if (lines.every((l) => /^[-*]\s+/.test(l))) {
-      const items = lines.map((l) => `<li>${inline(l.replace(/^[-*]\s+/, ''))}</li>`).join('');
-      out.push(`<!-- wp:list -->\n<ul class="wp-block-list">${items}</ul>\n<!-- /wp:list -->`);
-    } else if (lines.every((l) => l.startsWith('>'))) {
-      const body = inline(lines.map((l) => l.replace(/^>\s?/, '')).join(' '));
-      out.push(`<!-- wp:quote -->\n<blockquote class="wp-block-quote"><p>${body}</p></blockquote>\n<!-- /wp:quote -->`);
-    } else {
-      out.push(`<!-- wp:paragraph -->\n<p>${inline(block).replace(/\n/g, '<br>')}</p>\n<!-- /wp:paragraph -->`);
-    }
-  }
-  return out.join('\n\n');
-}
+// 変換本体は lib/gutenberg.ts（インタビュー下書き lib/interviewDraft.ts と共用）。ここからも同じ名前で使える
+export { markdownToGutenberg };
 
 /** サイトのポッドキャスト一覧ページ。冒頭・末尾のリンクカードの飛び先 */
 const PODCAST_PAGE_URL = 'https://www.shinealight.jp/podcast';

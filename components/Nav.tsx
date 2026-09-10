@@ -17,6 +17,7 @@ const LINKS: NavLink[] = [
     { label: 'Photos', href: '/photos' },
     { label: 'Videos', href: '/videos' },
     { label: 'Podcast', href: '/podcast' },
+    { label: 'Interview', href: '/interview' },
     { label: 'Contact', href: '/#contact', anchor: 'contact' },
     { label: 'Newsletter', href: '/newsletter', className: 'nav-letter-tag' },
     { label: 'for Pro', href: '/pro', className: 'nav-pro-tag' },

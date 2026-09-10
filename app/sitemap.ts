@@ -5,6 +5,7 @@ import { products } from '@/data/products';
 import { labProjects } from '@/app/lab/data';
 import { tools } from '@/data/tools';
 import { PRO_WORK_SLUGS } from '@/data/pro';
+import { getInterviewPosts } from '@/lib/interviews';
 
 // Sitemap is regenerated at most once per day.
 // Without this, every crawler request (Google, Bing, etc.) triggers a fresh
@@ -31,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/lab',
         '/newsletter',
         '/podcast',
+        '/interview',
         '/tools',
     ];
 
@@ -54,6 +56,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }));
     } catch (error) {
         console.error('Sitemap: Failed to fetch posts from WordPress', error);
+    }
+
+    // 2b. Interview (WordPress の Interview カテゴリ)
+    let interviewRoutes: MetadataRoute.Sitemap = [];
+    try {
+        const { posts } = await getInterviewPosts(1, 100);
+        interviewRoutes = posts.map((post) => ({
+            url: `${BASE_URL}/interview/${post.id}`,
+            lastModified: new Date(post.modified || post.date),
+            changeFrequency: 'monthly' as const,
+            priority: 0.7,
+        }));
+    } catch (error) {
+        console.error('Sitemap: Failed to fetch interviews from WordPress', error);
     }
 
     // 3. Works (Dynamic from local data)
@@ -96,5 +112,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
     }));
 
-    return [...routes, ...journalRoutes, ...workRoutes, ...shopRoutes, ...labRoutes, ...proWorkRoutes, ...toolRoutes];
+    return [...routes, ...journalRoutes, ...interviewRoutes, ...workRoutes, ...shopRoutes, ...labRoutes, ...proWorkRoutes, ...toolRoutes];
 }

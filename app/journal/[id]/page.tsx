@@ -1,9 +1,9 @@
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import NewsletterForm from '@/components/NewsletterForm';
 import AuthorStrip from '@/components/AuthorStrip';
-import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate } from '@/lib/wordpress';
+import { getPostById, getPosts, getCategories, getFeaturedImageUrl, formatDate, getInterviewCategoryId } from '@/lib/wordpress';
 import { processYouTubeEmbeds } from '@/lib/youtube';
 import { processLinkCards } from '@/lib/ogp';
 import { processAffiliateCards } from '@/lib/affiliate';
@@ -95,6 +95,12 @@ export default async function JournalPostPage({ params }: PageProps) {
 
     if (!post) {
         notFound();
+    }
+
+    // インタビュー記事は専用ページへ（同じ内容を2つの URL で出さない）
+    const interviewCategoryId = await getInterviewCategoryId();
+    if (interviewCategoryId && post.categories.includes(interviewCategoryId)) {
+        permanentRedirect(`/interview/${id}`);
     }
 
     const imageUrl = getFeaturedImageUrl(post);

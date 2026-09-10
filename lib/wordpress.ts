@@ -1,7 +1,7 @@
 import { MEMENTO_TAG_SLUG } from './galleryCategories';
 
 const WP_BASE = 'https://journal.shinealight.jp';
-const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
+export const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
 
 export interface WPPost {
     id: number;
@@ -55,9 +55,8 @@ export async function getPosts(page = 1, perPage = 12, categoryId?: number): Pro
         if (categoryId) {
             url += `&categories=${categoryId}`;
         } else {
-            // ギャラリー専用投稿はジャーナル一覧から除外
-            const galleryId = await getGalleryCategoryId();
-            if (galleryId) url += `&categories_exclude=${galleryId}`;
+            // ギャラリー専用投稿とインタビューはジャーナル一覧から除外（それぞれ専用ページを持つ）
+            url += await journalExcludeQuery();
         }
 
         const res = await fetch(
@@ -90,8 +89,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
         let totalPages = 1;
 
         const listFields = '_fields=id,title,excerpt,date,categories,featured_media,_links,_embedded&_embed=wp:featuredmedia';
-        const galleryId = await getGalleryCategoryId();
-        const exclude = galleryId ? `&categories_exclude=${galleryId}` : '';
+        const exclude = await journalExcludeQuery();
 
         // Fetch first page to get totalPages
         const firstRes = await fetch(
@@ -394,51 +392,78 @@ export async function uploadMedia(file: File, filename: string): Promise<WPMedia
 // ===================================
 
 export const GALLERY_CATEGORY_SLUG = 'gallery';
+/** インタビュー記事のカテゴリ。/interview に出す投稿はこれを付ける（→ lib/interviews.ts） */
+export const INTERVIEW_CATEGORY_SLUG = 'interview';
 
-let _galleryCatId: number | null = null;
+const _categoryIds = new Map<string, number>();
 
-// Resolve the gallery category id (read-only). Cached in-process + via fetch cache.
-export async function getGalleryCategoryId(): Promise<number | null> {
-    if (_galleryCatId) return _galleryCatId;
+// Resolve a category id by slug (read-only). Cached in-process + via fetch cache.
+export async function getCategoryIdBySlug(slug: string): Promise<number | null> {
+    const memo = _categoryIds.get(slug);
+    if (memo) return memo;
     // まずは1時間キャッシュ済みの全カテゴリ一覧から引く（毎回 WP に問い合わせない）
-    const fromList = (await getCategories()).find((c) => c.slug === GALLERY_CATEGORY_SLUG);
+    const fromList = (await getCategories()).find((c) => c.slug === slug);
     if (fromList?.id) {
-        _galleryCatId = fromList.id;
-        return _galleryCatId;
+        _categoryIds.set(slug, fromList.id);
+        return fromList.id;
     }
     try {
         // カテゴリ未作成→作成後の遷移を確実に反映するためキャッシュしない。
         // 成功したidはモジュール変数に memo するので追加リクエストは最小限。
         const res = await fetch(
-            `${WP_REST_BASE}/categories&slug=${GALLERY_CATEGORY_SLUG}&_fields=id`,
+            `${WP_REST_BASE}/categories&slug=${slug}&_fields=id`,
             { cache: 'no-store' }
         );
         if (!res.ok) return null;
         const cats = await res.json();
         if (Array.isArray(cats) && cats[0]?.id) {
-            _galleryCatId = cats[0].id as number;
-            return _galleryCatId;
+            _categoryIds.set(slug, cats[0].id as number);
+            return cats[0].id as number;
         }
         return null;
     } catch (error) {
-        console.error('WordPress API error (getGalleryCategoryId):', error);
+        console.error(`WordPress API error (getCategoryIdBySlug: ${slug}):`, error);
         return null;
     }
 }
 
-// Resolve or create the gallery category (authenticated, admin use only).
-export async function getOrCreateGalleryCategoryId(): Promise<number> {
-    const existing = await getGalleryCategoryId();
+// Resolve or create a category (authenticated, admin use only).
+async function getOrCreateCategoryId(slug: string, name: string): Promise<number> {
+    const existing = await getCategoryIdBySlug(slug);
     if (existing) return existing;
     const res = await fetch(`${WP_REST_BASE}/categories`, {
         method: 'POST',
         headers: { Authorization: authHeader(), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: 'Gallery', slug: GALLERY_CATEGORY_SLUG }),
+        body: JSON.stringify({ name, slug }),
     });
-    if (!res.ok) throw new Error(`Create gallery category failed: ${await res.text()}`);
+    if (!res.ok) throw new Error(`Create ${slug} category failed: ${await res.text()}`);
     const cat = await res.json();
-    _galleryCatId = cat.id as number;
-    return _galleryCatId;
+    _categoryIds.set(slug, cat.id as number);
+    return cat.id as number;
+}
+
+export async function getGalleryCategoryId(): Promise<number | null> {
+    return getCategoryIdBySlug(GALLERY_CATEGORY_SLUG);
+}
+
+export async function getOrCreateGalleryCategoryId(): Promise<number> {
+    return getOrCreateCategoryId(GALLERY_CATEGORY_SLUG, 'Gallery');
+}
+
+export async function getInterviewCategoryId(): Promise<number | null> {
+    return getCategoryIdBySlug(INTERVIEW_CATEGORY_SLUG);
+}
+
+export async function getOrCreateInterviewCategoryId(): Promise<number> {
+    return getOrCreateCategoryId(INTERVIEW_CATEGORY_SLUG, 'Interview');
+}
+
+/** ジャーナル一覧から外すカテゴリの query。ギャラリー専用投稿とインタビューは専用ページを持つ */
+async function journalExcludeQuery(): Promise<string> {
+    const ids = (await Promise.all([getGalleryCategoryId(), getInterviewCategoryId()])).filter(
+        (id): id is number => !!id
+    );
+    return ids.length ? `&categories_exclude=${ids.join(',')}` : '';
 }
 
 // --- MEMENTO タグ（ギャラリー内のカテゴリ分け用） ---

@@ -10,6 +10,7 @@
     "db:migrate": "node scripts/db-migrate.mjs",
     "newsletter:selftest": "tsx scripts/newsletter-selftest.mts",
     "podcast:draft": "tsx scripts/podcast-to-draft.mts",
+    "interview:draft": "tsx scripts/interview-to-draft.mts",
     "brain:sync": "tsx scripts/podcast-brain.mts",
     "podcast:topic": "tsx scripts/podcast-topic-draft.mts"
   },
