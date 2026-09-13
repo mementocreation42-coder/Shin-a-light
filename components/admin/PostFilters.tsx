@@ -28,7 +28,7 @@ export default function PostFilters({ categories }: { categories: Category[] }) 
     }
     params.delete('page');
     const qs = params.toString();
-    router.push(qs ? `/admin?${qs}` : '/admin');
+    router.push(qs ? `/admin/posts?${qs}` : '/admin/posts');
   }
 
   // 入力中は打鍵ごとに遷移させず、止まってからまとめて反映する
@@ -87,7 +87,7 @@ export default function PostFilters({ categories }: { categories: Category[] }) 
       {hasFilters && (
         <button
           type="button"
-          onClick={() => router.push('/admin')}
+          onClick={() => router.push('/admin/posts')}
           className={styles.resetBtn}
         >
           リセット

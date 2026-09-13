@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getAdminPosts, getFeaturedThumbUrl, formatDate, stripHtml } from '@/lib/wordpress';
-import AdminNav from '@/components/admin/AdminNav';
 import PostActions from '@/components/admin/PostActions';
 import IdeaQuickAdd from '@/components/admin/IdeaQuickAdd';
 import styles from '../admin.module.css';
@@ -20,18 +19,7 @@ export default async function AdminIdeasPage() {
     const { posts, total } = await getAdminPosts(1, 100, { status: 'pending' });
 
     return (
-        <div className={styles.page}>
-            <header className={styles.header}>
-                <div className={styles.headerLeft}>
-                    <Link href="/" className={styles.logo}>SAL</Link>
-                    <span className={styles.logoBadge}>ADMIN</span>
-                    <AdminNav />
-                </div>
-                <div className={styles.headerRight}>
-                    <Link href="/journal" target="_blank" className={styles.ghostBtn}>公開ページを見る ↗</Link>
-                </div>
-            </header>
-
+        <>
             <main className={styles.main}>
                 <div className={styles.pageTitleRow}>
                     <h1 className={styles.pageTitle}>
@@ -81,6 +69,6 @@ export default async function AdminIdeasPage() {
                     </div>
                 )}
             </main>
-        </div>
+    </>
     );
 }

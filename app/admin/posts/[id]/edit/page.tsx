@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { getAdminPostById, getCategories, getFeaturedImageUrl, stripHtml } from '@/lib/wordpress';
 import PostEditor from '@/components/admin/PostEditor';
+import HeaderActions from '@/components/admin/HeaderActions';
 import styles from '../../../admin.module.css';
 
 export const metadata = {
@@ -30,26 +31,16 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   };
 
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Link href="/" className={styles.logo}>SAL</Link>
-          <Link href="/admin" className={styles.breadcrumb}>/ 投稿一覧</Link>
-          <span className={styles.breadcrumb}>/ 投稿を編集</span>
-        </div>
-        <div className={styles.headerRight}>
-          {post.status === 'publish' && (
-            <Link href={`/journal/${id}`} target="_blank" className={styles.ghostBtn}>
-              公開ページを見る ↗
-            </Link>
-          )}
-          <div id="post-editor-actions" />
-        </div>
-      </header>
-
+    <>
+      {post.status === 'publish' && (
+        <HeaderActions>
+          <Link href={`/journal/${id}`} target="_blank" className={styles.ghostBtn}>この投稿を見る ↗</Link>
+        </HeaderActions>
+      )}
       <main className={styles.editorMain}>
+        <p className={styles.crumbs}><Link href="/admin/posts">投稿一覧</Link> / 投稿を編集</p>
         <PostEditor categories={categories} initialData={initialData} />
       </main>
-    </div>
+    </>
   );
 }

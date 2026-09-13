@@ -365,7 +365,7 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
   }, []);
 
   useEffect(() => {
-    setHeaderActionsTarget(document.getElementById('post-editor-actions'));
+    setHeaderActionsTarget(document.getElementById('admin-header-actions'));
   }, []);
 
   useEffect(() => {

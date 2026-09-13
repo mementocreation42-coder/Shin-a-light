@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import AdminNav from '@/components/admin/AdminNav';
+import HeaderActions from '@/components/admin/HeaderActions';
 import ToolSlotEditor from '@/components/admin/ToolSlotEditor';
 import { getTool, toolCategories } from '@/data/tools';
 import { getToolRow, resolveToolPhoto, rowToInput, toolToInput } from '@/lib/toolsStore';
@@ -23,18 +23,11 @@ export default async function AdminToolSlotPage({ params }: { params: Promise<{ 
     const initial = row ? rowToInput(row) : defaults;
 
     return (
-        <div className={styles.page}>
-            <header className={styles.header}>
-                <div className={styles.headerLeft}>
-                    <Link href="/" className={styles.logo}>SAL</Link>
-                    <span className={styles.logoBadge}>ADMIN</span>
-                    <AdminNav />
-                </div>
-                <div className={styles.headerRight}>
-                    <Link href="/admin/tools" className={styles.ghostBtn}>← 一覧</Link>
-                    <Link href={`/tools/${base.slot}`} target="_blank" className={styles.ghostBtn}>公開ページを見る ↗</Link>
-                </div>
-            </header>
+        <>
+            <HeaderActions>
+                <Link href="/admin/tools" className={styles.ghostBtn}>← 一覧</Link>
+                <Link href={`/tools/${base.slot}`} target="_blank" className={styles.ghostBtn}>この枠を見る ↗</Link>
+            </HeaderActions>
             <main className={styles.main}>
                 <ToolSlotEditor
                     slot={base.slot}
@@ -47,6 +40,6 @@ export default async function AdminToolSlotPage({ params }: { params: Promise<{ 
                     photo2Preview={resolveToolPhoto(initial.photo2)}
                 />
             </main>
-        </div>
+        </>
     );
 }

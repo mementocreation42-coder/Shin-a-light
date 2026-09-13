@@ -73,6 +73,9 @@ a {
 }
 
 .nav-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 18px;
   font-weight: 700;
   color: var(--accent-orange);
@@ -83,6 +86,17 @@ a {
 
 .nav-logo:hover {
   color: #fff;
+}
+
+/* ロゴの 3 円マーク（声・考え・僕が重なる） */
+.nav-logo-mark {
+  display: block;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.nav-logo:hover .nav-logo-mark {
+  transform: rotate(120deg);
 }
 
 /* B面のロゴに付く「for Pro」 */
@@ -3849,6 +3863,13 @@ select:disabled {
 
 /* コピーライト行に添えるログイン導線。本文の邪魔をしない程度に */
 /* フッターのサイト名ロゴ */
+/* フッターの 3 円マーク。ロゴ文字と同じ橙で、ひとまわり大きく */
+.footer-mark {
+  display: block;
+  margin: 0 auto 18px;
+  color: var(--accent-orange);
+}
+
 .footer-logo {
   font-family: var(--font-mono);
   font-size: 24px;

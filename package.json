@@ -12,7 +12,8 @@
     "podcast:draft": "tsx scripts/podcast-to-draft.mts",
     "interview:draft": "tsx scripts/interview-to-draft.mts",
     "brain:sync": "tsx scripts/podcast-brain.mts",
-    "podcast:topic": "tsx scripts/podcast-topic-draft.mts"
+    "podcast:topic": "tsx scripts/podcast-topic-draft.mts",
+    "gallery:new": "tsx scripts/gallery-new.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.117.1",

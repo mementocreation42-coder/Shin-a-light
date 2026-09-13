@@ -17,3 +17,20 @@ export async function getAppSetting(key: string): Promise<string | null> {
         return null;
     }
 }
+
+/** アプリ設定の書き込み（upsert）。DB 未接続なら false を返す */
+export async function setAppSetting(key: string, value: string): Promise<boolean> {
+    if (!isDbConfigured()) return false;
+    try {
+        const sql = getSql();
+        await sql`
+            insert into app_settings (key, value, updated_at)
+            values (${key}, ${value}, now())
+            on conflict (key) do update set value = excluded.value, updated_at = now()
+        `;
+        return true;
+    } catch (error) {
+        console.error('[appSettings] write failed:', error);
+        return false;
+    }
+}

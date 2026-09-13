@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import type { GalleryPhoto } from '@/lib/wordpress';
@@ -13,7 +14,8 @@ const CATEGORY_ORDER: readonly string[] = GALLERY_CATEGORIES;
 
 // カテゴリ選択時に、タブ直下へ出すコンセプト文（All では出さない）
 // contactLabel を持つカテゴリだけ、末尾に Contact への依頼導線を出す。
-const CONCEPTS: Record<string, { tagline: string; body: string; contactLabel?: string }> = {
+// receive を持つカテゴリは、撮った人向けの「写真を受け取る」導線（/g のお渡しページ）も出す。
+const CONCEPTS: Record<string, { tagline: string; body: string; contactLabel?: string; receive?: { label: string; href: string } }> = {
     Archive: {
         tagline: '光の射す場所にも、\n影のなかにも。',
         body:
@@ -28,6 +30,7 @@ const CONCEPTS: Record<string, { tagline: string; body: string; contactLabel?: s
             '過去は帰る場所ではなく、未来を創るための大切な時間。20年30年経って見返したとき、' +
             '素敵な思い出がよみがえる——そんな一枚を残します。',
         contactLabel: '出張写真撮影のご依頼・ご相談は',
+        receive: { label: '撮影した写真のお受け取りは', href: '/g' },
     },
 };
 
@@ -206,7 +209,13 @@ export default function PhotoGallery({ photos }: { photos: GalleryPhoto[] }) {
                     {CONCEPTS[category].contactLabel && (
                         <p className={styles.inquiry}>
                             <span>{CONCEPTS[category].contactLabel}</span>
-                            <a href="/#contact">Contact →</a>
+                            <Link href="/#contact">Contact →</Link>
+                        </p>
+                    )}
+                    {CONCEPTS[category].receive && (
+                        <p className={styles.inquiry}>
+                            <span>{CONCEPTS[category].receive.label}</span>
+                            <Link href={CONCEPTS[category].receive.href}>お渡しページ →</Link>
                         </p>
                     )}
                 </div>

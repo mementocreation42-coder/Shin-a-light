@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAL — エコシステム図</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#1e1e1e;--card:#262626;--line:#363636;--ink:#fff;--muted:#a0a0a0;--dim:#6e6e6e;
+  --orange:#ff764d;--pink:#e08cc8;--blue:#6fb3ff;--green:#87d37c;--amber:#e8b25a;--purple:#b48cff;--teal:#5fc7c7;
+  --sans:"IBM Plex Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13px;line-height:1.5}
+.page{max-width:1120px;margin:0 auto;padding:36px 32px 44px}
+
+/* 見出し */
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.head h1{font-family:var(--mono);font-size:40px;letter-spacing:8px;color:var(--orange);margin:0;line-height:1}
+.head h1 small{display:block;font-family:var(--sans);letter-spacing:0;font-size:12.5px;color:var(--muted);margin-top:10px;font-weight:400}
+.head .mission{font-size:12px;color:var(--muted);max-width:420px;text-align:right}
+
+/* セクション */
+.sec{padding:30px 0;border-bottom:1px solid var(--line)}
+.sec:last-of-type{border-bottom:0}
+.sec h2{display:flex;align-items:baseline;gap:12px;margin:0 0 18px;font-size:14px;font-weight:700}
+.sec h2 b{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--orange);font-weight:700}
+.sec h2 span{font-weight:400;color:var(--muted);font-size:12px}
+.sec h2 .k{margin-left:auto;font-family:var(--mono);font-size:22px;color:var(--ink)}
+.sec h2 .k small{font-size:11px;color:var(--dim);margin-left:4px;letter-spacing:0}
+
+/* 図の共通 */
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--sans);fill:var(--ink)}
+svg .mono{font-family:var(--mono)}
+svg .t{font-size:15px;font-weight:700}
+svg .s{font-size:10.5px;fill:var(--muted)}
+svg .d{font-size:9.5px;fill:var(--dim)}
+svg .big{font-family:var(--mono);font-size:22px;font-weight:700;letter-spacing:3px}
+svg .num{font-family:var(--mono);font-size:26px;font-weight:700}
+
+/* 00: 円 ＋ 数字 */
+.core{display:grid;grid-template-columns:minmax(280px,400px) 1fr;gap:32px;align-items:center}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 14px;text-align:center}
+.stat b{display:block;font-family:var(--mono);font-size:34px;line-height:1}
+.stat b small{font-size:14px;color:var(--dim)}
+.stat span{display:block;font-size:12px;color:var(--muted);margin-top:8px}
+.stat em{display:block;font-style:normal;font-family:var(--mono);font-size:9.5px;color:var(--dim);letter-spacing:1.5px;margin-top:6px}
+
+/* 02: ツール */
+.tools{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 8px;text-align:center}
+.tool i{display:block;width:34px;height:34px;border-radius:50%;margin:0 auto 8px;opacity:.9}
+.tool b{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:1px}
+.tool span{display:block;font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.tool em{display:block;font-style:normal;font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:6px}
+
+/* 03: 入口と家 */
+.outlets{display:grid;grid-template-columns:150px 40px 1fr;gap:0;align-items:stretch}
+.box{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--line);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:4px}
+.box b{font-size:15px}
+.box .u{font-family:var(--mono);font-size:9.5px;color:var(--dim);letter-spacing:.5px}
+.box p{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.5}
+.box .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto;padding-top:10px}
+.box .chips span{font-size:10px;padding:2px 7px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}
+.vbar{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px}
+.homes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.letter{margin-top:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:#222;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--muted)}
+.letter b{font-family:var(--mono);font-size:11px;letter-spacing:2px;color:var(--pink)}
+.letter .path{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--dim)}
+.outside{margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:11px;color:var(--dim)}
+.outside b{font-family:var(--mono);font-size:9.5px;letter-spacing:2px;margin-right:4px}
+.outside span{padding:3px 9px;border:1px dashed var(--line);border-radius:999px}
+
+/* フッター */
+.foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px 20px;padding-top:16px;border-top:1px solid var(--line);color:var(--dim);font-size:11px}
+.foot .mark{display:inline-flex;align-items:center;gap:10px;color:var(--muted)}
+
+/* 可変幅 */
+@media (max-width:900px){
+  .page{padding:24px 16px 36px}
+  .core{grid-template-columns:1fr}
+  .tools{grid-template-columns:repeat(4,1fr)}
+  .outlets{grid-template-columns:1fr}
+  .vbar{transform:rotate(90deg);height:36px}
+  .homes{grid-template-columns:1fr}
+  .head .mission{text-align:left}
+}
+@media (max-width:520px){
+  .head h1{font-size:32px}
+  .stats{grid-template-columns:1fr}
+  .tools{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="head">
+    <h1>SAL<small>Shine a Light エコシステム図 ── 小林大介 ／ 徳島県の限界集落から</small></h1>
+    <div class="mission">疲れた身体を整え、AI で仕事を軽くし、自然に触れ、自分の時間を取り戻す。</div>
+  </div>
+
+  <!-- 00 3 つの円 -->
+  <div class="sec">
+    <h2><b>00</b>SAL とは <span>3 つの円が重なるところ</span></h2>
+    <div class="core">
+      <svg viewBox="0 0 400 330" role="img" aria-label="録る・考え・声の 3 つの円。重なりが SAL">
+        <defs><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs>
+        <circle cx="200" cy="118" r="100" fill="#ff764d" fill-opacity=".13" stroke="#ff764d" stroke-width="2.5"/>
+        <circle cx="142" cy="212" r="100" fill="#e08cc8" fill-opacity=".11" stroke="#e08cc8" stroke-width="2.5"/>
+        <circle cx="258" cy="212" r="100" fill="#6fb3ff" fill-opacity=".11" stroke="#6fb3ff" stroke-width="2.5"/>
+        <circle cx="200" cy="180" r="40" fill="url(#glow)"/>
+        <text x="200" y="62" text-anchor="middle" class="t">録る</text>
+        <text x="200" y="80" text-anchor="middle" class="s">僕 ・ SAL Radio</text>
+        <text x="84" y="236" text-anchor="middle" class="t">考え</text>
+        <text x="84" y="254" text-anchor="middle" class="s">Brain</text>
+        <text x="316" y="236" text-anchor="middle" class="t">声</text>
+        <text x="316" y="254" text-anchor="middle" class="s">Writer</text>
+        <text x="200" y="178" text-anchor="middle" class="big">SAL</text>
+        <text x="200" y="196" text-anchor="middle" class="s">僕の分身</text>
+      </svg>
+      <div class="stats">
+        <div class="stat"><b style="color:var(--orange)">69</b><span>話 録った</span><em>SAL RADIO</em></div>
+        <div class="stat"><b style="color:var(--pink)">69</b><span>話 覚えた</span><em>BRAIN</em></div>
+        <div class="stat"><b style="color:var(--blue)">59<small>+60</small></b><span>言い回し ＋ 持論</span><em>WRITER</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 01 毎日のループ -->
+  <div class="sec">
+    <h2><b>01</b>毎日のループ <span>毎朝 7:00、自動で一周</span><span class="k">7:00</span></h2>
+    <svg viewBox="0 0 1060 250" role="img" aria-label="録る → 溜める → 書く → 育つ → 録る のループ">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6e6e6e"/></marker>
+      </defs>
+      <!-- 4 つの丸 -->
+      <g>
+        <circle cx="130" cy="110" r="58" fill="#ff764d" fill-opacity=".14" stroke="#ff764d" stroke-width="2.5"/>
+        <text x="130" y="104" text-anchor="middle" class="t">録る</text>
+        <text x="130" y="122" text-anchor="middle" class="s">散歩しながら 10 分</text>
+        <text x="130" y="190" text-anchor="middle" class="d mono">SAL RADIO</text>
+      </g>
+      <g>
+        <circle cx="397" cy="110" r="58" fill="#e08cc8" fill-opacity=".12" stroke="#e08cc8" stroke-width="2.5"/>
+        <text x="397" y="104" text-anchor="middle" class="t">溜める</text>
+        <text x="397" y="122" text-anchor="middle" class="s">文字起こし ＋ 要約</text>
+        <text x="397" y="190" text-anchor="middle" class="d mono">BRAIN</text>
+      </g>
+      <g>
+        <circle cx="663" cy="110" r="58" fill="#87d37c" fill-opacity=".12" stroke="#87d37c" stroke-width="2.5"/>
+        <text x="663" y="104" text-anchor="middle" class="t">書く</text>
+        <text x="663" y="122" text-anchor="middle" class="s">記事にして公開</text>
+        <text x="663" y="190" text-anchor="middle" class="d mono">SAL JOURNAL</text>
+      </g>
+      <g>
+        <circle cx="930" cy="110" r="58" fill="#6fb3ff" fill-opacity=".12" stroke="#6fb3ff" stroke-width="2.5"/>
+        <text x="930" y="104" text-anchor="middle" class="t">育つ</text>
+        <text x="930" y="122" text-anchor="middle" class="s">直された跡から学ぶ</text>
+        <text x="930" y="190" text-anchor="middle" class="d mono">WRITER</text>
+      </g>
+      <!-- 矢印 -->
+      <g stroke="#6e6e6e" stroke-width="2" fill="none" marker-end="url(#ar)">
+        <path d="M192 110 H335"/><path d="M459 110 H601"/><path d="M725 110 H868"/>
+      </g>
+      <g class="d" text-anchor="middle"><text x="263" y="98">whisper</text><text x="530" y="98">テーマで再構成</text><text x="796" y="98">言い回し・持論</text></g>
+      <!-- 戻る矢印 -->
+      <path d="M930 172 V228 H130 V172" stroke="#e8b25a" stroke-width="2" fill="none" stroke-dasharray="6 6" marker-end="url(#ar)"/>
+      <text x="530" y="222" text-anchor="middle" class="s" fill="#e8b25a" style="fill:#e8b25a">育った分身が、翌日の記事を書く</text>
+    </svg>
+  </div>
+
+  <!-- 02 SAL Studio -->
+  <div class="sec">
+    <h2><b>02</b>SAL Studio <span>ローカルで動く 8 つの道具。API 不使用</span><span class="k">8<small>apps</small></span></h2>
+    <div class="tools">
+      <div class="tool"><i style="background:var(--blue)"></i><b>OS</b><span>運用</span><em>:8763</em></div>
+      <div class="tool"><i style="background:var(--green)"></i><b>PUBLISHING</b><span>写真集</span><em>:8764</em></div>
+      <div class="tool"><i style="background:#c8c8c8"></i><b>DEVELOP</b><span>RAW 現像</span><em>app</em></div>
+      <div class="tool"><i style="background:var(--teal)"></i><b>ECHOS</b><span>対話記事</span><em>:8765</em></div>
+      <div class="tool"><i style="background:#e09a6a"></i><b>VOICE</b><span>語り → 下書き</span><em>:8765</em></div>
+      <div class="tool"><i style="background:var(--purple)"></i><b>PRISM</b><span>ネタ帳</span><em>:8766</em></div>
+      <div class="tool"><i style="background:#9ed0b0"></i><b>HEALTH</b><span>n=1 の数字</span><em>:8767</em></div>
+      <div class="tool"><i style="background:var(--amber)"></i><b>WRITER</b><span>分身の声</span><em>:8768</em></div>
+    </div>
+  </div>
+
+  <!-- 03 入口と家 -->
+  <div class="sec">
+    <h2><b>03</b>入口と家 <span>入口で軽く、家で深く</span><span class="k">1+3</span></h2>
+    <div class="outlets">
+      <div class="box" style="border-top-color:var(--orange)"><b>note</b><div class="u">入口</div><p>1,000 字の断面。完結させず、家へ送る</p>
+        <div class="chips"><span>断面</span><span>引っかかり</span><span>橋</span></div></div>
+      <div class="vbar">→</div>
+      <div class="homes">
+        <div class="box" style="border-top-color:var(--orange)"><b>Shine a Light</b><div class="u">SHINEALIGHT.JP</div><p>人柄と考え</p>
+          <div class="chips"><span>Journal</span><span>Tools</span><span>光と影</span><span>Films</span><span>MEMENTO</span><span>/pro</span></div></div>
+        <div class="box" style="border-top-color:var(--green)"><b>Mitoflow40</b><div class="u">MITOFLOW40.COM</div><p>体と数値</p>
+          <div class="chips"><span>ライブラリ</span><span>解析レポート</span><span>理想値 DB</span></div></div>
+        <div class="box" style="border-top-color:var(--blue)"><b>HL Fishing</b><div class="u">HLFISHING.NET</div><p>釣りの現場と道具</p>
+          <div class="chips"><span>釣行記</span><span>ギア</span><span>週次ニュース</span><span>for Pro</span></div></div>
+      </div>
+    </div>
+    <div class="letter"><b>SAL LETTER</b><span>3 つの家の交差点</span><span class="path">note で出会う → 家で読む → Letter でつながる</span></div>
+    <div class="outside"><b>OUTSIDE</b><span>TSURI HACK</span><span>MUGIZINE</span><span>受託の撮影・映像</span><span style="border:0;padding:0">＝ 別の脳。SAL には混ぜない</span></div>
+  </div>
+
+  <div class="foot">
+    <span class="mark"><svg width="34" height="26" viewBox="0 0 34 26" aria-hidden="true" style="width:34px"><g fill="none" stroke="#ff764d" stroke-width="1.6"><circle cx="17" cy="9" r="8"/><circle cx="12" cy="16" r="8"/><circle cx="22" cy="16" r="8"/></g></svg>3 つの円が重なる ＝ SAL</span>
+    <span>2026-09-14 ・ SAL Studio ・ hub/sal-map.html</span>
+  </div>
+</div>
+</body>
+</html>

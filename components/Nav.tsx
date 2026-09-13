@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SalMark from './SalMark';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -60,7 +61,8 @@ export default function Nav() {
     return (
         <nav className="nav">
             <Link href={isPro ? '/pro' : '/'} className="nav-logo" onClick={close}>
-                SAL{isPro && <span className="nav-logo-sub">for Pro</span>}
+                <SalMark className="nav-logo-mark" />
+                <span>SAL</span>{isPro && <span className="nav-logo-sub">for Pro</span>}
             </Link>
 
             {/* Desktop links */}

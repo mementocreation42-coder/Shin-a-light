@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import AdminNav from '@/components/admin/AdminNav';
 import { toolCategories } from '@/data/tools';
 import { getToolRows, getToolsMerged, resolveToolPhoto } from '@/lib/toolsStore';
 import { isDbConfigured } from '@/lib/db';
@@ -19,17 +18,7 @@ export default async function AdminToolsPage() {
     const dbConfigured = isDbConfigured();
 
     return (
-        <div className={styles.page}>
-            <header className={styles.header}>
-                <div className={styles.headerLeft}>
-                    <Link href="/" className={styles.logo}>SAL</Link>
-                    <span className={styles.logoBadge}>ADMIN</span>
-                    <AdminNav />
-                </div>
-                <div className={styles.headerRight}>
-                    <Link href="/tools" target="_blank" className={styles.ghostBtn}>公開ページを見る ↗</Link>
-                </div>
-            </header>
+        <>
             <main className={styles.main}>
                 <h1 style={{ fontSize: 18, marginBottom: 4 }}>Tools</h1>
                 <p style={{ fontSize: 12, color: '#a0a0a0', marginBottom: 20 }}>
@@ -94,6 +83,6 @@ export default async function AdminToolsPage() {
                     );
                 })}
             </main>
-        </div>
+    </>
     );
 }

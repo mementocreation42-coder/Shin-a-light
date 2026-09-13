@@ -1,0 +1,84 @@
+{
+  "token": "8240309e0de99702",
+  "title": "Test session — Ikumi",
+  "place": "Ikumi Beach, Kaiyo, Tokushima",
+  "date": "2026-09-13",
+  "credit": "Photo: Daisuke Kobayashi / Shine a Light",
+  "price": {
+    "currency": "usd",
+    "single": 20,
+    "all": 60
+  },
+  "unlockKey": "13068e0d89d4",
+  "photos": [
+    {
+      "id": "01",
+      "w": 3903,
+      "h": 2927,
+      "preview": {
+        "avif": "/g/8240309e0de99702/p/01.avif",
+        "jpg": "/g/8240309e0de99702/p/01.jpg",
+        "w": 1200,
+        "h": 900
+      },
+      "orig": {
+        "avif": "/g/8240309e0de99702/o/01-7a665c63c9.avif",
+        "jpg": "/g/8240309e0de99702/o/01-7a665c63c9.jpg",
+        "w": 3903,
+        "h": 2927
+      }
+    },
+    {
+      "id": "02",
+      "w": 3992,
+      "h": 2992,
+      "preview": {
+        "avif": "/g/8240309e0de99702/p/02.avif",
+        "jpg": "/g/8240309e0de99702/p/02.jpg",
+        "w": 1200,
+        "h": 899
+      },
+      "orig": {
+        "avif": "/g/8240309e0de99702/o/02-7db7343c6c.avif",
+        "jpg": "/g/8240309e0de99702/o/02-7db7343c6c.jpg",
+        "w": 3992,
+        "h": 2992
+      }
+    },
+    {
+      "id": "03",
+      "w": 4000,
+      "h": 3000,
+      "preview": {
+        "avif": "/g/8240309e0de99702/p/03.avif",
+        "jpg": "/g/8240309e0de99702/p/03.jpg",
+        "w": 1200,
+        "h": 900
+      },
+      "orig": {
+        "avif": "/g/8240309e0de99702/o/03-001b563cd4.avif",
+        "jpg": "/g/8240309e0de99702/o/03-001b563cd4.jpg",
+        "w": 4000,
+        "h": 3000
+      }
+    },
+    {
+      "id": "04",
+      "w": 3843,
+      "h": 2882,
+      "preview": {
+        "avif": "/g/8240309e0de99702/p/04.avif",
+        "jpg": "/g/8240309e0de99702/p/04.jpg",
+        "w": 1200,
+        "h": 900
+      },
+      "orig": {
+        "avif": "/g/8240309e0de99702/o/04-ef7be71477.avif",
+        "jpg": "/g/8240309e0de99702/o/04-ef7be71477.jpg",
+        "w": 3843,
+        "h": 2882
+      }
+    }
+  ],
+  "created": "2026-09-13T09:07:27.023Z"
+}

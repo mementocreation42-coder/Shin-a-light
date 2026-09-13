@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import SalMark from './SalMark';
 import { usePathname } from 'next/navigation';
 import { SKILL_GROUPS } from '@/data/skills';
 
@@ -49,6 +50,7 @@ export default function Footer() {
             </div>
 
             <div className="footer-info" style={{ marginBottom: "1rem", fontSize: "0.85rem", opacity: 0.8 }} itemScope itemType="https://schema.org/LocalBusiness">
+                <SalMark size={96} className="footer-mark" />
                 <p itemProp="name" className="footer-logo">Shine a Light</p>
                 <address itemProp="address" itemScope itemType="https://schema.org/PostalAddress" style={{ fontStyle: "normal", lineHeight: 1.6 }}>
                     <span itemProp="addressRegion">徳島県</span>

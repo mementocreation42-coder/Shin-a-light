@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import AdminNav from '@/components/admin/AdminNav';
+import HeaderActions from '@/components/admin/HeaderActions';
 import styles from '@/app/admin/admin.module.css';
 import nl from '@/app/admin/newsletter/newsletter.module.css';
 
-/** ニュースレター管理の共通の枠。ヘッダーの作りは他の管理画面に合わせている */
+/** ニュースレター管理の共通の枠。ヘッダーは layout が描くので、ボタンとパンくずだけ足す */
 export default function NewsletterShell({
   children,
   actions,
@@ -15,26 +15,17 @@ export default function NewsletterShell({
   breadcrumb?: string;
 }) {
   return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <div className={styles.headerLeft}>
-          <Link href="/" className={styles.logo}>SAL</Link>
-          {breadcrumb ? (
-            <>
-              <Link href="/admin/newsletter" className={styles.breadcrumb}>/ ニュースレター</Link>
-              <span className={styles.breadcrumb}>/ {breadcrumb}</span>
-            </>
-          ) : (
-            <>
-              <span className={styles.logoBadge}>ADMIN</span>
-              <AdminNav />
-            </>
-          )}
-        </div>
-        <div className={styles.headerRight}>{actions}</div>
-      </header>
-      <main className={styles.main}>{children}</main>
-    </div>
+    <>
+      {actions && <HeaderActions>{actions}</HeaderActions>}
+      <main className={styles.main}>
+        {breadcrumb && (
+          <p className={styles.crumbs}>
+            <Link href="/admin/newsletter">ニュースレター</Link> / {breadcrumb}
+          </p>
+        )}
+        {children}
+      </main>
+    </>
   );
 }
 
