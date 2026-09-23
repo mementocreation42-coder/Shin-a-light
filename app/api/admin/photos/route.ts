@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import {
     getAdminGalleryPhotos,
     getOrCreateGalleryCategoryId,
@@ -9,6 +9,7 @@ import {
     updateWPPost,
     deleteWPPost,
 } from '@/lib/wordpress';
+import { WP_CACHE_TAGS } from '@/lib/wordpress';
 
 // キャプション無しの写真投稿でも本文を空にしないための非表示マーカー（表示には出ない）
 const GALLERY_CONTENT_MARKER = '<!-- gallery photo -->';
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
             ...(shotDate ? { date: shotDate } : {}),
         });
         revalidatePath('/photos');
+        revalidateTag(WP_CACHE_TAGS.adminGallery, 'max');
         return NextResponse.json({ id: post.id });
     } catch (err: unknown) {
         return NextResponse.json(
@@ -89,6 +91,7 @@ export async function PATCH(req: NextRequest) {
         }
         await updateWPPost(Number(id), payload);
         revalidatePath('/photos');
+        revalidateTag(WP_CACHE_TAGS.adminGallery, 'max');
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         return NextResponse.json(
@@ -110,6 +113,7 @@ export async function DELETE(req: NextRequest) {
         }
         await deleteWPPost(Number(id));
         revalidatePath('/photos');
+        revalidateTag(WP_CACHE_TAGS.adminGallery, 'max');
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
         return NextResponse.json(

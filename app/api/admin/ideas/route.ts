@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { getIdeaPosts, createWPPost, updateWPPost, deleteWPPost } from '@/lib/wordpress';
+import { WP_CACHE_TAGS } from '@/lib/wordpress';
 
 /**
  * 記事ネタの管理。
@@ -37,6 +39,7 @@ export async function POST(req: NextRequest) {
         status: 'pending',
         categories: [JOURNAL_CATEGORY_ID],
     });
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ ok: true, id: post.id });
 }
 
@@ -50,6 +53,7 @@ export async function PUT(req: NextRequest) {
         return NextResponse.json({ error: 'id は必須です' }, { status: 400 });
     }
     await updateWPPost(body.id, { status: 'draft' });
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ ok: true });
 }
 
@@ -63,5 +67,6 @@ export async function DELETE(req: NextRequest) {
         return NextResponse.json({ error: 'id は必須です' }, { status: 400 });
     }
     await deleteWPPost(id);
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ ok: true });
 }

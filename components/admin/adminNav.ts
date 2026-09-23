@@ -40,7 +40,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     key: 'photo',
     label: '写真',
     items: [
-      { href: '/admin/photos', label: 'フォト管理', publicHref: '/photos' },
+      { href: '/admin/photos', label: '公開フォト', publicHref: '/photos' },
       { href: '/admin/galleries', label: 'メメント', publicHref: '/g' },
     ],
   },

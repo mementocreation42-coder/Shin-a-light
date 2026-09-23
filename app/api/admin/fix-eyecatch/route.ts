@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { fetchOGP } from '@/lib/ogp';
 import { uploadMedia, updateWPPost } from '@/lib/wordpress';
+import { WP_CACHE_TAGS } from '@/lib/wordpress';
 
 const WP_BASE = 'https://journal.shinealight.jp';
 const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
@@ -88,6 +89,8 @@ export async function POST() {
   }
 
   revalidatePath('/', 'layout');
+
+  revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
 
   return NextResponse.json({
     total: posts.length,

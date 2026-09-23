@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     '/g/[token]': ['./data/galleries/**'],
     '/api/gallery/checkout': ['./data/galleries/**'],
     '/admin/galleries': ['./data/galleries/**'],
+    '/api/admin/galleries/publish': ['./data/galleries/**'],
     '/admin/sal-map/raw': ['./data/sal-map.html'],
   },
   images: {

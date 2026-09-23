@@ -29,10 +29,11 @@ async function safe<T>(p: Promise<T>, fallback: T): Promise<T> {
 export default async function AdminDashboardPage() {
   const empty = { posts: [], totalPages: 0, total: 0 };
   const [recent, drafts, ideas, scheduled, galleries, subscribers] = await Promise.all([
-    safe(getAdminPosts(1, 6), empty),
-    safe(getAdminPosts(1, 1, { status: 'draft' }), empty),
-    safe(getAdminPosts(1, 1, { status: 'pending' }), empty),
-    safe(getAdminPosts(1, 1, { status: 'future' }), empty),
+    // 数字と最近の投稿は 60 秒キャッシュ（投稿の作成・更新・削除時に API 側で無効化される）
+    safe(getAdminPosts(1, 6, {}, { revalidate: 60 }), empty),
+    safe(getAdminPosts(1, 1, { status: 'draft' }, { revalidate: 60 }), empty),
+    safe(getAdminPosts(1, 1, { status: 'pending' }, { revalidate: 60 }), empty),
+    safe(getAdminPosts(1, 1, { status: 'future' }, { revalidate: 60 }), empty),
     safe(listGalleries(), []),
     isDbConfigured() ? safe(countByStatus(), {} as Record<string, number>) : Promise.resolve(null),
   ]);
@@ -116,7 +117,7 @@ export default async function AdminDashboardPage() {
             <div className={styles.panelHead}><span>SAL のなか</span></div>
             <div className={styles.sections}>
               <Link href="/admin/posts" className={styles.section}><span className={styles.sectionLabel}>記事</span><span className={styles.sectionSub}>投稿管理・記事ネタ</span></Link>
-              <Link href="/admin/photos" className={styles.section}><span className={styles.sectionLabel}>写真</span><span className={styles.sectionSub}>フォト管理・メメント</span></Link>
+              <Link href="/admin/photos" className={styles.section}><span className={styles.sectionLabel}>写真</span><span className={styles.sectionSub}>公開フォト・メメント</span></Link>
               <Link href="/admin/newsletter" className={styles.section}><span className={styles.sectionLabel}>届ける</span><span className={styles.sectionSub}>ニュースレター</span></Link>
               <Link href="/admin/site-images" className={styles.section}><span className={styles.sectionLabel}>サイト</span><span className={styles.sectionSub}>Pro ページ・ツールズ</span></Link>
             </div>

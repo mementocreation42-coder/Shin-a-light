@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { updateWPPost, deleteWPPost } from '@/lib/wordpress';
+import { WP_CACHE_TAGS } from '@/lib/wordpress';
 
 function escAttr(s: string) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -116,6 +117,7 @@ export async function PUT(
 
     const post = await updateWPPost(parseInt(id, 10), updateData);
     revalidatePath('/', 'layout');
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ success: true, post });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
@@ -134,6 +136,7 @@ export async function DELETE(
   try {
     await deleteWPPost(parseInt(id, 10));
     revalidatePath('/', 'layout');
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ success: true });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';

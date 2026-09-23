@@ -20,6 +20,8 @@ export interface Gallery {
   unlockKey: string;         // Stripe を使わない解放用（現金・PayPal のあと本人が渡す）。URL の ?unlock=
   /** true なら原本も無料で配る（購入ボタンを出さない）。JSON の値を DB の設定で上書きできる */
   free?: boolean;
+  /** サイトの作例（/photos の MEMENTO）に公開済みの写真 id。管理画面の「サイトに公開」で増える（DB に保存） */
+  published?: string[];
   photos: GalleryPhoto[];
   created: string;
 }
@@ -28,13 +30,25 @@ const dir = () => join(process.cwd(), 'data', 'galleries');
 
 /** 管理画面から切り替えた「無料配布」の設定キー。'1' で無料、'0' で有料に戻す */
 export const galleryFreeKey = (token: string) => `gallery_free:${token}`;
+/** サイトに公開済みの写真 id（JSON 配列）の設定キー */
+export const galleryPublishedKey = (token: string) => `gallery_published:${token}`;
 
 /** JSON の free を DB 側の設定で上書きする（本番はファイルを書き換えられないため） */
 async function applyOverrides(g: Gallery): Promise<Gallery> {
-  const v = await getAppSetting(galleryFreeKey(g.token));
-  if (v === '1') return { ...g, free: true };
-  if (v === '0') return { ...g, free: false };
-  return g;
+  const [free, published] = await Promise.all([
+    getAppSetting(galleryFreeKey(g.token)),
+    getAppSetting(galleryPublishedKey(g.token)),
+  ]);
+  const out: Gallery = { ...g };
+  if (free === '1') out.free = true;
+  if (free === '0') out.free = false;
+  if (published) {
+    try {
+      const ids = JSON.parse(published);
+      if (Array.isArray(ids)) out.published = ids.map(String);
+    } catch { /* 壊れていれば未公開扱い */ }
+  }
+  return out;
 }
 
 async function readGalleryFile(file: string): Promise<Gallery | null> {

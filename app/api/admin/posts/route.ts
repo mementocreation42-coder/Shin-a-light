@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { createWPPost } from '@/lib/wordpress';
+import { WP_CACHE_TAGS } from '@/lib/wordpress';
 import { resolveDraftEyecatch } from '@/lib/eyecatch/draftEyecatch';
 
 function escAttr(s: string) {
@@ -106,6 +107,8 @@ export async function POST(request: NextRequest) {
     });
 
     revalidatePath('/', 'layout');
+
+    revalidateTag(WP_CACHE_TAGS.adminPosts, 'max');
     return NextResponse.json({ success: true, post });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';

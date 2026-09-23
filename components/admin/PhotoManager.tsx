@@ -83,7 +83,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const upData = await parseJsonSafe(upRes);
             if (upRes.status === 401) throw new Error(AUTH_EXPIRED_MSG);
             if (!upRes.ok) {
-                throw new Error(upData?.error || (upRes.status === 413 ? '画像が大きすぎます。' : `アップロード失敗 (${upRes.status})`));
+                throw new Error(upData?.error || (upRes.status === 413 ? '画像が大きすぎます（1 枚 4MB まで）。' : `アップロード失敗 (${upRes.status})`));
             }
             if (!upData?.id || !upData.url) throw new Error('アップロード応答が不正です。');
             const mediaUrl = upData.url;
@@ -345,7 +345,7 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
                                 <div key={p.id} style={{ background: '#2a2a2a', borderRadius: '8px', overflow: 'hidden', border: `1px solid ${isSelected ? '#ff764d' : '#3a3a3a'}`, outline: isSelected ? '1px solid #ff764d' : 'none' }}>
                                     <div style={{ position: 'relative' }}>
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={p.url} alt={p.caption} onClick={(e) => handleSelectClick(e, p.id)} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', cursor: 'pointer', opacity: isSelected ? 0.85 : 1, userSelect: 'none' }} />
+                                        <img src={p.thumbUrl || p.url} alt={p.caption} loading="lazy" decoding="async" onClick={(e) => handleSelectClick(e, p.id)} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block', cursor: 'pointer', opacity: isSelected ? 0.85 : 1, userSelect: 'none' }} />
                                         <button onClick={(e) => handleSelectClick(e, p.id)}
                                             aria-label={isSelected ? '選択解除' : '選択'}
                                             style={{ position: 'absolute', top: '6px', left: '6px', width: '24px', height: '24px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isSelected ? '#ff764d' : 'rgba(0,0,0,0.55)', border: isSelected ? 'none' : '1px solid rgba(255,255,255,0.5)', color: '#fff', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>

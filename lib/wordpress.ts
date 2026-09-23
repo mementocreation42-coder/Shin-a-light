@@ -1,5 +1,14 @@
 import { MEMENTO_TAG_SLUG } from './galleryCategories';
 
+/**
+ * 管理画面向け取得のキャッシュタグ。書き込み API は該当タグを revalidateTag(tag, 'max') で無効化する。
+ * 投稿一覧・記事ネタは編集直後の反映を優先して毎回取得（no-store）。ダッシュボードと写真一覧だけ短くキャッシュする。
+ */
+export const WP_CACHE_TAGS = {
+    adminPosts: 'wp-admin-posts',
+    adminGallery: 'wp-admin-gallery',
+} as const;
+
 const WP_BASE = 'https://journal.shinealight.jp';
 export const WP_REST_BASE = `${WP_BASE}/index.php?rest_route=/wp/v2`;
 
@@ -271,7 +280,9 @@ export interface WPPostAdmin extends WPPost {
 export async function getAdminPosts(
   page = 1,
   perPage = 20,
-  filters: { search?: string; status?: 'publish' | 'draft' | 'future' | 'pending'; categoryId?: number } = {}
+  filters: { search?: string; status?: 'publish' | 'draft' | 'future' | 'pending'; categoryId?: number } = {},
+  // revalidate 秒を渡すと短くキャッシュする（ダッシュボード用）。省略時は毎回取得
+  opts: { revalidate?: number } = {}
 ): Promise<{
   posts: WPPostAdmin[];
   totalPages: number;
@@ -288,7 +299,9 @@ export async function getAdminPosts(
   const url = `${WP_REST_BASE}/posts&page=${page}&per_page=${perPage}&_embed=wp:featuredmedia,wp:term&${fields}&status=${status}${exclude}${search}${category}`;
   const res = await fetch(url, {
     headers: { Authorization: authHeader() },
-    cache: 'no-store',
+    ...(opts.revalidate
+      ? { next: { revalidate: opts.revalidate, tags: [WP_CACHE_TAGS.adminPosts] } }
+      : { cache: 'no-store' as const }),
   });
   if (!res.ok) return { posts: [], totalPages: 0, total: 0 };
   const posts = await res.json();
@@ -570,15 +583,17 @@ async function fetchAllGalleryPosts(
     if (!first.ok) return [];
     const posts: WPPostAdmin[] = await first.json();
     const totalPages = parseInt(first.headers.get('X-WP-TotalPages') || '1', 10);
-    for (let page = 2; page <= totalPages; page++) {
-        const res = await fetch(
-            `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&page=${page}&${query}${GALLERY_FIELDS}`,
-            init
-        );
-        if (!res.ok) break;
-        posts.push(...((await res.json()) as WPPostAdmin[]));
-    }
-    return posts;
+    // 2ページ目以降は順番待ちせず同時に取る（400枚超で 2 秒以上かかっていた）
+    const rest = await Promise.all(
+        Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) => i + 2).map(async (page) => {
+            const res = await fetch(
+                `${WP_REST_BASE}/posts&categories=${catId}&per_page=100&page=${page}&${query}${GALLERY_FIELDS}`,
+                init
+            );
+            return res.ok ? ((await res.json()) as WPPostAdmin[]) : [];
+        })
+    );
+    return posts.concat(...rest);
 }
 
 // Public: fetch all gallery photos (newest first).
@@ -602,9 +617,10 @@ export async function getAdminGalleryPhotos(): Promise<GalleryPhoto[]> {
     const catId = await getGalleryCategoryId();
     if (!catId) return [];
     const mementoTagId = await getMementoTagId();
+    // 写真は追加・削除時に API 側でタグを無効化するので、短くキャッシュして毎回の全件取得を避ける
     const posts = await fetchAllGalleryPosts(catId, 'status=publish,draft&', {
         headers: { Authorization: authHeader() },
-        cache: 'no-store',
+        next: { revalidate: 300, tags: [WP_CACHE_TAGS.adminGallery] },
     });
     return posts
         .map((p) => mapGalleryPost(p, mementoTagId))
