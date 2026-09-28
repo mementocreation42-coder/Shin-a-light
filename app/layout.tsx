@@ -98,6 +98,8 @@ export default async function RootLayout({
         {/* ダークモードで白に反転するファビコン（Chrome / Firefox / Edge）。
             app/icon.svg に置くと Turbopack のビルドが落ちるため public に置いて手で読み込む */}
         <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+        {/* RSS リーダーがサイトの URL から Journal のフィードを見つけられるように */}
+        <link rel="alternate" type="application/rss+xml" title="Shine a Light Journal" href="/feed.xml" />
       </head>
       <body className={`${jetbrainsMono.variable} ${ibmPlexSansJP.variable} ${permanentMarker.variable} ${orbitron.variable} ${righteous.variable} ${caveat.variable}`}>
         {/* クロームの出し分けはクライアント側（SiteChrome）で行う。

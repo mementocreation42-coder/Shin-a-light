@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import SalMark from './SalMark';
+import RssIcon from './RssIcon';
 import { usePathname } from 'next/navigation';
 import { SKILL_GROUPS } from '@/data/skills';
 
@@ -47,6 +48,10 @@ export default function Footer() {
                 <Link href="/terms">利用規約</Link>
                 <Link href="/privacy">プライバシーポリシー</Link>
                 <Link href="/legal">特定商取引法に基づく表記</Link>
+                <a href="/feed.xml" title="Journal の RSS フィード" style={{ display: "inline-flex", alignItems: "center", gap: "0.4em" }}>
+                    <RssIcon size={14} />
+                    RSS
+                </a>
             </div>
 
             <div className="footer-info" style={{ marginBottom: "1rem", fontSize: "0.85rem", opacity: 0.8 }} itemScope itemType="https://schema.org/LocalBusiness">
