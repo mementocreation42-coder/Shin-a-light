@@ -1,11 +1,11 @@
 import { getFeaturedImageUrl, getPosts, stripHtml, type WPMedia, type WPPost } from '@/lib/wordpress';
 
-// Journal の RSS。RSS リーダー（SAL Reader など）でフォローできるようにする
+// サイトの RSS（中身は Journal の新着）。RSS リーダー（SAL Reader など）でフォローできるようにする
 export const revalidate = 3600;
 
 const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.shinealight.jp';
-const TITLE = 'Shine a Light Journal';
-const DESCRIPTION = '小林大介のジャーナル。映像・写真・Web・AI・健康・自然のこと。';
+const TITLE = 'Shine a Light';
+const DESCRIPTION = '徳島を拠点に、映像・写真・Web・AI・健康・自然のことを書く小林大介のサイト。';
 
 // WordPress の date はタイムゾーンなしの日本時間。Vercel（UTC）でそのまま読むと 9 時間ずれる
 const jst = (d: string) => new Date(/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(d) ? d : `${d}+09:00`);
@@ -37,7 +37,7 @@ export async function GET() {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/">
   <channel>
     <title>${esc(TITLE)}</title>
-    <link>${SITE_URL}/journal</link>
+    <link>${SITE_URL}/</link>
     <description>${esc(DESCRIPTION)}</description>
     <language>ja</language>
     <atom:link href="${SITE_URL}/feed.xml" rel="self" type="application/rss+xml"/>
