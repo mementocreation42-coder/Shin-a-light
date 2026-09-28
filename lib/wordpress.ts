@@ -472,6 +472,20 @@ export async function getOrCreateInterviewCategoryId(): Promise<number> {
 }
 
 /** ジャーナル一覧から外すカテゴリの query。ギャラリー専用投稿とインタビューは専用ページを持つ */
+/** RSS 用：Journal 一覧と同じ除外で、本文（content）まで含めて新しい順に取る */
+export async function getFeedPosts(perPage = 30): Promise<(WPPost & { _embedded?: { 'wp:featuredmedia'?: WPMedia[] } })[]> {
+    try {
+        const fields = '_fields=id,title,excerpt,content,date,categories,featured_media,_links,_embedded&_embed=wp:featuredmedia';
+        const res = await fetch(`${WP_REST_BASE}/posts&page=1&per_page=${perPage}&${fields}${await journalExcludeQuery()}`, {
+            next: { revalidate: 3600 },
+        });
+        if (!res.ok) return [];
+        return res.json();
+    } catch {
+        return [];
+    }
+}
+
 async function journalExcludeQuery(): Promise<string> {
     const ids = (await Promise.all([getGalleryCategoryId(), getInterviewCategoryId()])).filter(
         (id): id is number => !!id
