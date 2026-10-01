@@ -1,7 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { ImageResponse } from 'next/og';
-import sharp from 'sharp';
 import { getPodcast } from '@/lib/podcast';
 
 /**
@@ -18,20 +17,13 @@ export const contentType = 'image/png';
 const FALLBACK_TITLE = 'SAL Radio';
 const FALLBACK_TAGLINE = '釣りと身体とものづくりの雑談';
 
-/** RSS のアートワーク（3000px）を 630px の正方形にして data URI で埋め込む */
-async function loadArtwork(url: string): Promise<string | null> {
-  if (!url) return null;
-  try {
-    const res = await fetch(url, { next: { revalidate: 3600 } });
-    if (!res.ok) return null;
-    const jpeg = await sharp(Buffer.from(await res.arrayBuffer()))
-      .resize(630, 630, { fit: 'cover' })
-      .jpeg({ quality: 86 })
-      .toBuffer();
-    return `data:image/jpeg;base64,${jpeg.toString('base64')}`;
-  } catch {
-    return null;
-  }
+/**
+ * RSS のアートワーク URL をそのまま使う（画像の取得と縮小は ImageResponse が行う）。
+ * sharp をここで読み込むと、ページ本体の関数がこのファイルの設定（alt・size）を読むときに
+ * sharp まで読み込もうとして本番で 500 になる。そのため画像処理ライブラリは使わない。
+ */
+function artworkUrl(url: string): string | null {
+  return /^https:\/\//.test(url) ? url : null;
 }
 
 export default async function Image() {
@@ -45,7 +37,7 @@ export default async function Image() {
     .split(/[｜|]/)
     .map((s) => s.trim());
   const episodes = show?.episodes.length ?? 0;
-  const artwork = await loadArtwork(show?.image ?? '');
+  const artwork = artworkUrl(show?.image ?? '');
 
   return new ImageResponse(
     (
