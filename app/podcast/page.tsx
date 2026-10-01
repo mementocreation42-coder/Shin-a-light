@@ -18,21 +18,19 @@ export const metadata: Metadata = {
         canonical: '/podcast',
     },
     openGraph: {
-        title: 'Podcast - Shine a Light',
+        title: 'SAL Radio — Podcast | Shine a Light',
         description:
             '徳島・牟岐町から届ける、思考と対話のポッドキャスト「SAL Radio」。Spotifyで配信中。',
         url: '/podcast',
         siteName: 'Shine a Light',
         locale: 'ja_JP',
         type: 'website',
-        images: ['/opengraph-image'],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Podcast - Shine a Light',
+        title: 'SAL Radio — Podcast | Shine a Light',
         description:
             '徳島・牟岐町から届ける、思考と対話のポッドキャスト「SAL Radio」。Spotifyで配信中。',
-        images: ['/opengraph-image'],
     },
 };
 

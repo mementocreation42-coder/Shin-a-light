@@ -5,11 +5,11 @@ import { revalidatePath, revalidateTag } from 'next/cache';
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { setAppSetting } from '@/lib/appSettings';
 import { galleryPublishedKey, loadGallery } from '@/lib/gallery';
+import { uploadMediaResilient } from '@/lib/wpMediaUpload';
 import {
   createWPPost,
   getOrCreateGalleryCategoryId,
   getOrCreateMementoTagId,
-  uploadMedia,
   WP_CACHE_TAGS,
 } from '@/lib/wordpress';
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     try {
       const bytes = await readOriginal(p.orig.jpg);
       const filename = `memento-${g.token.slice(0, 6)}-${p.id}.jpg`;
-      const media = await uploadMedia(new File([bytes], filename, { type: 'image/jpeg' }), filename);
+      const media = await uploadMediaResilient(new File([bytes], filename, { type: 'image/jpeg' }), filename);
       await createWPPost({
         // キャプションは撮影地。個人名は出さない
         title: g.place,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
-import { uploadMedia } from '@/lib/wordpress';
+import { uploadMediaResilient } from '@/lib/wpMediaUpload';
 
 export async function POST(request: NextRequest) {
   if (!(await isAdminAuthed())) {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     if (!file || file.size === 0) {
       return NextResponse.json({ error: 'No file' }, { status: 400 });
     }
-    const result = await uploadMedia(file, file.name);
+    const result = await uploadMediaResilient(file, file.name);
     return NextResponse.json({ url: result.source_url, id: result.id });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';

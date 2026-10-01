@@ -1,4 +1,5 @@
-import { stripHtml, uploadMedia } from '@/lib/wordpress';
+import { uploadMediaResilient } from '@/lib/wpMediaUpload';
+import { stripHtml } from '@/lib/wordpress';
 import { generateTitleEyecatch, EYECATCH_MIME, type EyecatchFormat } from './generate';
 
 /**
@@ -20,7 +21,7 @@ export async function createTitleEyecatchMedia(title: string): Promise<number> {
       const ext = format === 'jpeg' ? 'jpg' : format;
       const mime = EYECATCH_MIME[format];
       const file = new File([new Uint8Array(bytes)], `title-eyecatch.${ext}`, { type: mime });
-      const media = await uploadMedia(file, `title-eyecatch-${Date.now()}.${ext}`);
+      const media = await uploadMediaResilient(file, `title-eyecatch-${Date.now()}.${ext}`);
       return media.id;
     } catch (error) {
       lastError = error;

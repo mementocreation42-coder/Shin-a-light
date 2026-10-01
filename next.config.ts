@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   // 仮アイキャッチ生成用のフォントを、本番のサーバー関数にも同梱する
   outputFileTracingIncludes: {
     '/api/admin/posts': ['./lib/eyecatch/fonts/**'],
+    // ポッドキャストの OGP 画像（日本語を描くためのフォント）
+    '/podcast/opengraph-image': ['./lib/eyecatch/fonts/**'],
     // 限定ギャラリーの定義と SAL 図をサーバー関数に同梱する
     '/g/[token]': ['./data/galleries/**'],
     '/api/gallery/checkout': ['./data/galleries/**'],

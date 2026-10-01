@@ -1,8 +1,9 @@
+import { uploadMediaResilient } from '@/lib/wpMediaUpload';
 import { NextResponse } from 'next/server';
 import { isAdminAuthed } from '@/lib/adminAuth';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { fetchOGP } from '@/lib/ogp';
-import { uploadMedia, updateWPPost } from '@/lib/wordpress';
+import { updateWPPost } from '@/lib/wordpress';
 import { WP_CACHE_TAGS } from '@/lib/wordpress';
 
 const WP_BASE = 'https://journal.shinealight.jp';
@@ -79,7 +80,7 @@ export async function POST() {
       const filename = `note-eyecatch-${Date.now()}.${ext}`;
       const file = new File([buffer], filename, { type: contentType });
 
-      const media = await uploadMedia(file, filename);
+      const media = await uploadMediaResilient(file, filename);
       await updateWPPost(post.id, { featured_media: media.id });
 
       results.push({ id: post.id, status: 'ok' });
