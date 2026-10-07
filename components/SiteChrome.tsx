@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import FloatingNav from '@/components/FloatingNav';
+import NewsletterPopup from '@/components/NewsletterPopup';
 
 /**
  * サイト共通クローム（ヘッダー・フッター・フローティングナビ）の出し分け。
@@ -31,6 +32,7 @@ export function SiteFooter() {
         <>
             <Footer />
             <FloatingNav />
+            <NewsletterPopup />
         </>
     );
 }

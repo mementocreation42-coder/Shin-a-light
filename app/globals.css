@@ -125,6 +125,7 @@ a {
 .nav-links a {
   color: var(--text-secondary);
   text-decoration: none;
+  white-space: nowrap;
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1626,7 +1627,9 @@ select:disabled {
   }
 }
 
-@media (max-width: 768px) {
+/* ヘッダー: メニュー 8 項目が 1 行に収まらない幅（約 935px 未満）はハンバーガーにする。
+   以前は 768px で切り替えていて、769〜934px でロゴとメニューが重なっていた */
+@media (max-width: 960px) {
   .nav {
     padding: 12px 20px;
   }
@@ -1642,7 +1645,20 @@ select:disabled {
   .nav-mobile {
     display: flex;
   }
+}
 
+/* 961〜1120px は余裕が少ないので、メニューの間隔を詰める */
+@media (min-width: 961px) and (max-width: 1120px) {
+  .nav {
+    padding: 16px 24px;
+  }
+
+  .nav-links {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 768px) {
   .section-inner {
     padding: 60px 20px;
   }
@@ -10582,5 +10598,188 @@ body:has(.b-side) .approach-months dt {
 
   .iv-list--compact {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ===== ニュースレター登録ポップアップ（components/NewsletterPopup.tsx） ===== */
+.nlp-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: nlp-fade 0.25s ease;
+}
+
+.nlp-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  padding: 36px 32px 24px;
+  background: #ffffff;
+  border: 1px solid #e6e3dc;
+  border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  color: #1a1a1a;
+  text-align: center;
+  animation: nlp-rise 0.3s ease;
+}
+
+.nlp-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: #999;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.nlp-close:hover {
+  color: #1a1a1a;
+}
+
+.nlp-eyebrow {
+  margin: 0 0 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #e4582b;
+}
+
+.nlp-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.nlp-lede {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: #555;
+}
+
+.nlp-gift {
+  margin: 0 0 18px;
+  font-size: 13px;
+  color: #d4501f;
+}
+
+.nlp-dialog .nl-form {
+  text-align: left;
+}
+
+.nlp-dialog .nl-input-group {
+  flex-wrap: wrap;
+}
+
+/* 白地に合わせてフォームの配色を上書き */
+.nlp-dialog .email-input {
+  background: #f6f5f2;
+  border: 1px solid #dcd8cf;
+  color: #1a1a1a;
+}
+
+.nlp-dialog .email-input::placeholder {
+  color: #a3a09a;
+}
+
+.nlp-dialog .email-input:focus {
+  border-color: #ff764d;
+  background: #fff;
+}
+
+.nlp-dialog .email-submit-btn {
+  color: #fff;
+}
+
+.nlp-dialog .nl-privacy,
+.nlp-dialog .nl-gift {
+  color: #888;
+}
+
+.nlp-dialog .email-error-text {
+  color: #c0392b;
+}
+
+.nlp-dialog .nl-success {
+  padding: 12px 0 4px;
+}
+
+.nlp-dialog .nl-success-icon,
+.nlp-dialog .nl-success-title {
+  color: #2e8b57;
+}
+
+.nlp-dialog .nl-success-desc {
+  color: #555;
+}
+
+.nlp-later {
+  margin-top: 12px;
+  border: 0;
+  background: transparent;
+  color: #888;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.nlp-later:hover {
+  color: #333;
+}
+
+@keyframes nlp-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nlp-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* スマホも画面中央に。余白と文字を少し詰める */
+@media (max-width: 640px) {
+  .nlp-backdrop {
+    padding: 16px;
+  }
+
+  .nlp-dialog {
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    padding: 30px 20px 18px;
+  }
+
+  /* 入力欄と登録ボタンを同じ幅で縦に並べる */
+  .nlp-dialog .nl-input-group .email-input,
+  .nlp-dialog .nl-input-group .email-submit-btn {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .nlp-title {
+    font-size: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nlp-backdrop,
+  .nlp-dialog {
+    animation: none;
   }
 }

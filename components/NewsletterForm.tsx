@@ -2,7 +2,16 @@
 
 import React, { useState } from 'react';
 
-export default function NewsletterForm({ giftText, benefits }: { giftText?: string; benefits?: string[] } = {}) {
+export default function NewsletterForm({
+    giftText,
+    benefits,
+    onSuccess,
+}: {
+    giftText?: string;
+    benefits?: string[];
+    /** 登録（確認メール送信）が成功したときに呼ぶ。ポップアップが「もう出さない」を記録するのに使う */
+    onSuccess?: () => void;
+} = {}) {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
@@ -35,6 +44,7 @@ export default function NewsletterForm({ giftText, benefits }: { giftText?: stri
 
             setDoubleOptIn(Boolean(data.doubleOptIn));
             setStatus('success');
+            onSuccess?.();
         } catch (error) {
             setStatus('error');
             setErrorMessage(error instanceof Error ? error.message : 'エラーが発生しました。もう一度お試しください。');
