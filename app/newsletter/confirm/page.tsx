@@ -4,6 +4,7 @@ import { isDbConfigured } from '@/lib/db';
 import { confirmSubscriber } from '@/lib/newsletter';
 import { renderWelcomeEmail } from '@/lib/email/templates';
 import { sendEmail } from '@/lib/email/mailer';
+import { notifyNewSubscriber } from '@/lib/newsletterNotify';
 
 export const metadata: Metadata = {
     title: '登録の確認',
@@ -33,16 +34,18 @@ export default async function ConfirmPage({
                     presetUrl: `${origin}/presets/selpico3.xmp`,
                     unsubUrl: `${origin}/newsletter/unsubscribe?token=${encodeURIComponent(outcome.unsubToken)}`,
                 });
-                try {
-                    await sendEmail({
+                // 登録者へのウェルカムメールと、運営者への通知を同時に送る。どちらの失敗も画面には出さない
+                const [welcome, notify] = await Promise.allSettled([
+                    sendEmail({
                         to: outcome.email,
                         subject: '【Shine a Light】ようこそ。プレゼントの selpico3 をどうぞ',
                         html: mail.html,
                         text: mail.text,
-                    });
-                } catch (error) {
-                    console.error('[Newsletter] welcome mail failed:', error);
-                }
+                    }),
+                    notifyNewSubscriber({ email: outcome.email, source: outcome.source ?? null }),
+                ]);
+                if (welcome.status === 'rejected') console.error('[Newsletter] welcome mail failed:', welcome.reason);
+                if (notify.status === 'rejected') console.error('[Newsletter] owner notify failed:', notify.reason);
             }
         } catch (error) {
             console.error('[Newsletter] confirm failed:', error);

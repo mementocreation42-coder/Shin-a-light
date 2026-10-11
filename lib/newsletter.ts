@@ -149,22 +149,24 @@ export interface ConfirmOutcome {
   email?: string;
   /** 同上。ウェルカムメールに載せる解除リンク用 */
   unsubToken?: string;
+  /** 同上。登録元のパス（運営者への通知に使う） */
+  source?: string | null;
 }
 
 export async function confirmSubscriber(token: string): Promise<ConfirmOutcome> {
   const sql = getSql();
   if (!token) return { result: 'invalid' };
 
-  const rows = await sql<{ id: string; email: string; unsub_token: string }>`
+  const rows = await sql<{ id: string; email: string; unsub_token: string; source: string | null }>`
     update subscribers
        set status = 'active',
            consented_at = now(),
            updated_at = now()
      where confirm_token = ${token} and status = 'pending'
-     returning id, email, unsub_token
+     returning id, email, unsub_token, source
   `;
   if (rows.length > 0) {
-    return { result: 'confirmed', email: rows[0].email, unsubToken: rows[0].unsub_token };
+    return { result: 'confirmed', email: rows[0].email, unsubToken: rows[0].unsub_token, source: rows[0].source };
   }
 
   const found = await sql<{ status: SubscriberStatus }>`
