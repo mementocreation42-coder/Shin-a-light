@@ -8,6 +8,7 @@ import {
     type GalleryCategory,
 } from '@/lib/galleryCategories';
 import { compressImage } from '@/lib/imageCompress';
+import { uploadImage } from '@/lib/uploadImage';
 import { readExifDate } from '@/lib/exifDate';
 
 const FILTER_ALL = 'All';
@@ -77,15 +78,8 @@ export default function PhotoManager({ initialPhotos }: { initialPhotos: Gallery
             const file = await compressImage(original, true);
 
             // 1. 画像をメディアにアップロード
-            const fd = new FormData();
-            fd.append('image', file);
-            const upRes = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-            const upData = await parseJsonSafe(upRes);
-            if (upRes.status === 401) throw new Error(AUTH_EXPIRED_MSG);
-            if (!upRes.ok) {
-                throw new Error(upData?.error || (upRes.status === 413 ? '画像が大きすぎます（1 枚 4MB まで）。' : `アップロード失敗 (${upRes.status})`));
-            }
-            if (!upData?.id || !upData.url) throw new Error('アップロード応答が不正です。');
+            // WAF に弾かれたらブラウザで作り直して送り直す（lib/uploadImage.ts）
+            const upData = await uploadImage(file);
             const mediaUrl = upData.url;
 
             // 2. ギャラリー写真として登録（選択中カテゴリを付与）

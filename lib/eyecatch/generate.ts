@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import satori from 'satori';
-import sharp from 'sharp';
+// satori と sharp は呼ばれたときだけ読み込む。sharp は本番（Vercel）の実行時に読み込めないことがあり、
+// ファイルの先頭で読み込むと、このファイルを使う窓口（記事の保存など）ごと 500 で落ちる
 
 /**
  * タイトル文字だけで作るアイキャッチ（1200×630）。
@@ -106,6 +106,7 @@ export async function generateTitleEyecatch(
     ]
   );
 
+  const { default: satori } = await import('satori');
   const svg = await satori(tree as never, {
     width: WIDTH,
     height: HEIGHT,
@@ -114,6 +115,7 @@ export async function generateTitleEyecatch(
 
   // 文字はアウトライン化済みの SVG なので、ラスタライズにフォントは要らない
   // mozjpeg 出力は WP 側の WAF（SiteGuard）に弾かれたことがあるので使わない
+  const { default: sharp } = await import('sharp');
   const img = sharp(Buffer.from(svg));
   if (format === 'png') return img.png().toBuffer();
   if (format === 'webp') return img.webp({ quality: 90 }).toBuffer();

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import styles from './PostEditor.module.css';
 import MediaPicker from './MediaPicker';
 import { compressImage, isHeic } from '@/lib/imageCompress';
+import { uploadImage } from '@/lib/uploadImage';
 import {
   autoGrow, parseBodySegments, spliceSeg, findLiveSeg, insertBlockAt, removeSegFromBody,
   getTextBlockFormat, projectTextForEditor, editorTextToRaw, formattedTextToPlain,
@@ -832,14 +833,11 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     const item: UploadedImage = { uid, localUrl: URL.createObjectURL(file), uploading: true };
     setEyecatch(item);
     try {
-      const fd = new FormData();
-      fd.append('image', file, file.name);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      const data = await uploadImage(file);
       setEyecatch((prev) => prev && prev.uid === uid ? { ...prev, url: data.url, id: data.id, uploading: false } : prev);
-    } catch {
+    } catch (err) {
       setEyecatch((prev) => prev && prev.uid === uid ? { ...prev, uploading: false, error: 'アップロード失敗' } : prev);
+      setErrorMsg(`アイキャッチ: ${err instanceof Error ? err.message : 'アップロードに失敗しました'}`);
     }
   }
 
@@ -898,14 +896,11 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     const file = target.file;
     setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploading: true, error: undefined } : img));
     try {
-      const fd = new FormData();
-      fd.append('image', file, file.name);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      const data = await uploadImage(file);
       setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, url: data.url, id: data.id, uploading: false } : img));
-    } catch {
+    } catch (err) {
       setImages((prev) => prev.map((img) => img.uid === uid ? { ...img, uploading: false, error: 'アップロード失敗' } : img));
+      setErrorMsg(err instanceof Error ? err.message : 'アップロードに失敗しました');
     }
   }
 
@@ -942,18 +937,15 @@ const eyecatchInputRef = useRef<HTMLInputElement>(null);
     newItems.forEach(async (item, relIdx) => {
       const file = compressed[relIdx];
       try {
-        const fd = new FormData();
-        fd.append('image', file, file.name);
-        const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Upload failed');
+        const data = await uploadImage(file);
         setImages((prev) => prev.map((img) =>
           img.uid === item.uid ? { ...img, url: data.url, id: data.id, uploading: false } : img
         ));
-      } catch {
+      } catch (err) {
         setImages((prev) => prev.map((img) =>
           img.uid === item.uid ? { ...img, uploading: false, error: 'アップロード失敗' } : img
         ));
+        setErrorMsg(err instanceof Error ? err.message : 'アップロードに失敗しました');
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -4,10 +4,11 @@
 // たまたま「攻撃っぽい文字の並び」が含まれると、403（閲覧できません）で弾かれる。
 // 画像の見た目はほぼ変えずにバイト列だけ変えれば通るので、403 のときだけ
 // sharp で少しずつ違う設定に再エンコードして送り直す。
+// sharp は先頭で読み込まない（本番の実行時に読み込めず、窓口ごと 500 になったため）。
 //
 // lib/wordpress.ts はクライアント画面からも読まれるため、sharp はここに分けている。
 
-import sharp, { type JpegOptions } from 'sharp';
+import type { JpegOptions } from 'sharp';
 import { uploadMedia, type WPMedia } from '@/lib/wordpress';
 
 /** 403 のときに試す再エンコード（見た目はほぼ同じ。バイト列が変わる） */
@@ -42,6 +43,16 @@ export async function uploadMediaResilient(file: File, filename: string): Promis
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (!isWafBlock(message) || !/^image\/(jpeg|png|webp)$/.test(file.type || 'image/jpeg')) {
+      throw new Error(friendlyUploadError(message));
+    }
+
+    // sharp は本番の実行時に読み込めないことがあるので、ここで初めて読み込む。
+    // 読み込めなければ WAF のエラーをそのまま返し、ブラウザ側の作り直し（lib/uploadImage.ts）に任せる
+    let sharp: (typeof import('sharp'))['default'];
+    try {
+      sharp = (await import('sharp')).default;
+    } catch (loadError) {
+      console.error('[upload] sharp を読み込めないため、サーバー側の作り直しは省略:', loadError);
       throw new Error(friendlyUploadError(message));
     }
 
