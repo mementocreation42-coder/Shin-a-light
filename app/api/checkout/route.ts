@@ -19,6 +19,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
 
+        // 準備中の商品と、価格未定（0 円）の有料枠は決済に進ませない
+        if (product.comingSoon || product.price <= 0) {
+            return NextResponse.json({ error: 'この商品は準備中です。' }, { status: 400 });
+        }
+
         if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.startsWith('sk_test_XXX')) {
             return NextResponse.json(
                 { error: 'Stripe is not configured yet. Please set STRIPE_SECRET_KEY in .env.local' },

@@ -40,7 +40,13 @@ export default function ShopPage() {
         <div className="shop-page">
             <header className="shop-hero">
                 <div className="shop-hero-inner">
-                    <h1 className="shop-title">SAL<br />STORE</h1>
+                    {/* ロゴ: 白の SAL ＋ 橙の STORE（マークなし） */}
+                    <h1 className="shop-title" aria-label="SAL STORE">
+                        <span className="shop-title-words" aria-hidden="true">
+                            <span className="shop-title-sal">SAL</span>
+                            <span className="shop-title-store">STORE</span>
+                        </span>
+                    </h1>
                     <p className="shop-subtitle">Creative Assets & Tools - For those who make their own.</p>
                 </div>
             </header>

@@ -2877,26 +2877,37 @@ select:disabled {
 }
 
 .shop-title {
-  font-size: clamp(48px, 8vw, 88px);
-  font-family: var(--font-righteous), sans-serif;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 22px;
   font-weight: 400;
-  margin-bottom: 20px;
-  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.shop-title-words {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(4px, 0.8vw, 10px);
+}
+
+.shop-title-sal {
+  font-family: var(--font-righteous), sans-serif;
+  font-size: clamp(54px, 8.4vw, 92px);
+  letter-spacing: 3px;
   line-height: 0.85;
-  text-transform: uppercase;
-  background: repeating-linear-gradient(
-    45deg,
-    #e8000a 0px,   #e8000a 20px,
-    #ff7700 20px,  #ff7700 40px,
-    #ffd600 40px,  #ffd600 60px,
-    #00b800 60px,  #00b800 80px,
-    #0066ff 80px,  #0066ff 100px,
-    #6600cc 100px, #6600cc 120px,
-    #cc00aa 120px, #cc00aa 140px
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
+}
+
+.shop-title-store {
+  font-family: var(--font-mono), monospace;
+  font-weight: 700;
+  font-size: clamp(20px, 3vw, 34px);
+  /* SAL の幅にそろうよう字間を広げる */
+  letter-spacing: 0.5em;
+  margin-right: -0.5em;
+  line-height: 1;
+  color: var(--accent-orange);
 }
 
 
