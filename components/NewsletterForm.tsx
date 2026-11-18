@@ -6,11 +6,14 @@ export default function NewsletterForm({
     giftText,
     benefits,
     onSuccess,
+    intent,
 }: {
     giftText?: string;
     benefits?: string[];
     /** 登録（確認メール送信）が成功したときに呼ぶ。ポップアップが「もう出さない」を記録するのに使う */
     onSuccess?: () => void;
+    /** 'goldroom' = GoldRoom のページ用。購読中の人には利用コードを送り直す */
+    intent?: 'goldroom';
 } = {}) {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -33,7 +36,7 @@ export default function NewsletterForm({
             const response = await fetch('/api/newsletter', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify(intent ? { email, intent } : { email }),
             });
 
             const data = await response.json();
@@ -59,7 +62,13 @@ export default function NewsletterForm({
                     {doubleOptIn ? '確認メールを送りました' : '登録ありがとうございます！'}
                 </h3>
                 <p className="nl-success-desc">
-                    {doubleOptIn ? (
+                    {doubleOptIn && intent === 'goldroom' ? (
+                        <>
+                            はじめての方は、メール内のボタンで登録を完了すると GoldRoom が届きます。<br />
+                            登録済みの方には、利用コードをお送りしました。<br />
+                            届かない場合は迷惑メールフォルダをご確認ください。
+                        </>
+                    ) : doubleOptIn ? (
                         <>
                             メール内のボタンを押すと登録が完了します。<br />
                             届かない場合は迷惑メールフォルダをご確認ください。

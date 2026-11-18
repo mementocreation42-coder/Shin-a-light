@@ -141,7 +141,55 @@ Shine a Light のニュースレターにご登録ありがとうございます
 }
 
 /** 登録完了直後に送るお礼＋プレゼント（selpico3）メール */
-export function renderWelcomeEmail(p: { presetUrl: string; unsubUrl: string }): { html: string; text: string } {
+/** GoldRoom（Mac の RAW 現像アプリ）の受け取り方。ウェルカムメールとコード再送メールで共通 */
+export interface GoldroomMailLinks {
+  code: string;
+  downloadUrl: string;
+  activateUrl: string;
+}
+
+function goldroomBlock(g: GoldroomMailLinks): { html: string; text: string } {
+  const html = `
+<p style="margin:0 0 12px;font-size:16px;line-height:1.85;color:${palette.text};">
+Mac をお使いの方には、RAW 現像アプリ<strong>「GoldRoom」</strong>もお贈りします（読者限定・無料）。
+</p>
+
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;">
+<tr><td align="center" bgcolor="${palette.accent}" style="border-radius:6px;">
+  <a href="${g.downloadUrl}" style="display:inline-block;padding:14px 32px;font-family:${FONT};font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;">GoldRoom をダウンロード</a>
+</td></tr>
+</table>
+
+<p style="margin:0 0 8px;font-size:14px;line-height:1.8;color:${palette.text};"><strong>使い始め方</strong></p>
+<p style="margin:0 0 12px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
+1. ダウンロードした dmg を開き、GoldRoom を「アプリケーション」へドラッグ<br />
+2. GoldRoom を開いたら、下の「コードを入れる」を押す（またはコードを貼り付ける）
+</p>
+<p style="margin:0 0 8px;font-size:14px;line-height:1.8;"><a href="${g.activateUrl}" style="color:${palette.accent};font-weight:700;">コードを入れる</a></p>
+<p style="margin:0 0 24px;font-size:12px;line-height:1.7;color:${palette.textMuted};word-break:break-all;">
+あなた専用のコード:<br /><code style="font-family:Menlo,monospace;">${escapeHtml(g.code)}</code>
+</p>`;
+  const text =
+    `【Mac の方へ: RAW 現像アプリ「GoldRoom」（読者限定・無料）】\n` +
+    `ダウンロード: ${g.downloadUrl}\n` +
+    `1. dmg を開き、GoldRoom を「アプリケーション」へドラッグ\n` +
+    `2. GoldRoom を開いて、次のコードを貼り付ける\n` +
+    `コードを入れる: ${g.activateUrl}\n` +
+    `あなた専用のコード: ${g.code}\n\n`;
+  return { html, text };
+}
+
+export function renderGoldroomEmail(p: GoldroomMailLinks & { unsubUrl: string }): { html: string; text: string } {
+  const b = goldroomBlock(p);
+  const content = `
+<h1 style="margin:0 0 20px;font-size:22px;line-height:1.5;font-weight:700;color:${palette.text};">GoldRoom の利用コード</h1>
+${b.html}
+<p style="margin:0;font-size:13px;line-height:1.8;color:${palette.textMuted};">このメールに心当たりがない場合は、破棄してください。</p>`;
+  const text = `GoldRoom の利用コード\n\n${b.text}解除はこちら: ${p.unsubUrl}\n`;
+  return { html: layout({ preheader: 'GoldRoom の利用コードをお届けします', content, unsubUrl: p.unsubUrl }), text };
+}
+
+export function renderWelcomeEmail(p: { presetUrl: string; unsubUrl: string; goldroom?: GoldroomMailLinks }): { html: string; text: string } {
   const content = `
 <h1 style="margin:0 0 20px;font-size:22px;line-height:1.5;font-weight:700;color:${palette.text};">ご登録ありがとうございます</h1>
 <p style="margin:0 0 24px;font-size:16px;line-height:1.85;color:${palette.text};">
@@ -178,6 +226,7 @@ Shine a Light のニュースレターへようこそ。<br />
 <a href="${p.presetUrl}" style="color:${palette.accent};word-break:break-all;">${escapeHtml(p.presetUrl)}</a>
 </p>
 
+${p.goldroom ? goldroomBlock(p.goldroom).html : ''}
 <p style="margin:0;font-size:14px;line-height:1.85;color:${palette.text};">
 それでは、次の便でお会いしましょう。
 </p>`;
@@ -196,6 +245,7 @@ Shine a Light のニュースレターへようこそ。<br />
     `【スマホの場合（Lightroom モバイル・無料版でOK）】\n` +
     `写真を開く → 下部の「プリセット」→ 右上の「…」→「プリセットを読み込み」\n` +
     `→ 保存した selpico3.xmp を選択。\n\n` +
+    (p.goldroom ? goldroomBlock(p.goldroom).text : '') +
     `解除はこちら: ${p.unsubUrl}\n`;
 
   return { html: layout({ preheader: 'ようこそ。プレゼントの selpico3 をどうぞ', content, unsubUrl: p.unsubUrl }), text };
