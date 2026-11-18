@@ -18,10 +18,10 @@ const TEMPLATES = [
     },
     {
         key: 'welcome',
-        name: 'ウェルカムメール（お礼＋selpico3）',
-        subject: '【Shine a Light】ようこそ。プレゼントの selpico3 をどうぞ',
+        name: 'ウェルカムメール（お礼＋GoldRoom の予告）',
+        subject: '【Shine a Light】ご登録ありがとうございます',
         when: '確認リンクを踏んで登録が完了した直後',
-        note: 'プリセットのダウンロードボタンと解除リンク付き',
+        note: 'GoldRoom は 2/22 の第1号で届くことと、解除リンク',
     },
 ];
 

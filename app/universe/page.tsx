@@ -58,7 +58,7 @@ export default function UniversePage() {
                     </div>
                     <div className="universe-newsletter-inner">
                         <NewsletterForm benefits={[
-                            '🎁 登録者には、SAL謹製写真現像プリセット「selpico3」をプレゼント。',
+                            '🎁 SAL謹製の現像アプリ「GoldRoom」を、2/22配信予定のニュースレター第1号で無料配布。',
                             '📬 映像・写真・健康・AI・自然、暮らしのヒントを不定期に届ける。',
                             '🔧 使っているツール・ワークフロー・機材の話を共有。',
                         ]} />

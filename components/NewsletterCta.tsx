@@ -19,7 +19,7 @@ export default function NewsletterCta({
                 <p className="nl-cta-lede">{lede}</p>
                 <NewsletterForm />
                 <p className="nl-cta-note">
-                    🎁 登録者には写真現像プリセット「selpico3」をプレゼント。
+                    🎁 SAL謹製の現像アプリ「GoldRoom」を、2/22配信予定のニュースレター第1号で無料配布。
                 </p>
             </div>
         </section>

@@ -49,7 +49,6 @@ export async function GET(req: NextRequest) {
     ({ html } = renderConfirmEmail(`${origin}/newsletter/confirm?token=PREVIEW`));
   } else if (template === 'welcome') {
     ({ html } = renderWelcomeEmail({
-      presetUrl: `${origin}/presets/selpico3.xmp`,
       unsubUrl: `${origin}/newsletter/unsubscribe?token=PREVIEW`,
     }));
   } else {

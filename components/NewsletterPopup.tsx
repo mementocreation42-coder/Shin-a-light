@@ -104,7 +104,7 @@ export default function NewsletterPopup() {
                 <p className="nlp-lede">
                     映像・写真・AI・釣り・健康 —— 暮らしを軽くするヒントを、不定期で届けています。
                 </p>
-                <p className="nlp-gift">🎁 登録すると、写真現像プリセット「selpico3」をプレゼント。</p>
+                <p className="nlp-gift">🎁 SAL謹製の現像アプリ「GoldRoom」を、2/22配信予定のニュースレター第1号で無料配布。</p>
                 <NewsletterForm
                     onSuccess={() => {
                         setSubscribed(true);

@@ -140,8 +140,8 @@ Shine a Light のニュースレターにご登録ありがとうございます
   return { html: layout({ preheader: '登録の確認をお願いします', content }), text };
 }
 
-/** 登録完了直後に送るお礼＋プレゼント（selpico3）メール */
-export function renderWelcomeEmail(p: { presetUrl: string; unsubUrl: string }): { html: string; text: string } {
+/** 登録完了直後に送るお礼メール（GoldRoom は 2/22 配信のニュースレター第1号で届ける） */
+export function renderWelcomeEmail(p: { unsubUrl: string }): { html: string; text: string } {
   const content = `
 <h1 style="margin:0 0 20px;font-size:22px;line-height:1.5;font-weight:700;color:${palette.text};">ご登録ありがとうございます</h1>
 <p style="margin:0 0 24px;font-size:16px;line-height:1.85;color:${palette.text};">
@@ -149,33 +149,9 @@ Shine a Light のニュースレターへようこそ。<br />
 映像・写真・AI・釣り・健康——暮らしを軽くするヒントを、不定期でお届けします。
 </p>
 
-<p style="margin:0 0 12px;font-size:16px;line-height:1.85;color:${palette.text};">
-お礼に、SAL謹製の写真現像プリセット<strong>「selpico3」</strong>をお贈りします。<br />
-下のボタンからダウンロードしてください。
-</p>
-
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;">
-<tr><td align="center" bgcolor="${palette.accent}" style="border-radius:6px;">
-  <a href="${p.presetUrl}" style="display:inline-block;padding:14px 32px;font-family:${FONT};font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;">selpico3 をダウンロード</a>
-</td></tr>
-</table>
-
-<p style="margin:0 0 8px;font-size:14px;line-height:1.8;color:${palette.text};"><strong>使い方（PC の Lightroom）</strong></p>
-<p style="margin:0 0 16px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
-1. 上のボタンから selpico3.xmp を保存<br />
-2. 編集（現像）画面で「プリセット」パネルを開き、「＋」→「プリセットを読み込み」<br />
-3. 保存した selpico3.xmp を選ぶと、一覧に「selpico3」が追加されます<br />
-4. 写真を開いて selpico3 をタップ。最後に露出だけ好みに合わせれば完成です
-</p>
-
-<p style="margin:0 0 8px;font-size:14px;line-height:1.8;color:${palette.text};"><strong>スマホの場合（Lightroom モバイル・無料版でOK）</strong></p>
-<p style="margin:0 0 16px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
-写真を開く → 下部の「プリセット」→ 右上の「…」→「プリセットを読み込み」→ 保存した selpico3.xmp を選択。
-</p>
-
-<p style="margin:0 0 24px;font-size:13px;line-height:1.8;color:${palette.textMuted};">
-ボタンからうまく保存できない場合は、次のURLをブラウザに貼り付けてください。<br />
-<a href="${p.presetUrl}" style="color:${palette.accent};word-break:break-all;">${escapeHtml(p.presetUrl)}</a>
+<p style="margin:0 0 24px;font-size:16px;line-height:1.85;color:${palette.text};">
+SAL謹製の現像アプリ<strong>「GoldRoom」</strong>は、2/22配信予定のニュースレター第1号でお届けします。<br />
+楽しみにお待ちください。
 </p>
 
 <p style="margin:0;font-size:14px;line-height:1.85;color:${palette.text};">
@@ -186,17 +162,9 @@ Shine a Light のニュースレターへようこそ。<br />
     `ご登録ありがとうございます\n\n` +
     `Shine a Light のニュースレターへようこそ。\n` +
     `映像・写真・AI・釣り・健康——暮らしを軽くするヒントを、不定期でお届けします。\n\n` +
-    `お礼に、写真現像プリセット「selpico3」をお贈りします。\n` +
-    `ダウンロード: ${p.presetUrl}\n\n` +
-    `【使い方（PC の Lightroom）】\n` +
-    `1. 上のURLから selpico3.xmp を保存\n` +
-    `2. 編集（現像）画面で「プリセット」パネルを開き、「＋」→「プリセットを読み込み」\n` +
-    `3. 保存した selpico3.xmp を選ぶと、一覧に「selpico3」が追加されます\n` +
-    `4. 写真を開いて selpico3 をタップ。最後に露出だけ好みに合わせれば完成です\n\n` +
-    `【スマホの場合（Lightroom モバイル・無料版でOK）】\n` +
-    `写真を開く → 下部の「プリセット」→ 右上の「…」→「プリセットを読み込み」\n` +
-    `→ 保存した selpico3.xmp を選択。\n\n` +
+    `SAL謹製の現像アプリ「GoldRoom」は、2/22配信予定のニュースレター第1号でお届けします。\n` +
+    `楽しみにお待ちください。\n\n` +
     `解除はこちら: ${p.unsubUrl}\n`;
 
-  return { html: layout({ preheader: 'ようこそ。プレゼントの selpico3 をどうぞ', content, unsubUrl: p.unsubUrl }), text };
+  return { html: layout({ preheader: 'ようこそ。GoldRoom は 2/22 の第1号でお届けします', content, unsubUrl: p.unsubUrl }), text };
 }

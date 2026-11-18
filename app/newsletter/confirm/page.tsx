@@ -26,19 +26,18 @@ export default async function ConfirmPage({
             const outcome = await confirmSubscriber(token);
             result = outcome.result;
 
-            // 登録が成立した瞬間に、お礼＋プレゼント（selpico3）を届ける。
+            // 登録が成立した瞬間に、お礼メールを届ける（GoldRoom は 2/22 の第1号で）。
             // 送信失敗で登録完了画面を壊さない（ログだけ残す）。
             if (outcome.result === 'confirmed' && outcome.email && outcome.unsubToken) {
                 const origin = process.env.SITE_URL ?? 'https://www.shinealight.jp';
                 const mail = renderWelcomeEmail({
-                    presetUrl: `${origin}/presets/selpico3.xmp`,
                     unsubUrl: `${origin}/newsletter/unsubscribe?token=${encodeURIComponent(outcome.unsubToken)}`,
                 });
                 // 登録者へのウェルカムメールと、運営者への通知を同時に送る。どちらの失敗も画面には出さない
                 const [welcome, notify] = await Promise.allSettled([
                     sendEmail({
                         to: outcome.email,
-                        subject: '【Shine a Light】ようこそ。プレゼントの selpico3 をどうぞ',
+                        subject: '【Shine a Light】ご登録ありがとうございます',
                         html: mail.html,
                         text: mail.text,
                     }),
