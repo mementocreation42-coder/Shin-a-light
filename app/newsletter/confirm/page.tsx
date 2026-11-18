@@ -5,6 +5,7 @@ import { confirmSubscriber } from '@/lib/newsletter';
 import { renderWelcomeEmail } from '@/lib/email/templates';
 import { sendEmail } from '@/lib/email/mailer';
 import { notifyNewSubscriber } from '@/lib/newsletterNotify';
+import { isGoldroomConfigured, goldroomLinks } from '@/lib/goldroom';
 
 export const metadata: Metadata = {
     title: '登録の確認',
@@ -33,6 +34,8 @@ export default async function ConfirmPage({
                 const mail = renderWelcomeEmail({
                     presetUrl: `${origin}/presets/selpico3.xmp`,
                     unsubUrl: `${origin}/newsletter/unsubscribe?token=${encodeURIComponent(outcome.unsubToken)}`,
+                    // GoldRoom（Mac の現像アプリ）も一緒に渡す。鍵と置き場が揃っているときだけ
+                    goldroom: isGoldroomConfigured() ? goldroomLinks(outcome.email, origin) : undefined,
                 });
                 // 登録者へのウェルカムメールと、運営者への通知を同時に送る。どちらの失敗も画面には出さない
                 const [welcome, notify] = await Promise.allSettled([

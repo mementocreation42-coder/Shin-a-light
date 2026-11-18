@@ -13,7 +13,8 @@
     "interview:draft": "tsx scripts/interview-to-draft.mts",
     "brain:sync": "tsx scripts/podcast-brain.mts",
     "podcast:topic": "tsx scripts/podcast-topic-draft.mts",
-    "gallery:new": "tsx scripts/gallery-new.mts"
+    "gallery:new": "tsx scripts/gallery-new.mts",
+    "goldroom:selftest": "tsx scripts/goldroom-selftest.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.117.1",

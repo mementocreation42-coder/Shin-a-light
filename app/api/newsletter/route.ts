@@ -3,6 +3,7 @@ import { isDbConfigured } from '@/lib/db';
 import { registerSubscriber, isValidEmail } from '@/lib/newsletter';
 import { renderConfirmEmail } from '@/lib/email/templates';
 import { sendEmail } from '@/lib/email/mailer';
+import { sendGoldroomCodeIfActive } from '@/lib/goldroom';
 
 /**
  * 購読登録。
@@ -27,8 +28,10 @@ function sourcePath(referer: string | null): string | undefined {
 
 export async function POST(req: NextRequest) {
     let email: string;
+    // 'goldroom' = /goldroom のフォームから。購読中の人には GoldRoom の利用コードを送り直す
+    let intent: unknown;
     try {
-        ({ email } = await req.json());
+        ({ email, intent } = await req.json());
     } catch {
         return NextResponse.json({ error: 'リクエストの形式が不正です。' }, { status: 400 });
     }
@@ -112,6 +115,16 @@ export async function POST(req: NextRequest) {
             // 名簿には pending で残っているので、あとから再送信できる。
             // ここで 500 を返すと利用者が何度も登録し直すことになるため飲み込む。
             console.error('[Newsletter] confirm mail failed:', error);
+        }
+    }
+
+    // /goldroom から来た購読中の人（確認メールは要らない人）には、利用コードを送る。
+    // 新しく登録した人には、確認のあとのウェルカムメールで届く。
+    if (!confirmToken && intent === 'goldroom') {
+        try {
+            await sendGoldroomCodeIfActive(email, process.env.SITE_URL ?? req.nextUrl.origin);
+        } catch (error) {
+            console.error('[Newsletter] goldroom code mail failed:', error);
         }
     }
 
